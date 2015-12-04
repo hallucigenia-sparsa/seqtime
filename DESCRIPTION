@@ -13,4 +13,5 @@ Depends:
     vegan, FGN, deSolve, igraph, untb, gtools
 License: GPL-2
 LazyData: true
+URL: https://github.com/hallucigenia-sparsa/seqtime
 RoxygenNote: 5.0.1
