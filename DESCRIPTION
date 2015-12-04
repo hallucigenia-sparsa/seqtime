@@ -1,0 +1,16 @@
+Package: seqtime
+Title: Time Series Analysis of Sequencing Data
+Version: 0.1
+Authors@R: c(person("Karoline", "Faust", email = "karoline.faust@vib-kuleuven.be", role = c("aut", "cre")),
+             person("Franziska", "Bauchinger", role = "aut"),
+             person("Didier", "Gonze", role = "aut"),
+             person("Sophie", "De Buyl", role = "aut"),
+             person("Leo", "Lahti", role = "aut"),
+             person("Stefanie", "Widder", role = "aut"))
+Description: Provides functions to analyse sequencing data time series and to simulate community dynamics.
+Depends:
+    R (>= 3.2.1),
+    vegan, FGN, deSolve, igraph, untb, gtools
+License: GPL-2
+LazyData: true
+RoxygenNote: 5.0.1
