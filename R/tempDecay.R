@@ -10,6 +10,7 @@ tempDecay<-function(x, time=c(1:ncol(x)), dissim="bray", header="", units=""){
   if(length(time) != ncol(x)){
     stop("The time vector has not as many entries as x has columns!")
   }
+
   # compute sample-wise dissimilarities
   dissimMat=as.matrix(vegdist(t(x),method=dissim))
   intervals = c()
