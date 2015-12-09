@@ -7,18 +7,23 @@ output: markdown_document
 
 Simulating noise types (following [this](http://stackoverflow.com/questions/8697567/how-to-simulate-pink-noise-in-r))
 
-```{r noise_simu, echo=TRUE, message=FALSE, warning=FALSE}
+```{r noise_simu, echo=TRUE, message=FALSE, warning=FALSE, fig.height = 10, fig.width = 6}
 require(tuneR)
 
 # White noise
 w <- noise(kind = c("white"))
 
+# Brown noise is integrated white noise
+# (ie. random walk)
+b <- cumsum(w)
+
 # Pink noise
 p <- noise(kind = c("pink"))
 
 # Visualize
-par(mfrow=c(2,1))
+par(mfrow=c(3,1))
 plot(w,main="white noise")
+plot(b,main="brown noise")
 plot(p,main="pink noise")
 ```
 
@@ -27,6 +32,9 @@ Estimating Hurst exponent for the noises
 ```{r noise_simu2, echo=TRUE, message=FALSE, warning=FALSE}
 library(pracma)
 Hwhite <- hurstexp(w@left, d = 128)
+Hbrown <- hurstexp(b, d = 128)
 Hpink <- hurstexp(p@left, d = 128)
 ```
+
+
 
