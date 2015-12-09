@@ -16,14 +16,9 @@ w <- noise(kind = c("white"))
 
 # Brown noise is integrated white noise
 # (ie. random walk)
-b <- cumsum(w)
-```
+# Use same time series length as in the other series
+b <- cumsum(rnorm(length(w@left)))
 
-```
-## Error in eval(expr, envir, enclos): no method for coercing this S4 class to a vector
-```
-
-```r
 # Pink noise
 p <- noise(kind = c("pink"))
 
@@ -31,13 +26,6 @@ p <- noise(kind = c("pink"))
 par(mfrow=c(3,1))
 plot(w,main="white noise")
 plot(b,main="brown noise")
-```
-
-```
-## Error in plot(b, main = "brown noise"): error in evaluating the argument 'x' in selecting a method for function 'plot': Error: object 'b' not found
-```
-
-```r
 plot(p,main="pink noise")
 ```
 
@@ -52,10 +40,10 @@ Hwhite <- hurstexp(w@left, d = 128)
 ```
 
 ```
-## Simple R/S Hurst estimation:         0.5358669 
-## Corrected R over S Hurst exponent:   0.5454923 
-## Empirical Hurst exponent:            0.5230614 
-## Corrected empirical Hurst exponent:  0.5080329 
+## Simple R/S Hurst estimation:         0.4936968 
+## Corrected R over S Hurst exponent:   0.5136791 
+## Empirical Hurst exponent:            0.5221794 
+## Corrected empirical Hurst exponent:  0.5066996 
 ## Theoretical Hurst exponent:          0.5151584
 ```
 
@@ -64,7 +52,11 @@ Hbrown <- hurstexp(b, d = 128)
 ```
 
 ```
-## Error in stopifnot(is.numeric(x), is.numeric(d)): object 'b' not found
+## Simple R/S Hurst estimation:         0.9285047 
+## Corrected R over S Hurst exponent:   1.010464 
+## Empirical Hurst exponent:            1.008459 
+## Corrected empirical Hurst exponent:  1.004516 
+## Theoretical Hurst exponent:          0.5151584
 ```
 
 ```r
@@ -72,10 +64,10 @@ Hpink <- hurstexp(p@left, d = 128)
 ```
 
 ```
-## Simple R/S Hurst estimation:         0.8012564 
-## Corrected R over S Hurst exponent:   0.888189 
-## Empirical Hurst exponent:            0.889189 
-## Corrected empirical Hurst exponent:  0.8832739 
+## Simple R/S Hurst estimation:         0.8094879 
+## Corrected R over S Hurst exponent:   0.9094174 
+## Empirical Hurst exponent:            0.9345781 
+## Corrected empirical Hurst exponent:  0.9286394 
 ## Theoretical Hurst exponent:          0.5151584
 ```
 

@@ -15,7 +15,8 @@ w <- noise(kind = c("white"))
 
 # Brown noise is integrated white noise
 # (ie. random walk)
-b <- cumsum(w)
+# Use same time series length as in the other series
+b <- cumsum(rnorm(length(w@left)))
 
 # Pink noise
 p <- noise(kind = c("pink"))
