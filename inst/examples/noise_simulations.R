@@ -1,4 +1,3 @@
-
 # Simulate noise types
 # http://stackoverflow.com/questions/8697567/how-to-simulate-pink-noise-in-r
 require(tuneR)
@@ -12,5 +11,6 @@ plot(p,main="pink noise")
 library(pracma)
 Hwhite <- hurstexp(w@left, d = 128)
 Hpink <- hurstexp(p@left, d = 128)
+
 
 
