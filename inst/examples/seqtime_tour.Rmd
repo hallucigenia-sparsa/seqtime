@@ -1,0 +1,97 @@
+---
+title: "Tour through seqtime - Noise types and Taylor laws in different data types"
+author: "Karoline Faust"
+date: "16 Dec 2015"
+output: html_document
+---
+
+We start by loading the seqtime library.
+
+```{r, message=FALSE, warning=FALSE}
+library(seqtime)
+```
+
+Then, we generate a time series with Ricker's model. For this, we have to specify the number of species in the community as well as the interaction matrix that describes
+their interactions. We generate an interaction matrix with a specified connectance at random.
+
+```{r}
+N=50
+A=generateA(N, c=0.1, ignore.c=FALSE)
+# Generate a matrix using the algorithm by Klemm and Eguiluz to simulate a species network with a realistic structure. This takes a couple of minutes to complete.
+#A=generateA(N, type="klemm", c=0.1, ignore.c=FALSE)
+```
+
+The code below visualizes the species network encoded in A. Each node
+has a self-arc, which represents intra-species competition.
+
+```{r}
+A.graph=graph.adjacency(A,mode="directed",weighted=TRUE)
+plot(A.graph,layout=layout.grid(A.graph))
+```
+
+Now we generate uneven initial species abundances, summing to a total count of 1000.
+
+```{r}
+y=round(generateAbundances(N,mode=5))
+names(y)=c(1:length(y))
+barplot(y,main="Initial species abundances",xlab="Species",ylab="Abundance")
+```
+
+With the initial abundances and the interaction matrix, we can run the simulation with Ricker and plot the resulting time series. We set the carrying capacity to a very low value, to avoid explosions.
+
+```{r}
+out.ricker=ricker(N,A=A,y=y,K=rep(0.0005,N),tend=500)
+tsplot(out.ricker,type="l",header="ricker")
+```
+
+We can then analyse the community time series. First, we plot for each species
+the mean against the variance. If a straight line fits well in log scale,
+the Taylor law applies. In case of the Ricker model, the Taylor law has a positive slope.
+
+```{r}
+# the pseudo-code allows to take the logarithm of species hat went extinct
+taylor(out.ricker, pseudo=1, col="green", type="taylor")
+```
+
+Now we look at the noise types of the species simulated with the Ricker model. In this case, the only noise type that is clearly identified is brown noise.
+
+```{r}
+ricker.noise=identifyNoisetypes(out.ricker, abund.threshold = 0)
+plot(ricker.noise)
+```
+
+Next, we run the SOC model on the same interaction matrix and initial abundances. For the example, we run it with only 500 individuals and 100 generations.
+
+```{r}
+out.soc=soc(N, I=500, A=A, m.vector=y, tend=100)
+```
+
+The Taylor law fits far better to species generated with SOC than with Ricker according to the R2.
+
+```{r}
+taylor(out.soc, pseudo=1, col="blue", type="taylor")
+```
+
+When we compute noise types in the community time series generated with SOC, we find that both pink and brown noise occurs.
+
+```{r}
+soc.noise=identifyNoisetypes(out.soc,abund.threshold=0)
+plot(soc.noise)
+```
+
+Finally, we generate a community with the Dirichlet Multinomial distribution and plot
+its Taylor law.
+
+```{r}
+dm.uneven=simCountMat(N,samples=100,mode=5,k=0.05)
+taylor(dm.uneven, pseudo=1, col="orange", type="taylor", header="Dirichlet-Multinomial")
+```
+
+Only white noise occurs, as expected, since samples were generated independently with the Dirichlet-Multinomial distribution.
+
+```{r}
+# we relax the p-value of the linear fit in the log-scaled power spectrum
+dm.uneven.noise=identifyNoisetypes(dm.uneven,pval.threshold = 1)
+plot(dm.uneven.noise)
+```
+

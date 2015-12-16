@@ -4,7 +4,7 @@
 \alias{taylor}
 \title{Plot relationship between row mean and row variance}
 \usage{
-taylor(x, type = "boxplot", col = "black", header = "")
+taylor(x, type = "boxplot", pseudo = 0, col = "black", header = "")
 }
 \arguments{
 \item{x}{a matrix}

@@ -35,6 +35,7 @@ generateA<-function(N=100, type="random", c=0.02, ignore.c=TRUE, d=-0.5, pep=50,
   }
 
   if(ignore.c==FALSE){
+    print(paste("Adjusting connectance to",c))
     A=adjustc(A,c=c)
   }
 

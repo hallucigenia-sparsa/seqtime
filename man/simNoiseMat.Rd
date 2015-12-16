@@ -29,6 +29,7 @@ powerspec(simNoiseMat(samples=100,noisetypes=list(white=0,brown=0,pink=1))[1,],p
 # plot a matrix with mixed noise types
 mat=simNoiseMat(samples=300,noisetypes=list(white=0,brown=20,pink=30))
 tsplot(mat,type="l", header="simulated noise")
-taylor(simNoiseMat(samples=300,noisetypes=list(white=10,brown=50,pink=0)),type="taylor")
+# Taylor law of brown noise
+taylor(simNoiseMat(samples=300,noisetypes=list(white=0,brown=50,pink=0)),type="taylor")
 }
 

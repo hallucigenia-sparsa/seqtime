@@ -2,7 +2,7 @@
 title: "Digital History in Finland, 1488-1828"
 author: "Leo Lahti"
 date: "December 9, 2015"
-output: markdown_document
+output: html_document
 ---
 
 Simulating noise types (following [this](http://stackoverflow.com/questions/8697567/how-to-simulate-pink-noise-in-r))
