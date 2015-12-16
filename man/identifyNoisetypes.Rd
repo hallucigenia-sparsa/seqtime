@@ -21,10 +21,13 @@ Row count sums need to be above the given abundance threshold and
 the spectrum needs to scale significantly with the frequency below p-value 0.05
 in log-log scale.
 The periodogram is computed with spectrum.
+The function returns a noisetypes object, which groups matrix row indices
+by noise type.
 }
 \examples{
 N=10
 ricker.out=ricker(N,generateA(N),K=rep(0.01,N))
-identify.noisetypes(ricker.out)
+noisetypes=identifyNoisetypes(ricker.out)
+plot(ricker.out[noisetypes$brown[1],], main=paste("Simulated OTU",noisetypes$brown[1]),ylab="Abundance")
 }
 

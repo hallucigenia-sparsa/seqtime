@@ -10,7 +10,7 @@
 
 powerspec<-function(v, plot.log=FALSE, header="", col="blue"){
   # generates periodogram
-  out=spectrum(v, plot=FALSE)
+  out=stats::spectrum(v, plot=FALSE)
   logfreq=log(out$freq)
   logspec=log(out$spec)
   reg.data=data.frame(logfreq,logspec)
