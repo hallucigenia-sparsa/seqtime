@@ -1,0 +1,12 @@
+[1] "Modularity of the network: "
+[1] 0.1545779
+[1] "Average path length of the network 1.55789473684211"
+[1] "Initial connectance 0.447368421052632"
+[1] "Number of edges removed 151"
+[1] "Final connectance 0.05"
+[1] 0.3564014
+[1] "Average clustering coefficient of final network 0.16969696969697"
+[1] "Average path length of final network 2.40789473684211"
+[1] "Converting 5 edges into negative edges"
+[1] "percentage of positive interactions 0.30952380952381"
+[1] "percentage of negative interactions 0.69047619047619"
