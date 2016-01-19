@@ -4,12 +4,12 @@
 #' @param taxa vector of taxon row indices or row names present in x
 #' @param logdissim take the logarithm of the dissimilarity before fitting a line
 #'
-#' @examples 
+#' @examples
 #' data=rarefyFilter(david_stoolA_otus,min=10000)
 #' # Faecalibacterium OTUs
 #' taxa=c("OTU_72853","OTU_119271")
 #' out=simDecay(data,taxa)
-#' 
+#'
 simDecay<-function(x,taxa=c(1),dissim="bray",logdissim=FALSE){
   if(length(taxa)==0){
     stop("Please provide at least the index or the name of one taxon.")
