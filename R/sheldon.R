@@ -1,6 +1,7 @@
 #' Compute evenness using Sheldon's index
 #'
 #' @references A.L. Sheldon 1969. Equitability indices: dependence on the species count. Ecology, 50, 466-467.
+#' @references C Heip 1974. A new index measuring evenness. J. mar. biol. Ass. UK 54, 555-557.
 #'
 #' Note that the N2N1 mode results in evenness smaller than 1 for equal taxon
 #' probabilities.

@@ -11,6 +11,8 @@ taylor(x, type = "boxplot", pseudo = 0, col = "black", header = "")
 
 \item{type}{the type of plot to do: mean.var (mean vs variance), boxplot (row-wise), taylor (powerlaw fitted to mean vs variance)}
 
+\item{pseudo}{add a pseudo count to deal with zeros in log-log plot (for type=taylor)}
+
 \item{col}{the color of the dots}
 
 \item{header}{header string}

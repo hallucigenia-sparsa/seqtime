@@ -2,7 +2,7 @@
 #'
 #' Generate an interaction matrix, either randomly from a uniform distribution or
 #' using Klemm-Eguiluz algorithm to generate a modular and scale-free interaction matrix.
-#' @param type random (sample a uniform distribution), klemm (generate a Klemm-Eguiluz matrix)
+#' @param type random (sample a uniform distribution), klemm (generate a Klemm-Eguiluz matrix) or empty (zero everywhere, except for diagonal which is set to d)
 #' @param pep desired positive edge percentage (only for klemm)
 #' @param d diagonal values (should be negative)
 #' @param c desired connectance (interaction probability)
@@ -15,8 +15,8 @@
 #' @references Klemm & Eguiluz, Growing Scale-Free Networks with Small World Behavior \url{http://arxiv.org/pdf/cond-mat/0107607v1.pdf}
 #' @export
 
-generateA<-function(N=100, type="random", c=0.02, ignore.c=TRUE, d=-0.5, pep=50, negedge.symm=FALSE, clique.size=5){
-  A=matrix(nrow=N,ncol=N)      # init species interaction matrix
+generateA<-function(N=100, type="random", c=0.02, ignore.c=FALSE, d=-0.5, pep=50, negedge.symm=FALSE, clique.size=5){
+  A=matrix(0,nrow=N,ncol=N)      # init species interaction matrix
   if(type=="random"){
     for (i in 1:N){
       for(j in 1:N){
@@ -27,6 +27,8 @@ generateA<-function(N=100, type="random", c=0.02, ignore.c=TRUE, d=-0.5, pep=50,
         }
       }
     }
+  }else if(type=="empty"){
+    diag(A)=d
   }else if(type=="klemm"){
     g<-klemm.game(N,verb=FALSE, clique.size)
     A=get.adjacency(g)

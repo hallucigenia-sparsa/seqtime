@@ -4,11 +4,11 @@
 \alias{generateA}
 \title{Generate an interaction matrix}
 \usage{
-generateA(N = 100, type = "random", c = 0.02, ignore.c = TRUE,
+generateA(N = 100, type = "random", c = 0.02, ignore.c = FALSE,
   d = -0.5, pep = 50, negedge.symm = FALSE, clique.size = 5)
 }
 \arguments{
-\item{type}{random (sample a uniform distribution), klemm (generate a Klemm-Eguiluz matrix)}
+\item{type}{random (sample a uniform distribution), klemm (generate a Klemm-Eguiluz matrix) or empty (zero everywhere, except for diagonal which is set to d)}
 
 \item{c}{desired connectance (interaction probability)}
 

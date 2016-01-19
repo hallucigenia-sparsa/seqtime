@@ -9,6 +9,11 @@
 #' @param header a string to be appended to the plot title (Time decay)
 #' @param units a string to describe the units of the time points (days, weeks etc)
 #' @return a list with the time intervals, dissimilarity values, intersection, slope, p-value, adjusted R2, dissimilarity measure used and log status of dissimilarity measure
+#' @examples 
+#' data("david_stoolA_otus")
+#' data=rarefyFilter(david_stoolA_otus,min=10000)
+#' out.decay=timeDecay(data[,1:50], header="Stool subject A")
+#' 
 #' @export
 
 timeDecay<-function(x, time=c(1:ncol(x)), dissim="bray", logdissim=FALSE, header="", units=""){
@@ -31,6 +36,9 @@ timeDecay<-function(x, time=c(1:ncol(x)), dissim="bray", logdissim=FALSE, header
     }
   }
   # reg.data=data.frame(intervals,dissimValues)
+  if(logdissim==TRUE){
+    dissimValues=log(dissimValues)
+  }
   linreg = lm(formula = dissimValues~intervals)
   intersection = linreg$coefficients[1]
   slope=linreg$coefficients[2]
