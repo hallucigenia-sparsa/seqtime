@@ -4,10 +4,9 @@
 \alias{generateTS}
 \title{Generate community time series}
 \usage{
-generateTS(N = 100, I = 1500, tend = 2000, initAbundMode = 5,
-  c = 0.02, Atype = "klemm", d = -1, PEP = 30, m = 0.05,
-  algorithm = "", interval = 1, output.folder = "", expId = "",
-  maxIter = 10)
+generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.02,
+  Atype = "klemm", d = -1, PEP = 30, m = 0.05, algorithm = "dm",
+  interval = 1, output.folder = "", expId = "", maxIter = 10)
 }
 \arguments{
 \item{N}{species number}
@@ -50,6 +49,6 @@ and other randomly generated input are also
 stored in settings. The idea is that the time
 series can be re-created from the information
 stored in the settings folder (though not
-exactly, since all 3 models have random components).
+exactly, since the SOC, Ricker and neutral models have random components).
 }
 

@@ -5,7 +5,7 @@
 \title{Generate time series from Ricker model}
 \usage{
 ricker(N, A, K = rep(0.1, N), y = runif(N), sigma = 0.01, tend = 100,
-  tskip = 0)
+  tskip = 0, explosion.bound = 10^4)
 }
 \arguments{
 \item{N}{number of species}
@@ -21,12 +21,15 @@ ricker(N, A, K = rep(0.1, N), y = runif(N), sigma = 0.01, tend = 100,
 \item{tend}{number of time points}
 
 \item{tskip}{number of initial time points to skip (to skip the transient)}
+
+\item{explosion.bound}{boundary for explosion}
 }
 \value{
 a matrix with species abundances as rows and time points as columns
 }
 \description{
-Generate time series from Ricker model
+If an explosion occurs, -1 is returned. An explosion
+is reported if any species crosses the explosion bound.
 }
 \examples{
 tsplot(ricker(10,generateA(10),K=rep(0.01,10)),type="l", header="ricker")

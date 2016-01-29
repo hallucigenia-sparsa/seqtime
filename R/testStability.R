@@ -14,10 +14,11 @@
 #' compute the mean interaction strength.
 #' The eigenvalue criterium tests whether all real parts of the eigenvalues
 #' of the interaction matrix are smaller than zero.
+#' Ricker simply runs a simulation with Ricker and tests whether an explosion occurs.
 #'
 #'
 #' @param A the interaction matrix to test
-#' @param method the method to test stability (coyte or eigen)
+#' @param method the method to test stability (coyte, eigen, ricker)
 #' @return boolean false if unstable and true if stable
 #' @references Coyte et al., Science 2015: "The ecology of the microbiome: Networks, competition, and stability"
 #' @export
@@ -31,11 +32,16 @@ testStability<-function(A, method="eigen"){
 
     res=getAStats(A)
     # convert into proportions
+    P=res$nbinteractions
     Pa=res$nbam/P
     Pc=res$nbcomp/P
     Pe=res$nbexp/P
     Pm=res$nbmut/P
     Pp=res$com/P
+
+    var=res$varstrength
+    EX=res$meanstrength
+    EXsquare=EX*EX
 
     # compute stability criterion
     re=sqrt(S*C* (var*(1-((Pp+Pa)/2))-C*EXsquare*(Pm-Pc+((Pp-Pa)/2))^2) )
@@ -56,6 +62,14 @@ testStability<-function(A, method="eigen"){
     eig=eigen(A)
     real=Re(eig$values)
     if(length(real[real>0]) > 0){
+      stable = FALSE
+    }else{
+      stable = TRUE
+    }
+  }else if(method == "ricker"){
+    N=nrow(A)
+    out=ricker(N, A=A, K=rep(0.1,N), y=runif(N), sigma=0.01, tend=100, tskip=0, explosion.bound=10^4)
+    if(out==-1){
       stable = FALSE
     }else{
       stable = TRUE

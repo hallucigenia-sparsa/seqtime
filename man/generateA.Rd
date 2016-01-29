@@ -24,6 +24,7 @@ generateA(N = 100, type = "random", c = 0.02, ignore.c = FALSE,
 }
 \value{
 the interaction matrix
+TODO: generate interaction strengths from half-normal distribution
 }
 \description{
 Generate an interaction matrix, either randomly from a uniform distribution or

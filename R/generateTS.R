@@ -40,6 +40,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.02, Atype="kle
   k=0.5 # parameter for initial abundance generation mode 6
   tstep=1 # step size for glv
   interpolation.method="stineman"
+  stability.method="ricker" # method to test stability of interaction matrix
 
   # empty objects
   A=matrix() # interaction matrix
@@ -83,7 +84,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.02, Atype="kle
       # clicque.size defaults to 5, negative edges are by default not symmetric
       A=generateA(N=N,type=Atype,c=c,d=d,pep=PEP)
       # re-generate A until it is stable
-      while(testStability(A,method="eigen")==FALSE){
+      while(testStability(A,method=stability.method)==FALSE){
         A=generateA(N=N,type=Atype,c=c,d=d,pep=PEP,clique.size=clique.size,negedge.symm=negedge.symm)
         if(maxIter > 0 && iter >= maxIter){
           stop("Cannot generate a stable interaction matrix for the given parameters")

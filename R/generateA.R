@@ -10,6 +10,7 @@
 #' @param negedge.symm set symmetric negative interactions (only for klemm)
 #' @param clique.size modularity parameter (only for klemm)
 #' @return the interaction matrix
+#' TODO: generate interaction strengths from half-normal distribution
 #' @examples
 #' klemm=generateA(N=10,type="klemm",c=0.5)
 #' @references Klemm & Eguiluz, Growing Scale-Free Networks with Small World Behavior \url{http://arxiv.org/pdf/cond-mat/0107607v1.pdf}
@@ -44,22 +45,20 @@ generateA<-function(N=100, type="random", c=0.02, ignore.c=FALSE, d=-0.5, pep=50
   # for Klemm-Eguiluz: inroduce negative edges and set random interaction strengths
   if(type=="klemm"){
     if(pep < 100){
-      A=setNeg(A, perc=(100-pep), symmetric=negedge.symm)
+      A=modifyA(A=A, perc=(100-pep), symmetric=negedge.symm, mode="negpercent")
     }
     # excluding edges on the diagonal
-    print(paste("Final edge number", length(A[A!=0])-N ))
+    print(paste("Final arc number (excluding self-arcs)", length(A[A!=0])-N ))
     # excluding negative edges on the diagonal
-    print(paste("Final negative edge number", length(A[A<0])-N ))
+    print(paste("Final negative arc number (excluding self-arcs)", length(A[A<0])-N ))
 
     # check PEP and number of asymmetric negative interactions
     # assuming diagonal values are negative
     pep = getPep(A)
     print(paste("PEP:",pep))
 
-    num.asym.neg=getNumAsymNeg(A, amensalism=FALSE)
-    print(paste("Number of exploitative interactions (without amensalism):",num.asym.neg))
-    print(paste("Number of exploitative interactions, amensalism included:",getNumAsymNeg(A,amensalism=TRUE)))
-
+    # convert binary interaction strengths (-1/1) into continuous ones using uniform distribution
+    # zero would remove the edge, so the minimum strength is small, but non-zero
     min.strength=0.00001
     for(i in 1:nrow(A)){
       for(j in 1:nrow(A)){

@@ -2,14 +2,28 @@
 % Please edit documentation in R/getAStats.R
 \name{getAStats}
 \alias{getAStats}
-\title{Print interaction type statistics}
+\title{Analyse an interaction matrix}
 \usage{
-getAStats(A)
+getAStats(A, statsType = "interactions", plot.degree = FALSE)
 }
 \arguments{
 \item{A}{the interaction matrix}
+
+\item{statsType}{interactions or network}
+
+\item{plot.degree}{plot the degree distribution (for statsType network)}
+}
+\value{
+a list, for statsType interactions: meanstrength = average interaction strength, varstrength = variance of interaction strength, nbinteractions = total interaction number,nbmut = number of mutualisms, nbcomp = number of competitions, nbcom = number of commensalisms, nbam = number of amensalisms, nbexp = number of exploitations, for statsType network: nodenum (node number), arcnum (arc number), mod (fast greedy modularity), cc (average clustering coefficient), avgpathlength (average shortest path length)
 }
 \description{
-Print interaction type statistics
+Count interaction types or compute network properties of interaction matrix.
+The mean interaction strength is computed according to Coyte et al.
+by fitting a half-normal distribution to the realized interaction strengths.
+Graph properties (modularity, average clustering coefficient, average path length)
+are computed using igraph functions.
+}
+\references{
+Coyte et al., Science 2015: "The ecology of the microbiome: Networks, competition, and stability"
 }
 

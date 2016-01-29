@@ -23,7 +23,7 @@ klemm.game<-function(N,verb, clique.size){
   c<-make.full.clique(clique.size)
   c<-fill.graph.to.N(N,0.8,c)
   g<-edges.relink(c,0.01)
-  if (verb==T){plot(g)}
+  if (verb==TRUE){plot(g)}
   return(g)
 }
 
@@ -64,7 +64,7 @@ edges.relink<-function(c,d){
           aux = aux[which(edges[aux,2] == adj[j])]
           edges<-edges[-aux,]
           #add new edge auf namen ebene
-          h<-sample(1:length(theothers),1,replace=T)
+          h<-sample(1:length(theothers),1,replace=TRUE)
           edges<-rbind(edges,c(i,theothers[h]))
         }
       }}
@@ -95,7 +95,7 @@ sparse_democratic<-function(g,hm){
   kedg<-vector()
   edg<-get.edgelist(g)
   adjedg<-get.adjedgelist(g,mode="in")
-  tt<- sample(1:length(adjedg),nrow(edg)*hm,replace=T)
+  tt<- sample(1:length(adjedg),nrow(edg)*hm,replace=TRUE)
   nt<-table(tt)
   cand<-as.numeric(names(nt))#indices, zahlen
   for(i in 1:length(cand)){
@@ -117,7 +117,7 @@ fill.graph.to.N<-function(N,mu,g){
   deactive<-vector()
   m<-g$m
   edges<-get.edgelist(g$g)
-  # for non-clique nodes, place interactions when their randomly selected strenth is above mu
+  # for non-clique nodes, place interactions when their randomly selected strength is above mu
   for(i in (m+1):N){
     for(j in 1:length(active)){
       x<-runif(1,0.0,1.0)	# 1 uniform random number between 0 and 1
