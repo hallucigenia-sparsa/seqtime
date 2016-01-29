@@ -12,7 +12,7 @@
 #' stored in settings. The idea is that the time
 #' series can be re-created from the information
 #' stored in the settings folder (though not
-#' exactly, since all 3 models have random components).
+#' exactly, since the SOC, Ricker and neutral models have random components).
 #'
 #' @param N species number
 #' @param I individual number (only for SOC and UNTB)
@@ -29,7 +29,7 @@
 #' @return list containing the generated interaction matrix, initial abundances (they double as immigration probabilities for soc), carrying capacities (they double as growth rates for glv), extinction probabilities, time series and settings
 #' @export
 
-generateTS<-function(N=100, I=1500, tend=2000, initAbundMode=5,c=0.02, Atype="klemm",d=-1, PEP=30, m=0.05, algorithm="", interval=1, output.folder="", expId="", maxIter=10){
+generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.02, Atype="klemm",d=-1, PEP=30, m=0.05, algorithm="dm", interval=1, output.folder="", expId="", maxIter=10){
 
   # CONSTANTS
   sigma=0.05 # noise term in ricker

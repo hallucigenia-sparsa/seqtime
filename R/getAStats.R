@@ -1,6 +1,11 @@
 #' Print interaction type statistics
 #'
+#' The mean interaction strength is computed according to Coyte et al.
+#' by fitting a half-normal distribution to the realized interaction strengths.
+#'
 #' @param A the interaction matrix
+#' @return a list with interaction type counts (meanstrength = average interaction strength, nbinteractions = total interaction number,nbmut = number of mutualisms, nbcomp = number of competitions, nbcom = number of commensalisms, nbam = number of amensalisms, nbexp = number of exploitations)
+#' @references Coyte et al., Science 2015: "The ecology of the microbiome: Networks, competition, and stability"
 #' @export
 
 getAStats<-function(A){
