@@ -6,6 +6,13 @@
 \usage{
 sheldon(x, correction = TRUE, N2N1 = FALSE)
 }
+\arguments{
+\item{x}{a vector}
+
+\item{correction}{whether or not to apply the correction described in Alatalo, Oikos 37, 199-204, 1981}
+
+\item{N2N1}{whether to compute Sheldon's evenness as the ratio of e raised to the power of H (H = Shannon diversity) and Simpson's diversity}
+}
 \value{
 Sheldon's evenness
 }

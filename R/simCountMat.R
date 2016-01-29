@@ -4,6 +4,7 @@
 #'
 #' @param N the number of taxa
 #' @param samples the number of columns in the matrix
+#' @param pi taxon proportion vector of length N (if smaller N, it is generated using the mode and k parameters)
 #' @param counts either the total number of counts in each sample or a vector specifying the count number in each sample
 #' @param distrib "dm" for Dirichlet-Multinomial distribution or "unif" for uniform distribution
 #' @param maxcount maximal count number for any taxon (only for uniform distribution)
@@ -17,7 +18,7 @@
 #' @seealso \code{\link{generateAbundances}}
 #' @export
 
-simCountMat<-function(N, samples=100, counts=1000, distrib="dm", maxcount=100, mode=1, k=0.5, theta=0.002, norm=F, shuffle.samples=F){
+simCountMat<-function(N, pi=c(), samples=100, counts=1000, distrib="dm", maxcount=100, mode=1, k=0.5, theta=0.002, norm=F, shuffle.samples=F){
   if(length(counts)==1 && counts < 1){
     stop("counts should be at least 1.")
   }
@@ -27,7 +28,9 @@ simCountMat<-function(N, samples=100, counts=1000, distrib="dm", maxcount=100, m
   if(samples < 1){
     stop("There should be at least one sample.")
   }
-  pi = getProbabs(taxa=N, mode=mode, k=k)
+  if(length(pi) < N){
+    pi = getProbabs(taxa=N, mode=mode, k=k)
+  }
   mat=matrix(nrow=N,ncol=samples)
   # get taxon probabilities for each column
   sample.count = counts

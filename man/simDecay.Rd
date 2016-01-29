@@ -17,10 +17,9 @@ simDecay(x, taxa = c(1), dissim = "bray", logdissim = FALSE)
 Plot sample-wise taxon dissimilarities against the abundance difference of selected taxa
 }
 \examples{
-data=rarefyFilter(david_stoolA_otus,min=1000)
+data=rarefyFilter(david_stoolA_otus,min=10000)
 # Faecalibacterium OTUs
 taxa=c("OTU_72853","OTU_119271")
 out=simDecay(data,taxa)
-
 }
 

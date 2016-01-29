@@ -57,8 +57,8 @@ generateA<-function(N=100, type="random", c=0.02, ignore.c=FALSE, d=-0.5, pep=50
     print(paste("PEP:",pep))
 
     num.asym.neg=getNumAsymNeg(A, amensalism=FALSE)
-    print(paste("Number of asymmetric negative interactions:",num.asym.neg))
-    print(paste("Number of asymmetric negative interactions, amensalism included:",getNumAsymNeg(A,amensalism=TRUE)))
+    print(paste("Number of exploitative interactions (without amensalism):",num.asym.neg))
+    print(paste("Number of exploitative interactions, amensalism included:",getNumAsymNeg(A,amensalism=TRUE)))
 
     min.strength=0.00001
     for(i in 1:nrow(A)){

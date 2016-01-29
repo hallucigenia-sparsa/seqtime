@@ -101,7 +101,7 @@ generate.parameters<-function(N, I, A, m.vector, e.vector){
   parameters <- list(A=A,species_list=species_list,
                      abundances=abundances,immigration_prob=m.vector,
                      extinction_prob=e.vector,sites=sites,
-                     living_species=living_species, C=C,I=I,N=N)
+                     living_species=living_species,I=I,N=N)
 }
 
 

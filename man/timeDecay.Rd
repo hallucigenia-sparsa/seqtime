@@ -26,4 +26,10 @@ a list with the time intervals, dissimilarity values, intersection, slope, p-val
 \description{
 Plot the time against the sample distance.
 }
+\examples{
+data("david_stoolA_otus")
+data=rarefyFilter(david_stoolA_otus,min=10000)
+out.decay=timeDecay(data[,1:50], header="Stool subject A")
+
+}
 

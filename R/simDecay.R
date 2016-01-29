@@ -9,7 +9,8 @@
 #' # Faecalibacterium OTUs
 #' taxa=c("OTU_72853","OTU_119271")
 #' out=simDecay(data,taxa)
-#'
+#' @export
+
 simDecay<-function(x,taxa=c(1),dissim="bray",logdissim=FALSE){
   if(length(taxa)==0){
     stop("Please provide at least the index or the name of one taxon.")

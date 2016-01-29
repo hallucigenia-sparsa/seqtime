@@ -4,7 +4,7 @@
 \alias{tsubsample}
 \title{Subsample a time series}
 \usage{
-tsubsample(x, num = 100)
+tsubsample(x, target = NA, interval = NA)
 }
 \arguments{
 \item{x}{a matrix}
@@ -12,7 +12,8 @@ tsubsample(x, num = 100)
 \item{num}{the resulting number of time points (defaults to 100)}
 }
 \description{
-Subsample the given time series down to a target time point number using equal intervals.
+Subsample the given time series down to a target time point number using equal intervals
+or select the time points with the given interval.
 Assumes that time points are columns and time points are equidistant.
 }
 

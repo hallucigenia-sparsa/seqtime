@@ -6,9 +6,9 @@
 #' Note that the N2N1 mode results in evenness smaller than 1 for equal taxon
 #' probabilities.
 #'
-#' @params x a vector
-#' @params correction whether or not to apply the correction described in Alatalo, Oikos 37, 199-204, 1981
-#' @params N2N1 whether to compute Sheldon's evenness as the ratio of e raised to the power of H (H = Shannon diversity) and Simpson's diversity
+#' @param x a vector
+#' @param correction whether or not to apply the correction described in Alatalo, Oikos 37, 199-204, 1981
+#' @param N2N1 whether to compute Sheldon's evenness as the ratio of e raised to the power of H (H = Shannon diversity) and Simpson's diversity
 #' @return Sheldon's evenness
 #' @export
 ##############################################################################
