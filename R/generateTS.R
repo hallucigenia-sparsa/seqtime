@@ -25,7 +25,7 @@
 #' @param interval sampling frequency (if 1, each sample is taken, if 2, every second sample is taken etc.)
 #' @param output.folder path to result folder, if specified, input parameter and time series are exported to the output folder
 #' @param expId the identifier of the time series generation experiment
-#' @param maxIter maximal iteration number for finding a stable interaction matrix (if negative or 0, no constraint is set on the iteration number)
+#' @param maxIter maximal iteration number for finding a stable interaction matrix
 #' @return list containing the generated interaction matrix, initial abundances (they double as immigration probabilities for soc), carrying capacities (they double as growth rates for glv), extinction probabilities, time series and settings
 #' @export
 
@@ -34,13 +34,16 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.02, Atype="kle
   # CONSTANTS
   sigma=0.05 # noise term in ricker
   negedge.symm=FALSE # negative interactions are not forced to be symmetric
-  clique.size=5 # interaction matrix generated with Klemm
-  count=10000 # number of read counts per sample (for generation of initial abundances and Dirichlet-Multinomial)
+  clique.size=5 # module size for interaction matrix generated with Klemm
+  count=1000 # number of read counts per sample (for generation of Dirichlet-Multinomial time series)
   theta=0.002 # Dirichlet-Multinomial overdispersion parameter
-  k=0.5 # parameter for initial abundance generation mode 6
+  k=0.5 # parameter for initAbundMode=6 (evenness of geometric series, does not affect any other initAbundMode)
   tstep=1 # step size for glv
   interpolation.method="stineman"
   stability.method="ricker" # method to test stability of interaction matrix
+  explosion.bound=10^8 # abundance limit above which ricker reports an explosion
+  max.carrying.capacity=0.5 # maximal carrying capacity/growth rate for ricker and glv
+  divisor = 3 # num positive edges/divisor are converted into negative edges during tweaking
 
   # empty objects
   A=matrix() # interaction matrix
@@ -78,32 +81,11 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.02, Atype="kle
     }
   } # output.folder provided
 
-  # generate A
-  iter=1
-  if(algorithm == "ricker" || algorithm == "glv" || algorithm == "soc"){
-      # clicque.size defaults to 5, negative edges are by default not symmetric
-      A=generateA(N=N,type=Atype,c=c,d=d,pep=PEP)
-      # re-generate A until it is stable
-      while(testStability(A,method=stability.method)==FALSE){
-        A=generateA(N=N,type=Atype,c=c,d=d,pep=PEP,clique.size=clique.size,negedge.symm=negedge.symm)
-        if(maxIter > 0 && iter >= maxIter){
-          stop("Cannot generate a stable interaction matrix for the given parameters")
-        }
-        iter = iter+1
-      }
-      print(paste("It took",iter,"iterations to generate a stable A."))
-      # save A
-      if(output.folder != ""){
-        A.name=paste(expId,"interactionmatrix.txt",sep="_")
-        A.path=paste(exp.settings.folder,A.name,sep="/")
-        write(t(A),file=A.path,ncolumns=ncol(A),sep="\t")
-      }
-  }
-
   # generate initial abundances
   if(algorithm == "glv" || algorithm == "ricker" || algorithm == "soc" || algorithm == "dm"){
-    # generate initial abundances
+    # generate initial abundances between 0 and 1
     y=generateAbundances(N=N,mode=initAbundMode, count=count, k=k)
+    y=y/sum(y)
     if(output.folder != ""){
       y.name=paste(expId,"initabund.txt",sep="_")
       y.path=paste(exp.settings.folder,y.name,sep="/")
@@ -113,7 +95,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.02, Atype="kle
 
   # generate carrying capacities/growth rates
   if(algorithm == "ricker" || algorithm == "glv"){
-    K=runif(N,min=0,max=1)
+    K=runif(N,min=0,max=max.carrying.capacity)
     # save carrying capacities/growth rates
     if(output.folder != ""){
       K.name=paste(expId,"capacities.txt",sep="_")
@@ -122,19 +104,60 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.02, Atype="kle
     }
   }
 
+  # generate A
+  if(algorithm == "ricker" || algorithm == "glv" || algorithm == "soc"){
+    stable = FALSE
+    iter = 0
+    # try to generate a stable A
+    while(stable == FALSE && iter < maxIter){
+      iter = iter + 1
+      A=generateA(N=N,type=Atype,c=c,d=d,pep=PEP,clique.size=clique.size,negedge.symm=negedge.symm)
+      stable=testStability(A,method=stability.method, K=K, y=y, sigma=sigma, explosion.bound=explosion.bound)
+      if(stable == FALSE){
+        # tweak matrix
+        pos.num=length(A[A>0])
+        # number of tweaking trials
+        trials = round(pos.num/divisor)
+        for(arc.index in 1:trials){
+          A=modifyA(A=A,mode="tweak")
+          stable = testStability(A,method=stability.method, K=K, y=y, sigma=sigma, explosion.bound=explosion.bound)
+          if(stable == TRUE){
+            print(paste("It took",arc.index,"positive arcs converted into negative ones to generate a stable A."))
+            break
+          }
+        } # end loop over positive arcs
+      } # not stable
+    } # iterations
+
+    # save A
+    if(stable == TRUE){
+      print(paste("It took",iter,"iterations to generate a stable A."))
+      # print statistics of final A
+      stats=getAStats(A)
+
+      if(output.folder != ""){
+        A.name=paste(expId,"interactionmatrix.txt",sep="_")
+        A.path=paste(exp.settings.folder,A.name,sep="/")
+        write(t(A),file=A.path,ncolumns=ncol(A),sep="\t")
+      }
+    }else{
+      stop("Could not generate a stable interaction matrix for the given parameters.")
+    }
+  } # end generate A
+
   # generate time series
+  print("Preparation done, running simulation...")
   if(algorithm == "ricker"){
-    ts.out=ricker(N=N,A=A,sigma=sigma,y=y,tend=tend, K=K)
+    ts.out=ricker(N=N,A=A,sigma=sigma,y=y,tend=tend, K=K, explosion.bound=explosion.bound)
+    if(ts.out == -1){
+      stop("Explosion occurred!")
+    }
   }else if(algorithm == "glv"){
     ts.out=glv(N=N, A=A, b=K, y=y,tstart=0, tend=tend, tstep=tstep)
   }else if(algorithm == "soc"){
     extinction.probab=runif(N,min=0,max=1)
     # initial abundances serve as immigration probabilities
-    immigration.probab=y
-    if(sum(immigration.probab) > 1){
-      immigration.probab=immigration.probab/sum(immigration.probab)
-    }
-    ts.out=soc(N=N, I=I, A=A, m.vector=immigration.probab, e.vector=extinction.probab, tend=tend)
+    ts.out=soc(N=N, I=I, A=A, m.vector=y, e.vector=extinction.probab, tend=tend)
     # save extinction probabilities
     if(output.folder != ""){
       ext.name=paste(expId,"extinction.txt",sep="_")
@@ -144,11 +167,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.02, Atype="kle
   }else if(algorithm == "untb"){
     ts.out=simuntb(N=N,y=y,m=m, tskip=0, tend=tend)
   }else if(algorithm == "dm"){
-    pi=y
-    if(sum(pi) > 1){
-      pi=pi/sum(pi)
-    }
-    ts.out=simCountMat(N=N,pi=pi, samples=tend, counts=count, distrib="dm", theta=theta)
+    ts.out=simCountMat(N=N,pi=y, samples=tend, counts=count, distrib="dm", theta=theta)
   }else if(algorithm == "davida" || algorithm == "davidb"){
     if(algorithm == "davida"){
       data("david_stoolA_otus")
@@ -186,6 +205,12 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.02, Atype="kle
     ts.name=paste(expId,"timeseries.txt",sep="_")
     ts.path=paste(exp.timeseries.folder,ts.name,sep="/")
     write(t(ts.out),file=ts.path,ncolumns=ncol(ts.out),sep="\t")
+    # save a plot of the time series, for control
+    ts.plot.name=paste(expId,"timeseriesplot.pdf",sep="_")
+    ts.plot.path=paste(exp.timeseries.folder,ts.plot.name,sep="/")
+    pdf(ts.plot.path)
+    tsplot(ts.out)
+    dev.off()
 
     # save settings
     settings.name=paste(expId,"settings.txt",sep="_")

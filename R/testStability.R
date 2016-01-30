@@ -19,11 +19,15 @@
 #'
 #' @param A the interaction matrix to test
 #' @param method the method to test stability (coyte, eigen, ricker)
+#' @param K carrying capacities for ricker test
+#' @param y initial abundances for ricker test
+#' @param sigma noise term for ricker test
+#' @param explosion.bound explosion boundary for ricker test
 #' @return boolean false if unstable and true if stable
 #' @references Coyte et al., Science 2015: "The ecology of the microbiome: Networks, competition, and stability"
 #' @export
 
-testStability<-function(A, method="eigen"){
+testStability<-function(A, method="eigen", K=rep(0.1,N), y=runif(N), sigma=0.01, explosion.bound=10^4){
 
   if(method == "coyte"){
     S = nrow(A)
@@ -68,7 +72,7 @@ testStability<-function(A, method="eigen"){
     }
   }else if(method == "ricker"){
     N=nrow(A)
-    out=ricker(N, A=A, K=rep(0.1,N), y=runif(N), sigma=0.01, tend=100, tskip=0, explosion.bound=10^4)
+    out=ricker(N, A=A, K=K, y=y, sigma=sigma, tend=100, tskip=0, explosion.bound=explosion.bound)
     if(out==-1){
       stable = FALSE
     }else{

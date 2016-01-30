@@ -39,7 +39,7 @@ generateA<-function(N=100, type="random", c=0.02, ignore.c=FALSE, d=-0.5, pep=50
 
   if(ignore.c==FALSE){
     print(paste("Adjusting connectance to",c))
-    A=adjustc(A,c=c)
+    A=modifyA(A,c=c, mode="adjustc")
   }
 
   # for Klemm-Eguiluz: inroduce negative edges and set random interaction strengths

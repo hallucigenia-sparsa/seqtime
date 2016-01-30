@@ -7,7 +7,7 @@
 #' is counted only in one triangle of the interaction matrix.
 #'
 #' @param A the interaction matrix
-#' @param mode modification mode, adjustc (adjust connectance to reach target connectance), negpercent (set the specified percentage of negative edges), tweakstable (randomly add negative edges until matrix is stable or fully connected)
+#' @param mode modification mode, adjustc (adjust connectance to reach target connectance), negpercent (set the specified percentage of negative edges), tweak (multiply a randomly chosen positive interaction strength with -1)
 #' @param strength interaction strength, binary (0/1) or uniform (sampled from uniform distribution from minstrength to 1)
 #' @param minstrength minimum interaction strength for uniform mode (maximum is 1)
 #' @param c the target connectance (only for mode adjustc)
@@ -99,25 +99,18 @@ modifyA<-function(A, mode="adjustc", strength="binary", minstrength=0.1, c=0.2, 
       #print(paste("xpos",xpos,"ypos",ypos,"value:",A[xpos,ypos],sep=" "))
       #print(paste("reverse value:",A[ypos,xpos],sep=" "))
     }
-  }else if(mode == "tweakstable"){
-    # add negative edges randomly until matrix is stable or fully connected
-    while(testStability(A, method="ricker")==FALSE && isFullyconnected(A)==FALSE){
-      # randomly select source node of edge
-      xpos=sample(c(1:ncol(A)))[1]
-      # randomly select target node of edge
-      ypos=sample(c(1:ncol(A)))[1]
-      # avoid diagonal
-      if(xpos != ypos){
-        # count as added if there was no edge yet
-        if(A[xpos,ypos]==0){
-          edgeNumAdded = edgeNumAdded+1
-        }
-        # add negative arc with random interaction strength
-        A[xpos,ypos]=getStrength(strength=strength,pos=FALSE,minstrength=minstrength)
-        #print(paste("Number of edges added", edgeNumAdded))
-      }
-    } # end tweak A
-    print(paste("Number of edges added", edgeNumAdded))
+  }else if(mode == "tweak"){
+    # check that positive arcs are present
+    if(length(A[A>0]) > 0){
+      # row and column indices of positive arcs
+      indices.pos = which(A>0,arr.ind=TRUE)
+      # randomly select a positive arc
+      x=sample(1:nrow(indices.pos),1)
+      # convert positive arc into negative one, keeping the same interaction strength
+      A[indices.pos[x,1],indices.pos[x,2]]=A[indices.pos[x,1],indices.pos[x,2]]*(-1)
+    }else{
+      warning("Cannot tweak. No positive arc in the given matrix.")
+    }
   }
   c=getConnectance(A)
   print(paste("Final connectance:",c))
