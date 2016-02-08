@@ -2,24 +2,25 @@
 #
 #' LIMITS is an algorithm developed by Fisher & Mehta to estimate the interaction matrix assuming a Ricker model.
 #' @param x time series with taxa as rows and time points as columns
+#' @param bagging.iter the number of iterations used for bagging
 #' @param verbose print which taxon LIMITS is processing
 #' @return the estimated interaction matrix
 #'
 #' @references Fisher & Mehta (2014). Identifying Keystone Species in the Human Gut Microbiome from Metagenomic Timeseries using Sparse Linear Regression. PLoS One 9:e102451
 ################################################################
-limits<-function(x, verbose=FALSE){
+limits<-function(x, bagging.iter=100, verbose=FALSE){
   x=t(x)
   print(paste("Time series has",ncol(x),"taxa"))
   if(verbose==TRUE){
     print("Processing first taxon.")
   }
-  Aest<-t(limitscolumnwise(x,1))
-  # loop time points
+  Aest<-t(limitscolumnwise(x, 1, r=bagging.iter))
+  # loop taxa
   for(i in 2:ncol(x)){
     if(verbose==TRUE){
       print(paste("Processing taxon",i))
     }
-    Aest<-cbind(Aest,t(limitscolumnwise(x,i)))
+    Aest<-cbind(Aest,t(limitscolumnwise(x, i, r=bagging.iter)))
   }
   return(t(Aest))
 }
@@ -36,38 +37,41 @@ limits<-function(x, verbose=FALSE){
 #### errorF : idem as error but without the normalization by the variance.
 
 # by Sophie de Buyl, translated from a Mathematica code provided by from Charles Fisher and Pankaj Mehta.
-limitscolumnwise <- function(R,i){
+limitscolumnwise <- function(R,i, r=100){
 
   listnumbkeysp<-c(); #list of number species kept. NOT MANDATORY
 
   # choices to be made:
-  thresh <- .5; # orignially put to 5 (diminish to increase precision)
-  r <- 100;     # the number of iterations used for Bagging
+  thresh <- .5 # orignially put to 5 (diminish to increase precision)
 
   # manipulating R to put the data in the appropriated form to apply limits:
 
-  R[R == 0] <- 2.22507e-308; #we will have to take the log, so let's remove zero's.
-  sd<-dim(R);
-  N<-sd[2];#number of species
-  Ntp<-sd[1]-1;#number of time points
+  R[R == 0] <- 2.22507e-308  # we will have to take the log, so let's remove zero's.
+  sd<-dim(R)
+  N<-sd[2] #number of species
+  Ntp<-sd[1]-1 #number of time points
 
-  data<- R-t(kronecker(matrix(1,1,sd[1]),t(t(colMedians(R)))));#first N column of data matrix needed for limits
-  data<-data[1:(sd[1]-1),];
-  data<-cbind(data,(log(R[2:sd[1],i])-log(R[1:(sd[1]-1),i])));
+  # comput medians column-wise
+  colMedians=apply(R,2,median)
+  # formulation with dependency on matrixStats
+  #data<- R-t(kronecker(matrix(1,1,sd[1]),t(t(colMedians(R)))));#first N column of data matrix needed for limits
+  data<- R-t(kronecker(matrix(1,1,sd[1]),t(t(colMedians))))
+  data<-data[1:(sd[1]-1),]
+  data<-cbind(data,(log(R[2:sd[1],i])-log(R[1:(sd[1]-1),i])))
 
   # variable initiation
-  res<-array(0,c(N,1)); # array for storing results
+  res<-array(0,c(N,1)) # array for storing results
 
-  listspecies<-seq(1,N); # to construct the choices of excluded/includes species
+  listspecies<-seq(1,N) # to construct the choices of excluded/includes species
 
   for(k in 1:r){ # we do r times the same thing to get r estimations the interaction matrix B
 
     #initialize covariates to be included/excluded from regression model
     if (i!= 1 & i!=N){
       c1<-1:(i-1)
-      c2<-(i+1):N;
+      c2<-(i+1):N
       excluded <-  c(c1,c2)
-      included <- i;
+      included <- i
     }
 
     if(i==1){
@@ -136,9 +140,7 @@ limitscolumnwise <- function(R,i){
       }
     } # end of while loop
 
-
     # store final regression coefficients in res
-
     B <- matrix(0,N,1)
     B[test]<-t(B1temp)
 
