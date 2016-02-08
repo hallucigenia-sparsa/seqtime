@@ -10,7 +10,7 @@ modifyA(A, mode = "adjustc", strength = "binary", minstrength = 0.1,
 \arguments{
 \item{A}{the interaction matrix}
 
-\item{mode}{modification mode, adjustc (adjust connectance to reach target connectance), negpercent (set the specified percentage of negative edges), tweakstable (randomly add negative edges until matrix is stable or fully connected)}
+\item{mode}{modification mode, adjustc (adjust connectance to reach target connectance), negpercent (set the specified percentage of negative edges), tweak (multiply a randomly chosen positive interaction strength with -1)}
 
 \item{strength}{interaction strength, binary (0/1) or uniform (sampled from uniform distribution from minstrength to 1)}
 

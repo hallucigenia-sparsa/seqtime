@@ -4,12 +4,21 @@
 \alias{testStability}
 \title{Stability test for interaction matrix}
 \usage{
-testStability(A, method = "eigen")
+testStability(A, method = "eigen", K = rep(0.1, N), y = runif(N),
+  sigma = 0.01, explosion.bound = 10^4)
 }
 \arguments{
 \item{A}{the interaction matrix to test}
 
 \item{method}{the method to test stability (coyte, eigen, ricker)}
+
+\item{K}{carrying capacities for ricker test}
+
+\item{y}{initial abundances for ricker test}
+
+\item{sigma}{noise term for ricker test}
+
+\item{explosion.bound}{explosion boundary for ricker test}
 }
 \value{
 boolean false if unstable and true if stable

@@ -10,7 +10,7 @@ Authors@R: c(person("Karoline", "Faust", email = "karoline.faust@vib-kuleuven.be
 Description: Provides functions to analyse sequencing data time series and to simulate community dynamics.
 Depends:
     R (>= 3.2.1),
-    vegan, FGN, deSolve, igraph, untb, gtools, Voss, stinepack
+    vegan, FGN, deSolve, igraph, untb, gtools, Voss, stinepack, matrixStats, MASS
 License: GPL-2
 LazyData: true
 URL: https://github.com/hallucigenia-sparsa/seqtime

@@ -23,7 +23,7 @@ ricker<-function(N, A, K=rep(0.1,N), y=runif(N), sigma=0.01, tend=100, tskip=0, 
   # simulate difference equation
   for(t in 2:tend){
     b=rlnorm(N,meanlog=0,sdlog=sigma)
-    y=b*y*exp(K*(1+A%*%y))
+    y=b*y*exp(A%*%(y-K))
     if(max(y) > explosion.bound){
       print("Explosion!")
       return(-1)

@@ -9,18 +9,24 @@
 #' @seealso \code{\link{ricker}} for the Ricker model and \code{\link{glv}} for the generalized Lotka Volterra model
 #' @export
 
-simuntb<-function(N,y=rep(1,N),m=0.02, tskip=0, tend=500){
+simuntb<-function(N, y=rep(1,N), m=0.02, tskip=0, tend=5000){
 
-# Set random seed
-set.seed(24451)
+  if(tend < tskip){
+    stop("The total number of time points is smaller than the number of time points to be skipped!")
+  }
 
-# gens: generations
-# keep: keep the whole time series
-# outcome: timepoints x species
-ts <- untb(start = y, prob = m, gens = tend, keep = TRUE, meta = as.count(1:100))
-if(tskip > 0){
-  ts <- ts[(tskip+1):nrow(ts),]
-}
-return(t(ts))
+  # gens: generations
+  # keep: keep the whole time series
+  # outcome: timepoints x species
+  ts <- untb(start = y, prob = m, gens = tend, keep = TRUE, meta = as.count(1:100))
+
+  # skip the transient
+  if(tskip > 0){
+    ts <- ts[(tskip+1):nrow(ts),]
+  }
+
+  spec <- species.table(ts)
+
+  return(t(spec))
 }
 

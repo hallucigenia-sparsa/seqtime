@@ -15,9 +15,13 @@ generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.02,
 
 \item{tend}{the number of time points to generate}
 
-\item{initAbundMode}{the mode in which initial abundances are generated (described in generateAbundances.R)}
+\item{initAbundMode}{the mode in which initial abundances are generated (described in function generateAbundances)}
 
 \item{c}{connectivity of interaction matrix (only for SOC, ricker and gLV)}
+
+\item{Atype}{method to generate the interaction matrix (described in function generateA)}
+
+\item{d}{diagonal value of the interaction matrix}
 
 \item{PEP}{positive edge percentage of interaction matrix (only for SOC, ricker and gLV)}
 
@@ -31,7 +35,7 @@ generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.02,
 
 \item{expId}{the identifier of the time series generation experiment}
 
-\item{maxIter}{maximal iteration number for finding a stable interaction matrix (if negative or 0, no constraint is set on the iteration number)}
+\item{maxIter}{maximal iteration number for finding a stable interaction matrix}
 }
 \value{
 list containing the generated interaction matrix, initial abundances (they double as immigration probabilities for soc), carrying capacities (they double as growth rates for glv), extinction probabilities, time series and settings
@@ -50,5 +54,7 @@ stored in settings. The idea is that the time
 series can be re-created from the information
 stored in the settings folder (though not
 exactly, since the SOC, Ricker and neutral models have random components).
+Furthermore, a plot of the time series is
+stored in settings, for control.
 }
 
