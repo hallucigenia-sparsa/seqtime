@@ -55,7 +55,7 @@ limitscolumnwise <- function(R,i, r=100){
   colMedians=apply(R,2,median)
   # formulation with dependency on matrixStats
   #data<- R-t(kronecker(matrix(1,1,sd[1]),t(t(colMedians(R)))));#first N column of data matrix needed for limits
-  data<- R-t(kronecker(matrix(1,1,sd[1]),t(t(colMedians))))
+  data<- R-t(kronecker(matrix(1,1,sd[1]),colMedians))
   data<-data[1:(sd[1]-1),]
   data<-cbind(data,(log(R[2:sd[1],i])-log(R[1:(sd[1]-1),i])))
 
