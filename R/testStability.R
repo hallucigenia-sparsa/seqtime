@@ -73,7 +73,7 @@ testStability<-function(A, method="eigen", K=rep(0.1,N), y=runif(N), sigma=0.01,
   }else if(method == "ricker"){
     N=nrow(A)
     out=ricker(N, A=A, K=K, y=y, sigma=sigma, tend=100, tskip=0, explosion.bound=explosion.bound)
-    if(out==-1){
+    if(out[[1]]==-1){
       stable = FALSE
     }else{
       stable = TRUE

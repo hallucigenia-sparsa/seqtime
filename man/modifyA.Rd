@@ -4,15 +4,17 @@
 \alias{modifyA}
 \title{Modify the interaction matrix}
 \usage{
-modifyA(A, mode = "adjustc", strength = "binary", minstrength = 0.1,
-  c = 0.2, perc = 50, symmetric = FALSE)
+modifyA(A, mode = "adjustc", strength = "binary", factor = 2,
+  minstrength = 0.1, c = 0.2, perc = 50, symmetric = FALSE)
 }
 \arguments{
 \item{A}{the interaction matrix}
 
-\item{mode}{modification mode, adjustc (adjust connectance to reach target connectance), negpercent (set the specified percentage of negative edges), tweak (multiply a randomly chosen positive interaction strength with -1)}
+\item{mode}{modification mode, adjustc (adjust connectance to reach target connectance), negpercent (set the specified percentage of negative edges), tweak (multiply a randomly chosen positive interaction strength with -1), enforceneg (multiply negative interaction strengths with given factor, but keep diagonal as is)}
 
 \item{strength}{interaction strength, binary (0/1) or uniform (sampled from uniform distribution from minstrength to 1)}
+
+\item{factor}{multiplication factor for enforceneg mode}
 
 \item{minstrength}{minimum interaction strength for uniform mode (maximum is 1)}
 

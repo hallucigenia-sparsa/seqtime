@@ -4,9 +4,11 @@
 \alias{generateTS}
 \title{Generate community time series}
 \usage{
-generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.02,
-  Atype = "klemm", d = -1, PEP = 30, m = 0.05, algorithm = "dm",
-  interval = 1, output.folder = "", expId = "", maxIter = 10)
+generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.05,
+  Atype = "klemm", d = -1, PEP = 30, m = 0.02, algorithm = "dm",
+  interval = 1, output.folder = "", output.expId = "",
+  input.folder = "", input.expId = "", read.A = FALSE, read.y = FALSE,
+  read.K = FALSE, read.extinct = FALSE, maxIter = 10)
 }
 \arguments{
 \item{N}{species number}
@@ -33,7 +35,7 @@ generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.02,
 
 \item{output.folder}{path to result folder, if specified, input parameter and time series are exported to the output folder}
 
-\item{expId}{the identifier of the time series generation experiment}
+\item{output.expId}{the identifier of the time series generation experiment}
 
 \item{maxIter}{maximal iteration number for finding a stable interaction matrix}
 }

@@ -9,9 +9,10 @@
 #' @param header the title of the plot
 #' @param display.weight color-code the interaction strength by varying the red/green hues (only for corr.plot)
 #' @param show.grid display the grid (only for corrplot)
-#' @example
+#' @examples
 #' plotA(generateA(20,c=0.1))
-#'
+#' @export
+
 plotA<-function(A, method="image",header="",display.weight=FALSE, show.grid=FALSE){
   A=as.matrix(A)
 

@@ -7,15 +7,17 @@
 #' is counted only in one triangle of the interaction matrix.
 #'
 #' @param A the interaction matrix
-#' @param mode modification mode, adjustc (adjust connectance to reach target connectance), negpercent (set the specified percentage of negative edges), tweak (multiply a randomly chosen positive interaction strength with -1)
+#' @param mode modification mode, adjustc (adjust connectance to reach target connectance), negpercent (set the specified percentage of negative edges), tweak (multiply a randomly chosen positive interaction strength with -1), enforceneg (multiply negative interaction strengths with given factor, but keep diagonal as is)
 #' @param strength interaction strength, binary (0/1) or uniform (sampled from uniform distribution from minstrength to 1)
+#' @param factor multiplication factor for enforceneg mode
 #' @param minstrength minimum interaction strength for uniform mode (maximum is 1)
 #' @param c the target connectance (only for mode adjustc)
 #' @param perc negative edge percentage (only for mode negpercent)
 #' @param symmetric only introduce symmetric negative interactions (only for mode negpercent)
 #' @return the modified interaction matrix
-#'
-modifyA<-function(A, mode="adjustc", strength="binary", minstrength=0.1, c=0.2, perc=50, symmetric=FALSE){
+#' @export
+
+modifyA<-function(A, mode="adjustc", strength="binary", factor=2, minstrength=0.1, c=0.2, perc=50, symmetric=FALSE){
   edgeNumAdded = 0
   print(paste("Initial edge number", length(A[A!=0])))
   c_obs = getConnectance(A)
@@ -111,6 +113,15 @@ modifyA<-function(A, mode="adjustc", strength="binary", minstrength=0.1, c=0.2, 
     }else{
       warning("Cannot tweak. No positive arc in the given matrix.")
     }
+  }else if(mode == "enforceneg"){
+    diag=diag(A)
+    indices.neg = which(A<0,arr.ind=TRUE)
+    # multiply negative entries by given factor
+    A[indices.neg]=A[indices.neg]*factor
+    # keep original diagonal
+    diag(A)=diag
+  }else{
+    stop(paste("Mode",mode,"not known."))
   }
   c=getConnectance(A)
   print(paste("Final connectance:",c))

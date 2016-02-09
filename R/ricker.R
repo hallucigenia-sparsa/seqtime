@@ -17,7 +17,7 @@
 #' @seealso \code{\link{simuntb}} for the neutral model and \code{\link{glv}} for the generalized Lotka Volterra model
 #' @export
 
-ricker<-function(N, A, K=rep(0.1,N), y=runif(N), sigma=0.01, tend=100, tskip=0, explosion.bound=10^4){
+ricker<-function(N, A, K=rep(0.1,N), y=runif(N), sigma=0.05, tend=100, tskip=0, explosion.bound=10^8){
   out=matrix(nrow=N, ncol=tend-tskip)
   out[,1]=y
   # simulate difference equation
@@ -25,8 +25,10 @@ ricker<-function(N, A, K=rep(0.1,N), y=runif(N), sigma=0.01, tend=100, tskip=0, 
     b=rlnorm(N,meanlog=0,sdlog=sigma)
     y=b*y*exp(A%*%(y-K))
     if(max(y) > explosion.bound){
+      # report which species explodes
       print("Explosion!")
-      return(-1)
+      res=c(-1,which(y==max(y)))
+      return(res)
     }
     else if(length(y[y<0]) > 0){
       stop("Species below 0!")

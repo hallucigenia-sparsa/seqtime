@@ -4,7 +4,7 @@
 \alias{simuntb}
 \title{Run the Unified Neutral Theory of Biodiversity (UNTB) model}
 \usage{
-simuntb(N, y = rep(1, N), m = 0.02, tskip = 0, tend = 500)
+simuntb(N, y = rep(1, N), m = 0.02, tskip = 0, tend = 5000)
 }
 \arguments{
 \item{N}{number of species}

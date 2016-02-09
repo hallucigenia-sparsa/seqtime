@@ -5,9 +5,9 @@
 #' @param bagging.iter the number of iterations used for bagging
 #' @param verbose print which taxon LIMITS is processing
 #' @return the estimated interaction matrix
-#'
 #' @references Fisher & Mehta (2014). Identifying Keystone Species in the Human Gut Microbiome from Metagenomic Timeseries using Sparse Linear Regression. PLoS One 9:e102451
-################################################################
+#' @export
+
 limits<-function(x, bagging.iter=100, verbose=FALSE){
   x=t(x)
   print(paste("Time series has",ncol(x),"taxa"))
@@ -151,7 +151,9 @@ limitscolumnwise <- function(R,i, r=100){
   # Bagging step: output median of res
 
   res<-res[,-1]
-  Beval<-t(as.matrix(rowMedians(res)))
+  # compute medians row-wise
+  rowMedians=apply(res,1,median)
+  Beval<-t(as.matrix(rowMedians))
 
   #listnumbkeysp
 
