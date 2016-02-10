@@ -7,7 +7,7 @@
 #' @param A interaction matrix
 #' @param K carrying capacity
 #' @param y initial abundances
-#' @param sigma noise level
+#' @param sigma noise level if set to a non-positive value, no noise is added
 #' @param tend number of time points
 #' @param tskip number of initial time points to skip (to skip the transient)
 #' @param explosion.bound boundary for explosion
@@ -22,7 +22,11 @@ ricker<-function(N, A, K=rep(0.1,N), y=runif(N), sigma=0.05, tend=100, tskip=0, 
   out[,1]=y
   # simulate difference equation
   for(t in 2:tend){
-    b=rlnorm(N,meanlog=0,sdlog=sigma)
+    if(sigma > 0){
+      b=rlnorm(N,meanlog=0,sdlog=sigma)
+    }else{
+      b=rep(1,N)
+    }
     y=b*y*exp(A%*%(y-K))
     if(max(y) > explosion.bound){
       # report which species explodes
