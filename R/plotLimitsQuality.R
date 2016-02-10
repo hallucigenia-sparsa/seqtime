@@ -13,12 +13,13 @@
 #' @param A.ori the original interaction matrix (optional)
 #' @param predict.stepwise if TRUE, the predicted time series is computed step by step, else computed with a call to Ricker
 #' @param noSchur do not remove positive eigenvalues
+#' @param ignoreExplosion ignore the occurrence of an explosion (for step-wise prediction only)
 #' @param sigma noise factor in Ricker
 #' @param explosion.bound the explosion boundary in Ricker
 #' @return a list with the taxon numbers considered (taxonnum), the mean correlation of observed and predicted time series (meancrosscor) and the mean autocorrelations up to lag 5 (meanautocor1 to meanautocor5)
 #' @export
 
-plotLimitsQuality<-function(oriTS, A, A.ori=matrix(), predict.stepwise=TRUE, noSchur=FALSE, sigma=-1, explosion.bound=10^8){
+plotLimitsQuality<-function(oriTS, A, A.ori=matrix(), predict.stepwise=TRUE, noSchur=FALSE, ignoreExplosion=FALSE, sigma=-1, explosion.bound=10^8){
   if(ncol(oriTS) < 2){
     stop("Please provide the original time series.")
   }
@@ -59,7 +60,7 @@ plotLimitsQuality<-function(oriTS, A, A.ori=matrix(), predict.stepwise=TRUE, noS
       Amodifsub=Amodif[indicesOK,indicesOK]
       # compute cross-correlation of original and step-wise predicted time series
       if(predict.stepwise == TRUE){
-        crossres=getCrossCorOriPredStepwise(subTS,A=Amodifsub,sigma=sigma,explosion.bound = explosion.bound)
+        crossres=getCrossCorOriPredStepwise(subTS,A=Amodifsub,sigma=sigma,explosion.bound = explosion.bound, ignoreExplosion=ignoreExplosion)
       }else{
         crossres=getCrossOriPredFull(subTS,A=Amodifsub,sigma=sigma,explosion.bound = explosion.bound)
       }
@@ -139,7 +140,7 @@ getCrossOriPredFull<-function(oriTS, A, sigma=-1, explosion.bound=10^8){
 # explosion.bound the explosion boundary of Ricker
 #
 # returns the mean cross-correlation of the predicted time series
-getCrossCorOriPredStepwise<-function(oriTS,A,lag=1,sigma=-1, explosion.bound=10^8){
+getCrossCorOriPredStepwise<-function(oriTS,A,lag=1,sigma=-1, explosion.bound=10^8, ignoreExplosion=FALSE){
   tend=ncol(oriTS)
   N=nrow(oriTS)
   # estimate carrying capacity as the mean of the time series
@@ -158,7 +159,7 @@ getCrossCorOriPredStepwise<-function(oriTS,A,lag=1,sigma=-1, explosion.bound=10^
       b=rlnorm(N,meanlog=0,sdlog=sigma)
     }
     y<-b*oriTS[,prevT]*exp(A%*%(oriTS[,prevT]-K))
-    if(max(y) > explosion.bound){
+    if(max(y) > explosion.bound && ignoreExplosion == FALSE){
       # report which species explodes
       stop(paste("Explosion for taxon",which(y==max(y)),"in step-wise prediction."))
     }
