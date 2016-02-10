@@ -7,7 +7,7 @@
 #' is counted only in one triangle of the interaction matrix.
 #'
 #' @param A the interaction matrix
-#' @param mode modification mode, adjustc (adjust connectance to reach target connectance), negpercent (set the specified percentage of negative edges), tweak (multiply a randomly chosen positive interaction strength with -1), enforceneg (multiply negative interaction strengths with given factor, but keep diagonal as is)
+#' @param mode modification mode, adjustc (adjust connectance to reach target connectance), schur (remove positive eigenvalues using the Schur decomposition), negpercent (set the specified percentage of negative edges), tweak (multiply a randomly chosen positive interaction strength with -1), enforceneg (multiply negative interaction strengths with given factor, but keep diagonal as is)
 #' @param strength interaction strength, binary (0/1) or uniform (sampled from uniform distribution from minstrength to 1)
 #' @param factor multiplication factor for enforceneg mode
 #' @param minstrength minimum interaction strength for uniform mode (maximum is 1)
@@ -120,6 +120,37 @@ modifyA<-function(A, mode="adjustc", strength="binary", factor=2, minstrength=0.
     A[indices.neg]=A[indices.neg]*factor
     # keep original diagonal
     diag(A)=diag
+  }else if(mode == "schur"){
+    # remove positive real parts of eigenvalues if any (using schur decomposition)
+    sd<-dim(A)
+
+    if(max(Re(eigen(A)$values))){
+      # division by max.A helps removing positive eigenvalues
+      max=max(A)
+      A=A/max
+
+      diagt<-diag(sd[2])+0i
+
+      # Computes the generalized eigenvalues and Schur form of a pair of matrices.
+      # R=imaginary part identical to 0 with a tolerance of 100*machine_precision as determined by Lapack
+      schur.A<-geigen::gqz(A,diagt,"R")
+      # generalized inverse of a matrix
+      T<-schur.A$S%*%MASS::ginv(schur.A$T)
+      rediag<-Re(diag(T))
+      imdiag<-Im(diag(T))
+
+      indicesP=rediag>0
+      listind=1:sd[2]
+
+      for(k in listind[indicesP]){
+        T[k,k]<- complex(real=-Re(T[k,k]),imaginary=Im(T[k,k]))
+      }
+
+      A <- schur.A$Q %*% T %*% MASS::ginv(schur.A$Q)
+      A<-Re(A)
+      A=A*max
+    }
+
   }else{
     stop(paste("Mode",mode,"not known."))
   }

@@ -4,8 +4,8 @@
 \alias{ricker}
 \title{Generate time series from Ricker model}
 \usage{
-ricker(N, A, K = rep(0.1, N), y = runif(N), sigma = 0.01, tend = 100,
-  tskip = 0, explosion.bound = 10^4)
+ricker(N, A, K = rep(0.1, N), y = runif(N), sigma = 0.05, tend = 100,
+  tskip = 0, explosion.bound = 10^8)
 }
 \arguments{
 \item{N}{number of species}
