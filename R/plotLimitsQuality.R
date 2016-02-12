@@ -147,10 +147,6 @@ getCrossCorOriPredStepwise<-function(oriTS,A,lag=1,sigma=-1, explosion.bound=10^
   K=apply(oriTS,1,mean)
   predTS = matrix(0,nrow=N,ncol=tend)
   predTS[,1]=oriTS[,1]
-  predTS2 <- oriTS[,1:2]
-  predTS3 <- oriTS[,1:3]
-  predTS4 <- oriTS[,1:4]
-  predTS5 <- oriTS[,1:5]
   # generate predicted time series from original time series and estimated interaction matrix step by step
   for(t in 2:tend){
     prevT<- t-lag
