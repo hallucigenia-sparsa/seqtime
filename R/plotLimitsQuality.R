@@ -145,7 +145,8 @@ getCrossCorOriPredStepwise<-function(oriTS,A,lag=1,sigma=-1, explosion.bound=10^
   N=nrow(oriTS)
   # estimate carrying capacity as the mean of the time series
   K=apply(oriTS,1,mean)
-  predTS <- matrix(oriTS[,1],ncol=1)
+  predTS = matrix(0,nrow=N,ncol=tend)
+  predTS[,1]=oriTS[,1]
   predTS2 <- oriTS[,1:2]
   predTS3 <- oriTS[,1:3]
   predTS4 <- oriTS[,1:4]
@@ -163,7 +164,7 @@ getCrossCorOriPredStepwise<-function(oriTS,A,lag=1,sigma=-1, explosion.bound=10^
       # report which species explodes
       stop(paste("Explosion for taxon",which(y==max(y)),"in step-wise prediction."))
     }
-    predTS<-cbind(predTS,y)
+    predTS[,t]=y
   }
   crossCor<-getMeanCrosscor(oriTS[,2:tend],predTS[,2:tend],lag=0)
   return(crossCor)
