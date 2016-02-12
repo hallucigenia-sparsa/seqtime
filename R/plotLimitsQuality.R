@@ -145,7 +145,7 @@ getCrossCorOriPredStepwise<-function(oriTS,A,lag=1,sigma=-1, explosion.bound=10^
   N=nrow(oriTS)
   # estimate carrying capacity as the mean of the time series
   K=apply(oriTS,1,mean)
-  predTS <- oriTS[,1]
+  predTS <- matrix(oriTS[,1],ncol=1)
   predTS2 <- oriTS[,1:2]
   predTS3 <- oriTS[,1:3]
   predTS4 <- oriTS[,1:4]
