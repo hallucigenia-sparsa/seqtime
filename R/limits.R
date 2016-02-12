@@ -129,7 +129,7 @@ limitscolumnwise <- function(R,i, r=100){
       excluded <- setdiff(union(listspecies,test),intersect(listspecies,test))
 
       # if improvement over the current best model by thresh, include new species, otherwise exit loop
-      if(errorEt==0 || (100.0*(errorEtemp - errorEt)/errorEt< -thresh)){ #we keep adding species
+      if(errorEt!=0 && (100.0*(errorEtemp - errorEt)/errorEt< -thresh)){ #we keep adding species
         errorEt <- errorEtemp# we update the error to be compared with.
         B1t <- B1temp
         testt <- test
