@@ -6,6 +6,15 @@
 #' @param verbose print which taxon LIMITS is processing
 #' @return the estimated interaction matrix
 #' @references Fisher & Mehta (2014). Identifying Keystone Species in the Human Gut Microbiome from Metagenomic Timeseries using Sparse Linear Regression. PLoS One 9:e102451
+#' @examples
+#' N=20
+#' A=generateA(N,c=0.1)
+#' ts=ricker(N=N,A=A)
+#' Aest=limits(ts,verbose=TRUE)
+#' par(mfrow=c(2,1))
+#' plotA(A,header="original")
+#' plotA(Aest,header="estimated")
+#' par(mfrow=c(1,1))
 #' @export
 
 limits<-function(x, bagging.iter=100, verbose=FALSE){

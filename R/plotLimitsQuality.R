@@ -17,6 +17,12 @@
 #' @param sigma noise factor in Ricker
 #' @param explosion.bound the explosion boundary in Ricker
 #' @return a list with the taxon numbers considered (taxonnum), the mean correlation of observed and predicted time series (meancrosscor) and the mean autocorrelations up to lag 5 (meanautocor1 to meanautocor5)
+#' @examples
+#' N=20
+#' A=generateA(N,c=0.1)
+#' ts=ricker(N=N,A=A)
+#' Aest=limits(ts,verbose=TRUE)
+#' out=plotLimitsQuality(ts,A=Aest,A.ori=A)
 #' @export
 
 plotLimitsQuality<-function(oriTS, A, A.ori=matrix(), predict.stepwise=TRUE, noSchur=FALSE, ignoreExplosion=FALSE, sigma=-1, explosion.bound=10^8){
@@ -108,7 +114,6 @@ plotLimitsQuality<-function(oriTS, A, A.ori=matrix(), predict.stepwise=TRUE, noS
 #
 # oriTS: original time series, taxa are rows and time points are columns
 # A: estimated interaction matrix
-# lag: the predecing time point to consider (1 = one step before current, 2 = two steps before current etc.)
 # sigma: the noise term
 # explosion.bound the explosion boundary of Ricker
 #
@@ -146,7 +151,7 @@ getCrossCorOriPredStepwise<-function(oriTS,A,lag=1,sigma=-1, explosion.bound=10^
   # estimate carrying capacity as the mean of the time series
   K=apply(oriTS,1,mean)
   predTS = matrix(0,nrow=N,ncol=tend)
-  predTS[,1]=oriTS[,1]
+  predTS[,1]=as.numeric(oriTS[,1])
   # generate predicted time series from original time series and estimated interaction matrix step by step
   for(t in 2:tend){
     prevT<- t-lag
@@ -155,7 +160,7 @@ getCrossCorOriPredStepwise<-function(oriTS,A,lag=1,sigma=-1, explosion.bound=10^
     if(sigma > 0){
       b=rlnorm(N,meanlog=0,sdlog=sigma)
     }
-    y<-b*oriTS[,prevT]*exp(A%*%(oriTS[,prevT]-K))
+    y<-b*as.numeric(oriTS[,prevT])*exp(A%*%(as.numeric(oriTS[,prevT])-K))
     if(max(y) > explosion.bound && ignoreExplosion == FALSE){
       # report which species explodes
       stop(paste("Explosion for taxon",which(y==max(y)),"in step-wise prediction."))
