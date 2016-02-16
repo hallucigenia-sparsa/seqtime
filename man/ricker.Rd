@@ -16,7 +16,7 @@ ricker(N, A, K = rep(0.1, N), y = runif(N), sigma = 0.05, tend = 100,
 
 \item{y}{initial abundances}
 
-\item{sigma}{noise level}
+\item{sigma}{noise level if set to a non-positive value, no noise is added}
 
 \item{tend}{number of time points}
 

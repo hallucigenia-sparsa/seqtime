@@ -5,10 +5,11 @@
 \title{Generate community time series}
 \usage{
 generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.05,
-  Atype = "klemm", d = -1, PEP = 30, m = 0.02, algorithm = "dm",
+  clique.size = 5, sigma = 0.05, theta = 0.002, Atype = "klemm",
+  Atweak = "tweak", d = -1, PEP = 30, m = 0.02, algorithm = "dm",
   interval = 1, output.folder = "", output.expId = "",
   input.folder = "", input.expId = "", read.A = FALSE, read.y = FALSE,
-  read.K = FALSE, read.extinct = FALSE, maxIter = 10)
+  read.K = FALSE, read.extinct = FALSE, read.ts = FALSE, maxIter = 10)
 }
 \arguments{
 \item{N}{species number}
@@ -21,7 +22,15 @@ generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.05,
 
 \item{c}{connectivity of interaction matrix (only for SOC, ricker and gLV)}
 
+\item{clique.size}{parameter for interaction matrix generation (only for SOC, ricker and glv and Atype mode klemm)}
+
+\item{sigma}{noise term (only for ricker)}
+
+\item{theta}{Dirichlet-Multinomial overdispersion parameter (only for dm)}
+
 \item{Atype}{method to generate the interaction matrix (described in function generateA)}
+
+\item{Atweak}{tweaking method for instable interaction matrix, either tweak (convert positive into negative arcs until the matrix is stable or one third of the positive arcs have been converted) or schur (apply Schur decomposition, does not guarantee a stable matrix)}
 
 \item{d}{diagonal value of the interaction matrix}
 
@@ -37,10 +46,24 @@ generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.05,
 
 \item{output.expId}{the identifier of the time series generation experiment}
 
+\item{input.folder}{the folder from which previously generated parameters can be read}
+
+\item{input.expId}{the identifier of a previous experiment whose results will be read}
+
+\item{read.A}{read the interaction matrix from the given previous experiment}
+
+\item{read.y}{read the initial abundances/SOC immigration rates from the given previous experiment}
+
+\item{read.K}{read the carrying capacities/growth rates from the given previous experiment}
+
+\item{read.extinct}{read the SOC extinction rates from the given previous experiment}
+
+\item{read.ts}{read the previously generated time series from the given previous experiment}
+
 \item{maxIter}{maximal iteration number for finding a stable interaction matrix}
 }
 \value{
-list containing the generated interaction matrix, initial abundances (they double as immigration probabilities for soc), carrying capacities (they double as growth rates for glv), extinction probabilities, time series and settings
+list containing the generated interaction matrix, initial abundances (they double as immigration probabilities for soc and untb), carrying capacities (they double as growth rates for glv), extinction probabilities, time series and settings
 }
 \description{
 Wrapper function for time series generation.
@@ -56,7 +79,14 @@ stored in settings. The idea is that the time
 series can be re-created from the information
 stored in the settings folder (though not
 exactly, since the SOC, Ricker and neutral models have random components).
-Furthermore, a plot of the time series is
-stored in settings, for control.
+Furthermore, a plot of the time series and (if required by the model) the interaction
+matrix is stored in settings, for control. Properties of the interaction matrix
+are also stored there.
+}
+\details{
+On the random generation of parameter values:
+Extinction rates are sampled from the uniform distribution
+with values between 0 and 1. Carrying capacities/growth rates are sampled
+from the uniform distribution with values between 0 and 0.5.
 }
 

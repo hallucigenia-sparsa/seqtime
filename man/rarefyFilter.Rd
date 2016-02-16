@@ -12,7 +12,7 @@ rarefyFilter(x, min = 0)
 \item{min}{minimum count to which x is to be rarefied (if equal to zero, minimum column sum is taken as min)}
 }
 \value{
-rarefied vector or matrix
+a list with the rarefied vector or matrix (rar) and the indices of the columns that were kept (colindices)
 }
 \description{
 Rarefy a given count vector or matrix column-wise using vegan's rrarefy function.

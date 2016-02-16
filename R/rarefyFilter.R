@@ -4,7 +4,7 @@
 #' If columns have less than the minimum count number, they are discarded.
 #' @param x a matrix or vector
 #' @param min minimum count to which x is to be rarefied (if equal to zero, minimum column sum is taken as min)
-#' @return rarefied vector or matrix
+#' @return a list with the rarefied vector or matrix (rar) and the indices of the columns that were kept (colindices)
 #' @export
 
 rarefyFilter<-function(x,min = 0){
@@ -31,5 +31,7 @@ rarefyFilter<-function(x,min = 0){
     }
   }
   rar=t(vegan::rrarefy(t(x),min))
-  rar
+  res=list(rar,keep)
+  names(res)=c("rar","colindices")
+  return(res)
 }
