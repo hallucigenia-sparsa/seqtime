@@ -1,0 +1,184 @@
+#' Compare community time series generated with generateTS
+#'
+#' @param input.folder the folder where results of function generateTS are stored.
+#' @param expIds the experiment identifiers of time series to be considered
+#' @param timeDecayInterval the interval considered to compute the time decay
+#' @return a table with experiment parameters (algorithm, connectance, sigma, theta and so on) and time series properties (noise types, slope of Taylor's law etc.)
+#' @export
+
+compareTS<-function(input.folder="",expIds=c(), timeDecayInterval=20){
+  if(input.folder != ""){
+    if(!file.exists(input.folder)){
+      stop(paste("The input folder",input.folder,"does not exist!"))
+    }
+    input.settings.folder=paste(input.folder,"settings",sep="/")
+    if(!file.exists(input.settings.folder)){
+      stop("The input folder does not have a settings subfolder!")
+    }
+    input.timeseries.folder=paste(input.folder,"timeseries",sep="/")
+    if(!file.exists(input.settings.folder) && read.ts==TRUE){
+      stop("The input folder does not have a time series subfolder!")
+    }
+  }
+
+  # experiment properties
+  taxa=c()
+  samples=c()
+  ids=c()
+  peps=c()
+  initmode=c()
+  connectances=c()
+  algorithms=c()
+  sigmas=c()
+  thetas=c()
+  migrations=c()
+  individuals=c()
+  samplingfreqs=c()
+
+  # time series properties
+  taylorslopes=c()
+  taylorR2=c()
+  timedecayslopes=c()
+  timedecayR2=c()
+  percentbrown=c()
+  percentpink=c()
+  percentwhite=c()
+  percentmaxautocor8to1=c()
+  percentmaxautocor5to8=c()
+  percentmaxautocor3to5=c()
+  percentmaxautocor0to3=c()
+  lowHursts=c()
+  middleHursts=c()
+  highHursts=c()
+  veryHighHursts=c()
+
+  # collect time series properties
+  for(expId in expIds){
+
+    print(paste("Processing identifier",expId))
+
+    ids=c(ids,expId)
+
+    input.settings.name=paste(expId,"settings",sep="_")
+    input.settings.expId.folder=paste(input.settings.folder,input.settings.name,sep="/")
+    if(!file.exists(input.settings.expId.folder)){
+      stop("The input settings folder does not have a subfolder for the input experiment identifier!")
+    }
+    input.timeseries.name=paste(expId,"timeseries",sep="_")
+    input.timeseries.expId.folder=paste(input.timeseries.folder,input.timeseries.name,sep="/")
+    if(!file.exists(input.timeseries.expId.folder) && read.ts==TRUE){
+      stop("The input time series folder does not have a subfolder for the input experiment identifier!")
+    }
+
+    # read settings file
+    input.settings.expId.file=paste(expId,"settings.txt",sep="_")
+    settings.path=paste(input.settings.expId.folder,input.settings.expId.file,sep="/")
+    if(!file.exists(settings.path) && read.ts==TRUE){
+      stop(paste("The settings file",settings.path,"does not exist!"))
+    }
+    source(settings.path)
+
+    algorithms=c(algorithms,Algorithm)
+    samplingfreqs=c(samplingfreqs,Sampling_frequency)
+
+    # read interaction matrix
+    if(Algorithm == "ricker" || Algorithm == "soc" || Algorithm == "glv"){
+      source.expId = expId
+      interactionmatrix.folder=input.settings.expId.folder
+      # interaction matrix for current experiment was read from another experiment
+      if(!is.na(Input_experiment_identifier)){
+        source.expId=Input_experiment_identifier
+        source.expId.folder=paste(source.expId,"settings",sep="_")
+        interactionmatrix.folder=paste(input.settings.folder,source.expId.folder,sep="/")
+      }
+      A.name=paste(source.expId,"interactionmatrix.txt",sep="_")
+      input.path.A=paste(interactionmatrix.folder,A.name,sep="/")
+      print(paste("Reading interaction matrix from:",input.path.A,sep=" "))
+      A=read.table(file=input.path.A,sep="\t",header=FALSE)
+      A=as.matrix(A)
+      # the requested and target PEP differ
+      peps=c(peps,round(getPep(A),2))
+      connectances=c(connectances,getConnectance(A))
+    }else{
+      peps=c(peps,NA)
+      connectances=c(connectances,NA)
+    }
+
+    initmode=c(initmode,init_abundance_mode)
+
+    # read algorithm-specific parameters
+    if(Algorithm == "ricker"){
+      sigmas=c(sigmas,sigma)
+    }else{
+      sigmas=c(sigmas,NA)
+    }
+    if(Algorithm == "dm"){
+      thetas=c(thetas,theta)
+    }else{
+      thetas=c(thetas,NA)
+    }
+    if(Algorithm == "untb"){
+      migrations=c(migrations,immigration_rate_UNTB)
+    }else{
+      migrations=c(migrations,NA)
+    }
+    if(Algorithm == "soc"){
+      individuals=c(individuals,I)
+    }else{
+      individuals=c(individuals,NA)
+    }
+
+    # read time series file
+    ts.name=paste(expId,"timeseries.txt",sep="_")
+    input.path.ts=paste(input.timeseries.expId.folder,ts.name,sep="/")
+    print(paste("Reading time series from:",input.path.ts,sep=" "))
+    ts=read.table(file=input.path.ts,sep="\t",header=FALSE)
+    ts=as.matrix(ts)
+    N=nrow(ts)
+    print(paste("Read time series with",N,"taxa and",ncol(ts),"samples."))
+    onePerc=N/100
+    taxa=c(taxa,N)
+    samples=c(samples,ncol(ts))
+
+    # bin Hurst exponent
+    hursts=binHurst(ts)
+    lowHursts=c(lowHursts,onePerc*(length(hursts$lowH)/100))
+    middleHursts=c(middleHursts,onePerc*(length(hursts$middleH)/100))
+    highHursts=c(highHursts,onePerc*(length(hursts$highH)/100))
+    veryHighHursts=c(veryHighHursts,onePerc*(length(hursts$veryhighH)/100))
+
+    # bin maximal autocorrelations
+    autocorBins=binAutocorrelations(ts)
+    percentmaxautocor8to1=c(percentmaxautocor8to1, onePerc*(length(autocorBins$veryhighmaxautocor)/100))
+    percentmaxautocor5to8=c(percentmaxautocor5to8, onePerc*(length(autocorBins$highmaxautocor)/100))
+    percentmaxautocor3to5=c(percentmaxautocor3to5, onePerc*(length(autocorBins$middlemaxautocor)/100))
+    percentmaxautocor0to3=c(percentmaxautocor0to3, onePerc*(length(autocorBins$lowmaxautocor)/100))
+
+    # calculate taylor's law slope
+    taylorRes=taylor(ts,type="taylor",plot=FALSE, pseudo=0.0000001)
+    #timedecayRes=timeDecay(ts,plot=FALSE)
+    noisetypesRes=identifyNoisetypes(ts,abund.threshold = 0)
+
+    taylorslopes=c(taylorslopes,taylorRes$slope)
+    taylorR2=c(taylorR2,taylorRes$adjR2)
+    percentbrown=c(percentbrown,onePerc*(length(noisetypesRes$brown)/100))
+    percentpink=c(percentpink,onePerc*(length(noisetypesRes$pink)/100))
+    percentwhite=c(percentwhite,onePerc*(length(noisetypesRes$white)/100))
+
+    # if we do not sub-sample, it is very slow for 3000 samples
+    if(!is.na(timeDecayInterval)){
+      if(ncol(ts) < timeDecayInterval){
+        stop(paste("Time series",expId,"has less samples (namely",ncol(ts),") than the given time decay interval!"))
+      }
+     ts=tsubsample(ts, interval=timeDecayInterval)
+    }
+    timedecayRes=timeDecay(ts, plot=FALSE)
+    timedecayslopes=c(timedecayslopes,timedecayRes$slope)
+    timedecayR2=c(timedecayR2,timedecayRes$adjR2)
+  } # end loop over experiments
+
+  # assemble table
+  resulttable=list(ids,samples,algorithms,samplingfreqs,initmode,peps,connectances,sigmas,thetas,migrations,individuals,taylorslopes,taylorR2,percentbrown,percentpink,percentwhite,percentmaxautocor0to3,percentmaxautocor3to5,percentmaxautocor5to8,percentmaxautocor8to1, lowHursts, middleHursts, highHursts,veryHighHursts, timedecayslopes, timedecayR2)
+  names(resulttable)=c("id","samplenum","algorithm","interval","initabundmode","pep","c","sigma","theta","m","I","taylorslope","taylorr2","brown","pink","white","maxautocorbelow03","maxautocor03to05","maxautocor05to08","maxautocor08to1", "lowhurst","middlehurst","highhurst","veryhighhurst","timedecayslope","timedecayr2")
+  return(resulttable)
+}

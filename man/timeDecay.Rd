@@ -5,7 +5,7 @@
 \title{Do a time-decay plot of a taxon matrix}
 \usage{
 timeDecay(x, time = c(1:ncol(x)), dissim = "bray", logdissim = FALSE,
-  header = "", units = "")
+  header = "", units = "", plot = TRUE)
 }
 \arguments{
 \item{x}{a taxon matrix with rows representing taxa and columns samples}
@@ -19,6 +19,8 @@ timeDecay(x, time = c(1:ncol(x)), dissim = "bray", logdissim = FALSE,
 \item{header}{a string to be appended to the plot title (Time decay)}
 
 \item{units}{a string to describe the units of the time points (days, weeks etc)}
+
+\item{plot}{whether to do the plot}
 }
 \value{
 a list with the time intervals, dissimilarity values, intersection, slope, p-value, adjusted R2, dissimilarity measure used and log status of dissimilarity measure

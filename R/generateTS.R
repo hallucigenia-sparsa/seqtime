@@ -188,7 +188,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
       if(read.ts == FALSE){
         A.name=paste(input.expId,"interactionmatrix.txt",sep="_")
         input.path.A=paste(input.settings.expId.folder,A.name,sep="/")
-        print(paste("Reading extinction probabilities from:",input.path.A,sep=" "))
+        print(paste("Reading interaction matrix from:",input.path.A,sep=" "))
         A=read.table(file=input.path.A,sep="\t",header=FALSE)
         A=as.matrix(A)
       }
@@ -327,7 +327,10 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
   }
 
   # assemble settings string
-  settings.str=paste("Output experiment identifier=",output.expId,"\n","Input experiment identifier",input.expId,"\n","Interaction matrix read from input",read.A,"\n","Initial abundances/immigration rates read from input",read.y,"\n","Growth rates/capacities read from input=",read.K,"\n","Extinction rates read from input=",read.extinct,"\n","N=",N,"\n","I=",I,"\n","steps=",tend,"\n","init abundance mode=",initAbundMode,"\n","sigma=",sigma,"\n","clique size in interaction matrix=",clique.size,"\n","connectance=",c,"\n","Interaction matrix generation method=",Atype,"\n","Interaction matrix tweaking method=",Atweak,"\n","diagonal values of interaction matrix=",d,"\n","immigration rate UNTB=",m,"\n","Requested positive edge percentage of interaction matrix=",PEP,"\n","Algorithm=",algorithm,"\n","Sampling frequency=",interval,"\n","Iterations needed for stable interaction matrix=",iter,"\n",sep="")
+  if(input.expId == ""){
+    input.expId == "NA"
+  }
+  settings.str=paste("Output_experiment_identifier=",output.expId,"\n","Input_experiment_identifier=",input.expId,"\n","Interaction_matrix_read_from_input=",read.A,"\n","Initial_abundances_or_immigration_rates_read_from_input=",read.y,"\n","Growth_rates_or_capacities_read_from_input=",read.K,"\n","Extinction_rates_read_from_input=",read.extinct,"\n","N=",N,"\n","I=",I,"\n","steps=",tend,"\n","init_abundance_mode=",initAbundMode,"\n","sigma=",sigma,"\n","theta=",theta,"\n","clique_size_in_interaction_matrix=",clique.size,"\n","connectance=",c,"\n","Interaction_matrix_generation_method=\"",Atype,"\"\n","Interaction_matrix_tweaking_method=\"",Atweak,"\"\n","diagonal_values_of_interaction_matrix=",d,"\n","immigration_rate_UNTB=",m,"\n","Requested_positive_edge_percentage_of_interaction_matrix=",PEP,"\n","Algorithm=\"",algorithm,"\"\n","Sampling_frequency=",interval,"\n","Iterations_needed_for_stable_interaction_matrix=",iter,"\n",sep="")
 
   if(output.folder != ""){
     # save time series

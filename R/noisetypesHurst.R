@@ -13,7 +13,7 @@ noisetypesHurst<-function(x, noisetypes, header=""){
   hurst.pink=c()
   if(length(noisetypes$pink) > 0){
     for(i in 1:length(noisetypes$pink)){
-      h=HurstK(x[noisetypes$pink[i],])
+      h=FGN::HurstK(x[noisetypes$pink[i],])
       hurst.pink=c(hurst.pink,h)
     }
   }
@@ -27,7 +27,7 @@ noisetypesHurst<-function(x, noisetypes, header=""){
   hurst.brown=c()
   if(length(noisetypes$brown) > 0){
     for(i in 1:length(noisetypes$brown)){
-      h=HurstK(x[noisetypes$brown[i],])
+      h=FGN::HurstK(x[noisetypes$brown[i],])
       hurst.brown=c(hurst.brown,h)
     }
   }

@@ -4,7 +4,8 @@
 \alias{taylor}
 \title{Plot relationship between row mean and row variance}
 \usage{
-taylor(x, type = "boxplot", pseudo = 0, col = "black", header = "")
+taylor(x, type = "boxplot", pseudo = 0, col = "black", header = "",
+  plot = TRUE)
 }
 \arguments{
 \item{x}{a matrix}
@@ -16,6 +17,11 @@ taylor(x, type = "boxplot", pseudo = 0, col = "black", header = "")
 \item{col}{the color of the dots}
 
 \item{header}{header string}
+
+\item{plot}{whether to do the plot}
+}
+\value{
+for type taylor, the slope, p-value and adjusted R2 of the Taylor law are returned (slope, pval, adjR2)
 }
 \description{
 The power law of mean and variance is also known as Taylor's law.

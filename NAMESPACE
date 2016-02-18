@@ -2,6 +2,9 @@
 
 S3method(boxplot,noisetypes)
 S3method(plot,noisetypes)
+export(binAutocorrelations)
+export(binHurst)
+export(compareTS)
 export(generateA)
 export(generateAbundances)
 export(generateTS)

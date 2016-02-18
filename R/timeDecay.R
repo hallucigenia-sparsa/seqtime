@@ -8,15 +8,16 @@
 #' @param logdissim take the logarithm of the dissimilarity before fitting a line
 #' @param header a string to be appended to the plot title (Time decay)
 #' @param units a string to describe the units of the time points (days, weeks etc)
+#' @param plot whether to do the plot
 #' @return a list with the time intervals, dissimilarity values, intersection, slope, p-value, adjusted R2, dissimilarity measure used and log status of dissimilarity measure
-#' @examples 
+#' @examples
 #' data("david_stoolA_otus")
 #' data=rarefyFilter(david_stoolA_otus,min=10000)
 #' out.decay=timeDecay(data[,1:50], header="Stool subject A")
-#' 
+#'
 #' @export
 
-timeDecay<-function(x, time=c(1:ncol(x)), dissim="bray", logdissim=FALSE, header="", units=""){
+timeDecay<-function(x, time=c(1:ncol(x)), dissim="bray", logdissim=FALSE, header="", units="", plot=TRUE){
   if(length(time) != ncol(x)){
     stop("The time vector has not as many entries as x has columns!")
   }
@@ -39,21 +40,31 @@ timeDecay<-function(x, time=c(1:ncol(x)), dissim="bray", logdissim=FALSE, header
   if(logdissim==TRUE){
     dissimValues=log(dissimValues)
   }
-  linreg = lm(formula = dissimValues~intervals)
-  intersection = linreg$coefficients[1]
-  slope=linreg$coefficients[2]
-  sum=summary(linreg)
-  pval=1-pf(sum$fstatistic[1], sum$fstatistic[2], sum$fstatistic[3])
-  #print(paste("slope",slope))
-  #print(paste("p-value",pval))
-  #print(paste("Adjusted R2:",sum$adj.r.squared))
-  xlab="Interval"
-  if(units != ""){
-     xlab=paste(xlab,"in",units)
+  if(length(dissimValues) > 1){
+    linreg = lm(formula = dissimValues~intervals)
+    intersection = linreg$coefficients[1]
+    slope=linreg$coefficients[2]
+    sum=summary(linreg)
+    adjR2=sum$adj.r.squared
+    pval=1-pf(sum$fstatistic[1], sum$fstatistic[2], sum$fstatistic[3])
+    #print(paste("slope",slope))
+    #print(paste("p-value",pval))
+    #print(paste("Adjusted R2:",sum$adj.r.squared))
+    xlab="Interval"
+    if(units != ""){
+      xlab=paste(xlab,"in",units)
+    }
+    if(plot == TRUE){
+      plot(intervals,dissimValues, xlab=xlab, ylab=paste("Dissimilarity (",dissim,")", sep=""),main=paste("Time decay",header,"\nP-value",round(pval,3),", R2.adj",round(sum$adj.r.squared,3),", Slope",round(slope,3)))
+      abline(linreg,bty="n",col="red")
+    }
+  }else{
+    intersection=NA
+    slope=NA
+    pval=NA
+    adjR2=NA
   }
-  plot(intervals,dissimValues, xlab=xlab, ylab=paste("Dissimilarity (",dissim,")", sep=""),main=paste("Time decay",header,"\nP-value",round(pval,3),", R2.adj",round(sum$adj.r.squared,3),", Slope",round(slope,3)))
-  abline(linreg,bty="n",col="red")
-  res=list(intervals, dissimValues, intersection, slope, pval, sum$adj.r.squared, dissim,logdissim)
+  res=list(intervals, dissimValues, intersection, slope, pval, adjR2, dissim,logdissim)
   names(res)=c("intervals", "dissimvals","intersection","slope","pval","adjR2","dissim", "logdissim")
   return(res)
 }
