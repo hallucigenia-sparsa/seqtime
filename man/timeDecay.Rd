@@ -4,8 +4,8 @@
 \alias{timeDecay}
 \title{Do a time-decay plot of a taxon matrix}
 \usage{
-timeDecay(x, time = c(1:ncol(x)), dissim = "bray", logdissim = FALSE,
-  header = "", units = "", plot = TRUE)
+timeDecay(x, time = c(1:ncol(x)), dissim = "bray", normtaxa = FALSE,
+  logdissim = FALSE, header = "", units = "", plot = TRUE)
 }
 \arguments{
 \item{x}{a taxon matrix with rows representing taxa and columns samples}
@@ -13,6 +13,8 @@ timeDecay(x, time = c(1:ncol(x)), dissim = "bray", logdissim = FALSE,
 \item{time}{vector with time steps}
 
 \item{dissim}{sample dissimilarity to use, should be supported by vegdist}
+
+\item{normtaxa}{divide each taxon vector in x by its sum}
 
 \item{logdissim}{take the logarithm of the dissimilarity before fitting a line}
 
@@ -30,8 +32,7 @@ Plot the time against the sample distance.
 }
 \examples{
 data("david_stoolA_otus")
-data=rarefyFilter(david_stoolA_otus,min=10000)
+data=rarefyFilter(david_stoolA_otus,min=10000)[[1]]
 out.decay=timeDecay(data[,1:50], header="Stool subject A")
-
 }
 

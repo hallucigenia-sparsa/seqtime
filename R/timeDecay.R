@@ -5,6 +5,7 @@
 #' @param x a taxon matrix with rows representing taxa and columns samples
 #' @param time vector with time steps
 #' @param dissim sample dissimilarity to use, should be supported by vegdist
+#' @param normtaxa divide each taxon vector in x by its sum 
 #' @param logdissim take the logarithm of the dissimilarity before fitting a line
 #' @param header a string to be appended to the plot title (Time decay)
 #' @param units a string to describe the units of the time points (days, weeks etc)
@@ -12,22 +13,28 @@
 #' @return a list with the time intervals, dissimilarity values, intersection, slope, p-value, adjusted R2, dissimilarity measure used and log status of dissimilarity measure
 #' @examples
 #' data("david_stoolA_otus")
-#' data=rarefyFilter(david_stoolA_otus,min=10000)
+#' data=rarefyFilter(david_stoolA_otus,min=10000)[[1]]
 #' out.decay=timeDecay(data[,1:50], header="Stool subject A")
-#'
 #' @export
 
-timeDecay<-function(x, time=c(1:ncol(x)), dissim="bray", logdissim=FALSE, header="", units="", plot=TRUE){
+timeDecay<-function(x, time=c(1:ncol(x)), dissim="bray", normtaxa=FALSE, logdissim=FALSE, header="", units="", plot=TRUE){
   if(length(time) != ncol(x)){
     stop("The time vector has not as many entries as x has columns!")
   }
-
+  if(normtaxa == TRUE){
+    rowsums = apply(x,1,sum)
+    # remove taxa with only zeros from matrix, to avoid dividing by a zero
+    zero.indices=which(rowsums==0)
+    rowsums=rowsums[setdiff(1:nrow(x),zero.indices)]
+    x=x[setdiff(1:nrow(x),zero.indices),]
+    x=x/rowsums
+  }
   # compute sample-wise dissimilarities
   dissimMat=as.matrix(vegdist(t(x),method=dissim))
   intervals = c()
   dissimValues = c()
   # plot dissimilarities against time
-  for(index1 in 1:length(time)-1){
+  for(index1 in 1:(length(time)-1)){
     for(index2 in (index1+1):length(time)){
       interval = time[index2]-time[index1]
       # symmetric
@@ -54,8 +61,13 @@ timeDecay<-function(x, time=c(1:ncol(x)), dissim="bray", logdissim=FALSE, header
     if(units != ""){
       xlab=paste(xlab,"in",units)
     }
+    if(logdissim == TRUE){
+      ylab=paste("Log community dissimilarity (",dissim,")", sep="")
+    }else{
+      ylab=paste("Community dissimilarity (",dissim,")", sep="")
+    }
     if(plot == TRUE){
-      plot(intervals,dissimValues, xlab=xlab, ylab=paste("Dissimilarity (",dissim,")", sep=""),main=paste("Time decay",header,"\nP-value",round(pval,3),", R2.adj",round(sum$adj.r.squared,3),", Slope",round(slope,3)))
+      plot(intervals,dissimValues, xlab=xlab, ylab=ylab, main=paste("Time decay",header,"\nP-value",round(pval,3),", R2.adj",round(sum$adj.r.squared,3),", Slope",round(slope,3)))
       abline(linreg,bty="n",col="red")
     }
   }else{

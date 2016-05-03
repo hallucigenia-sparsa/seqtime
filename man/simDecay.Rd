@@ -2,24 +2,45 @@
 % Please edit documentation in R/simDecay.R
 \name{simDecay}
 \alias{simDecay}
-\title{Plot sample-wise taxon dissimilarities against the abundance difference of selected taxa}
+\title{Plot sample-wise taxon dissimilarities against the abundance difference of selected taxa or metadata.}
 \usage{
-simDecay(x, taxa = c(1), dissim = "bray", logdissim = FALSE)
+simDecay(x, taxa = c(), metadata = c(), metadataName = "",
+  samplegroups = rep(1, ncol(x)), dissim = "bray", normtaxa = FALSE,
+  logdissim = FALSE, header = "")
 }
 \arguments{
-\item{x}{taxon-sample matrix}
+\item{x}{taxon-sample matrix with taxa as rows and samples as columns}
 
-\item{taxa}{vector of taxon row indices or row names present in x}
+\item{metadata}{vector with values in the same order as samples in the taxon matrix}
+
+\item{metadataName}{name of the metadata vector (e.g. age)}
+
+\item{samplegroups}{supposed to assign an integer to each sample, with integers ranging from 1 to group number. If provided, intra-group dissimilarity dots are colored by sample group}
+
+\item{dissim}{dissimilarity measure to use}
+
+\item{normtaxa}{divide each taxon vector in x by its sum}
 
 \item{logdissim}{take the logarithm of the dissimilarity before fitting a line}
+
+\item{header}{a string to be appended to the plot title (Dissimilarity change)}
+
+\item{taxon}{vector of taxon row indices or row names present in x}
 }
 \description{
-Plot sample-wise taxon dissimilarities against the abundance difference of selected taxa
+Plot sample-wise taxon dissimilarities against the abundance difference of selected taxa or metadata.
 }
 \examples{
-data=rarefyFilter(david_stoolA_otus,min=10000)
+N=50
+data("david_stoolA_otus")
+rar=rarefyFilter(david_stoolA_otus,min=10000)
+data=rar[[1]]
 # Faecalibacterium OTUs
 taxa=c("OTU_72853","OTU_119271")
-out=simDecay(data,taxa)
+out1=simDecay(data[,1:N],taxa)
+data("david_stoolA_metadata")
+days=david_stoolA_metadata[1,rar[[2]]] # only keep samples that made it through rarefaction
+out2=simDecay(data[,1:N],metadata=days[1:N],metadataName=rownames(david_stoolA_metadata)[1])
+
 }
 

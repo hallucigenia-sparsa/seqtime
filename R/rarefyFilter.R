@@ -8,6 +8,7 @@
 #' @export
 
 rarefyFilter<-function(x,min = 0){
+  keep=c()
   if(min < 0){
     stop("Min should be either 0 or positive.")
   }
@@ -18,7 +19,6 @@ rarefyFilter<-function(x,min = 0){
     colsums=apply(x,2,sum)
     # there are columns below the minimum
     if(min(colsums) < min){
-      keep=c()
       # loop column sums
       for(j in 1:ncol(x)){
         if(colsums[j] >= min){
