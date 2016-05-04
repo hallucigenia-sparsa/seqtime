@@ -75,7 +75,6 @@ countSpecies<-function(grid,N){
   return(counts)
 }
 
-
 # Generate d integer values (d: number of dead individuals)
 # where integers from vector v are selected with
 # probability m.vector.
@@ -90,25 +89,3 @@ randp<-function(d,m.vector,v){
   return(r)
 }
 
-# if indplot is true, plot the number of individuals over time,
-# else plot the number of species over time
-# example: diagnostic(simHubbell(N=100,tend=500),indplot=TRUE)
-# community size: species number
-# for simHubbell:
-# number of individuals fluctuates, number of species always goes down for the first 1000 time points
-# for simUNTB:
-# number of individuals stays constant, number of species tends to increase for the first 1000 time points, but not always
-diagnostic<-function(x, indplot=TRUE){
-  if(indplot == TRUE){
-    colsums=apply(x,2,sum)
-    plot(1:ncol(x),colsums, ylab="Number of individuals", xlab="Time points") # no trend?
-  }else{
-    # species number bias - species number decreases with time
-    specnum=c()
-    for(j in 1:ncol(x)){
-      v=as.numeric(x[,j])
-      specnum=c(specnum, length(v[v>0]))
-    }
-    plot(1:ncol(x),specnum, ylab="Number of species", xlab="Time points")
-  }
-}
