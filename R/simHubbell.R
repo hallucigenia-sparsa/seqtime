@@ -1,5 +1,9 @@
 #' Simulate species abundances with the basic Hubbell model.
 #'
+#' For a recent review on the Hubbell model, see Rosindell, Hubbell and Etienne,
+#' The Unified Neutral Theory of Biodiversity and Biogeography at Age Ten,
+#' Trends in Ecology and Evolution, vol. 26 (7), 340-348, 2011.
+#'
 #' @param N species number
 #' @param I number of individuals
 #' @param y initial species probabilities, should sum to one
@@ -44,7 +48,7 @@ simHubbell<-function(N=50, I=500, y=rep(1/N,N), m.vector=rep(1/N,N), m=0.02, d=1
     # immigration probabs
     immiprobabs=immigrants*randp(d,m.vector,S)
     # local replacement probabs
-    localprobabs=locals*randp(d,counts,S)
+    localprobabs=locals*randp(d,(counts/sum(counts)),S)
     r=immiprobabs+localprobabs
     # replace dead individuals with local or immigrated ones
     for(i in 1:d){

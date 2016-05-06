@@ -13,7 +13,7 @@
 #' tsDiagnostic(outH,type="ind")
 #' @export
 
-tsDiagnostic<-function(x, type="ind", spec.index=NA, spec.meta=NA){
+tsDiagnostic<-function(x, type="ind", spec.index=1, spec.meta=NA){
   if(type=="ind"){
     colsums=apply(x,2,sum)
     plot(1:ncol(x),colsums, ylab="Number of individuals", xlab="Time points") # no trend?
@@ -26,13 +26,12 @@ tsDiagnostic<-function(x, type="ind", spec.index=NA, spec.meta=NA){
     }
     plot(1:ncol(x),specnum, ylab="Number of species", xlab="Time points")
   }else if(type=="distrib"){
-    if(is.na(spec.index)){
-      stop("Please provide the index of the species to be plotted.")
-    }
     x=normalize(x)
     hist(x[spec.index,],main=paste("Distribution species",spec.index), xlab="Abundance")
     if(!is.na(spec.meta)){
       abline(v=spec.meta, col="blue")
     }
+  }else{
+    stop("Available plot types are ind, spec and distrib.")
   }
 }
