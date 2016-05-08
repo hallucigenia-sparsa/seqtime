@@ -32,6 +32,7 @@ compareTS<-function(input.folder="",expIds=c(), timeDecayInterval=20){
   sigmas=c()
   thetas=c()
   migrations=c()
+  deathrates=c()
   individuals=c()
   samplingfreqs=c()
 
@@ -117,12 +118,14 @@ compareTS<-function(input.folder="",expIds=c(), timeDecayInterval=20){
     }else{
       thetas=c(thetas,NA)
     }
-    if(Algorithm == "untb"){
-      migrations=c(migrations,immigration_rate_UNTB)
+    if(Algorithm == "hubbell"){
+      migrations=c(migrations,immigration_rate_Hubbell)
+      deathrates=c(deathrates, deathrate_Hubbell)
     }else{
       migrations=c(migrations,NA)
+      deathrates=c(deathrates,NA)
     }
-    if(Algorithm == "soc"){
+    if(Algorithm == "soc" || Algorithm=="hubbell"){
       individuals=c(individuals,I)
     }else{
       individuals=c(individuals,NA)
@@ -178,7 +181,7 @@ compareTS<-function(input.folder="",expIds=c(), timeDecayInterval=20){
   } # end loop over experiments
 
   # assemble table
-  resulttable=list(ids,samples,algorithms,samplingfreqs,initmode,peps,connectances,sigmas,thetas,migrations,individuals,taylorslopes,taylorR2,percentbrown,percentpink,percentwhite,percentmaxautocor0to3,percentmaxautocor3to5,percentmaxautocor5to8,percentmaxautocor8to1, lowHursts, middleHursts, highHursts,veryHighHursts, timedecayslopes, timedecayR2)
-  names(resulttable)=c("id","samplenum","algorithm","interval","initabundmode","pep","c","sigma","theta","m","I","taylorslope","taylorr2","brown","pink","white","maxautocorbelow03","maxautocor03to05","maxautocor05to08","maxautocor08to1", "lowhurst","middlehurst","highhurst","veryhighhurst","timedecayslope","timedecayr2")
+  resulttable=list(ids,samples,algorithms,samplingfreqs,initmode,peps,connectances,sigmas,thetas,migrations, deathrates,individuals,taylorslopes,taylorR2,percentbrown,percentpink,percentwhite,percentmaxautocor0to3,percentmaxautocor3to5,percentmaxautocor5to8,percentmaxautocor8to1, lowHursts, middleHursts, highHursts,veryHighHursts, timedecayslopes, timedecayR2)
+  names(resulttable)=c("id","samplenum","algorithm","interval","initabundmode","pep","c","sigma","theta","m","deaths","I","taylorslope","taylorr2","brown","pink","white","maxautocorbelow03","maxautocor03to05","maxautocor05to08","maxautocor08to1", "lowhurst","middlehurst","highhurst","veryhighhurst","timedecayslope","timedecayr2")
   return(resulttable)
 }

@@ -21,9 +21,13 @@
 #' Extinction rates are sampled from the uniform distribution
 #' with values between 0 and 1. Carrying capacities/growth rates are sampled
 #' from the uniform distribution with values between 0 and 0.5.
+#' On the implementation of the neutral model: simHubbell is used to generate
+#' neutral model time series. The species number of the local community is
+#' set to 1/10th of the species number in the metacommunity.
+#' The local community is initialized with even abundances.
 #'
-#' @param N species number
-#' @param I individual number (only for SOC and UNTB)
+#' @param N species number (for hubbell, refers to the species number in the metacommunity)
+#' @param I individual number (only for SOC and hubbell)
 #' @param tend the number of time points to generate
 #' @param initAbundMode the mode in which initial abundances are generated (described in function generateAbundances)
 #' @param c connectivity of interaction matrix (only for SOC, ricker and gLV)
@@ -34,8 +38,9 @@
 #' @param Atweak tweaking method for instable interaction matrix, either tweak (convert positive into negative arcs until the matrix is stable or one third of the positive arcs have been converted) or schur (apply Schur decomposition, does not guarantee a stable matrix)
 #' @param d diagonal value of the interaction matrix
 #' @param PEP positive edge percentage of interaction matrix (only for SOC, ricker and gLV)
-#' @param m immigration rate (only for UNTB)
-#' @param algorithm how time series should be generated (can be untb, soc, ricker, glv, dm, davida or davidb)
+#' @param m immigration rate (only for hubbell)
+#' @param deathrate number of individuals that are replaced at each time step (only for hubbell)
+#' @param algorithm how time series should be generated (can be hubbell, soc, ricker, glv, dm, davida or davidb)
 #' @param interval sampling frequency (if 1, each sample is taken, if 2, every second sample is taken etc.)
 #' @param output.folder path to result folder, if specified, input parameter and time series are exported to the output folder
 #' @param output.expId the identifier of the time series generation experiment
@@ -43,14 +48,14 @@
 #' @param input.expId the identifier of a previous experiment whose results will be read
 #' @param read.A read the interaction matrix from the given previous experiment
 #' @param read.K read the carrying capacities/growth rates from the given previous experiment
-#' @param read.y read the initial abundances/SOC immigration rates from the given previous experiment
+#' @param read.y read the initial abundances/SOC immigration rates from the given previous experiment (for hubbell, initial abundances refer to the metacommunity)
 #' @param read.extinct read the SOC extinction rates from the given previous experiment
 #' @param read.ts read the previously generated time series from the given previous experiment
 #' @param maxIter maximal iteration number for finding a stable interaction matrix
-#' @return list containing the generated interaction matrix, initial abundances (they double as immigration probabilities for soc and untb), carrying capacities (they double as growth rates for glv), extinction probabilities, time series and settings
+#' @return list containing the generated interaction matrix, initial abundances (they double as immigration probabilities for soc and metapopulation proportions for hubbell), carrying capacities (they double as growth rates for glv), extinction probabilities, time series and settings
 #' @export
 
-generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size=5, sigma=0.05, theta=0.002, Atype="klemm", Atweak="tweak",d=-1, PEP=30, m=0.02, algorithm="dm", interval=1, output.folder="", output.expId="", input.folder="", input.expId="", read.A=FALSE, read.y=FALSE, read.K=FALSE, read.extinct=FALSE, read.ts=FALSE, maxIter=10){
+generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size=5, sigma=0.05, theta=0.002, Atype="klemm", Atweak="tweak",d=-1, PEP=30, m=0.02, deathrate=10, algorithm="dm", interval=1, output.folder="", output.expId="", input.folder="", input.expId="", read.A=FALSE, read.y=FALSE, read.K=FALSE, read.extinct=FALSE, read.ts=FALSE, maxIter=10){
 
   # CONSTANTS
   negedge.symm=FALSE # negative interactions are not forced to be symmetric
@@ -63,10 +68,12 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
   max.carrying.capacity=0.5 # maximal carrying capacity/growth rate for ricker and glv
   divisor = 3 # num positive edges/divisor are converted into negative edges during tweaking with tinker method tweak
   david.minsamplesum=10000 # minimum read number to be present in a sample from the David data
+  burnin = 1000 # burnin period for hubbell, skips the transient where species number increases
+  localSpecNumber=round(N/10) # local species number for hubbell is set to one tenth of the species number
 
   # empty objects
   A=matrix() # interaction matrix
-  y=c() # initial abundances (they double as immigration probabilities for soc and untb)
+  y=c() # initial abundances (they double as immigration probabilities for soc and metapopulation proportions for hubbell)
   K=c() # carrying capacities (they double as growth rates for glv)
   extinction.probab=c() # extinction probabilities
   ts.out=matrix() # time series
@@ -126,7 +133,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
   }
 
   # generate initial abundances
-  if(algorithm == "glv" || algorithm == "ricker" || algorithm == "soc" || algorithm == "dm" || algorithm == "untb"){
+  if(algorithm == "glv" || algorithm == "ricker" || algorithm == "soc" || algorithm == "dm" || algorithm == "hubbell"){
     if(input.folder != "" && read.y==TRUE && read.ts == FALSE){
       y.name=paste(input.expId,"initabund.txt",sep="_")
       input.path.y=paste(input.settings.expId.folder,y.name,sep="/")
@@ -134,8 +141,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
       y=as.numeric(scan(input.path.y))
     }else{
       # generate initial abundances between 0 and 1
-      y=generateAbundances(N=N,mode=initAbundMode, count=count, k=k)
-      y=y/sum(y)
+      y=generateAbundances(N=N,mode=initAbundMode, count=count, k=k, probabs=TRUE)
       if(output.folder != ""){
         y.name=paste(output.expId,"initabund.txt",sep="_")
         y.path=paste(exp.settings.folder,y.name,sep="/")
@@ -279,8 +285,10 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
     }else if(algorithm == "soc"){
       # initial abundances serve as immigration probabilities
       ts.out=soc(N=N, I=I, A=A, m.vector=y, e.vector=extinction.probab, tend=tend)
-    }else if(algorithm == "untb"){
-      ts.out=simuntb(N=N,y=y,m=m, tskip=0, tend=tend)
+    }else if(algorithm == "hubbell"){
+      # after reading, for numeric reasons, may not always sum exactly to one
+      y=y/sum(y)
+      ts.out=simHubbell(N=localSpecNumber,M=N, I=I, d=deathrate, m.vector=y,m=m, tskip=burnin, tend=(tend+burnin))
     }else if(algorithm == "dm"){
       ts.out=simCountMat(N=N,pi=y, samples=tend, counts=count, distrib="dm", theta=theta)
     }else if(algorithm == "davida" || algorithm == "davidb"){
@@ -330,7 +338,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
   if(input.expId == ""){
     input.expId == "NA"
   }
-  settings.str=paste("Output_experiment_identifier=",output.expId,"\n","Input_experiment_identifier=",input.expId,"\n","Interaction_matrix_read_from_input=",read.A,"\n","Initial_abundances_or_immigration_rates_read_from_input=",read.y,"\n","Growth_rates_or_capacities_read_from_input=",read.K,"\n","Extinction_rates_read_from_input=",read.extinct,"\n","N=",N,"\n","I=",I,"\n","steps=",tend,"\n","init_abundance_mode=",initAbundMode,"\n","sigma=",sigma,"\n","theta=",theta,"\n","clique_size_in_interaction_matrix=",clique.size,"\n","connectance=",c,"\n","Interaction_matrix_generation_method=\"",Atype,"\"\n","Interaction_matrix_tweaking_method=\"",Atweak,"\"\n","diagonal_values_of_interaction_matrix=",d,"\n","immigration_rate_UNTB=",m,"\n","Requested_positive_edge_percentage_of_interaction_matrix=",PEP,"\n","Algorithm=\"",algorithm,"\"\n","Sampling_frequency=",interval,"\n","Iterations_needed_for_stable_interaction_matrix=",iter,"\n",sep="")
+  settings.str=paste("Output_experiment_identifier=",output.expId,"\n","Input_experiment_identifier=",input.expId,"\n","Interaction_matrix_read_from_input=",read.A,"\n","Initial_abundances_or_immigration_rates_read_from_input=",read.y,"\n","Growth_rates_or_capacities_read_from_input=",read.K,"\n","Extinction_rates_read_from_input=",read.extinct,"\n","N=",N,"\n","I=",I,"\n","steps=",tend,"\n","init_abundance_mode=",initAbundMode,"\n","sigma=",sigma,"\n","theta=",theta,"\n","clique_size_in_interaction_matrix=",clique.size,"\n","connectance=",c,"\n","Interaction_matrix_generation_method=\"",Atype,"\"\n","Interaction_matrix_tweaking_method=\"",Atweak,"\"\n","diagonal_values_of_interaction_matrix=",d,"\n","immigration_rate_Hubbell=",m,"\n","deathrate_Hubbell=",deathrate,"\n","Requested_positive_edge_percentage_of_interaction_matrix=",PEP,"\n","Algorithm=\"",algorithm,"\"\n","Sampling_frequency=",interval,"\n","Iterations_needed_for_stable_interaction_matrix=",iter,"\n",sep="")
 
   if(output.folder != ""){
     # save time series
