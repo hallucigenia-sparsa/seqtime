@@ -60,6 +60,7 @@ plotLimitsQuality<-function(oriTS, A, A.ori=matrix(), predict.stepwise=TRUE, noS
   percOKlist<-c(.9,.8,.7,.6,.5,.4,.3,.2,.1,0)
   for(percOK in percOKlist){
     indicesOK<-which(rowMeans>percOK*maxAbundance)
+    #print(indicesOK)
     if(length(indicesOK)>1){
       specNumberVec<-cbind(specNumberVec,length(indicesOK))
       subTS=oriTS[indicesOK,]
@@ -101,8 +102,9 @@ plotLimitsQuality<-function(oriTS, A, A.ori=matrix(), predict.stepwise=TRUE, noS
 
   my.colors = c("red","blue","blue4","violet","cyan","cadetblue")
   # the extra 50 is place for the legend
-  plot(specNumberVec,mat[,1],xlim=c(0,N+100),ylim = c(-1,1), xlab = "Number of taxa considered", ylab = "Mean correlation", main = "Quality of estimated interaction matrix", type = "o", col = my.colors[1])
-  for(i in 2:ncol(mat)){
+  plot(specNumberVec,mat[,ncol(mat)],xlim=c(0,N+100),ylim = c(-1,1), xlab = "Number of taxa considered", ylab = "Mean correlation", main = "Quality of estimated interaction matrix", type = "o", col = my.colors[ncol(mat)])
+  # plot the cross-correlation prediction last
+  for(i in (ncol(mat)-1):1){
     lines(specNumberVec,mat[,i], col = my.colors[i], type="o")
   }
   legend(x="right",colnames(mat), lty = rep(1,ncol(mat)), col = my.colors, merge = TRUE, bg = "white", text.col="black")
@@ -161,9 +163,13 @@ getCrossCorOriPredStepwise<-function(oriTS,A,lag=1,sigma=-1, explosion.bound=10^
       b=rlnorm(N,meanlog=0,sdlog=sigma)
     }
     y<-b*as.numeric(oriTS[,prevT])*exp(A%*%(as.numeric(oriTS[,prevT])-K))
-    if(max(y) > explosion.bound && ignoreExplosion == FALSE){
-      # report which species explodes
-      stop(paste("Explosion for taxon",which(y==max(y)),"in step-wise prediction."))
+    if(max(y) > explosion.bound){
+      if(ignoreExplosion == FALSE){
+        stop(paste("Explosion for taxon",which(y==max(y)),"in step-wise prediction."))
+      }else{
+        # even if ignored, report explosion
+        warning(paste("Explosion for taxon",which(y==max(y)),"in step-wise prediction."))
+      }
     }
     predTS[,t]=y
   }
@@ -180,7 +186,7 @@ getMeanCrosscor<-function(oriTS,predTS,lag=1){
     stop("Original and predicted time series do not have the same number of time points!")
   }
   tend=ncol(oriTS)
-  # correlation between matrices is computed column-wise
+  # correlation between matrices is computed column-wise by default, so transpose
   Rcross=cor(t(oriTS[,1:(tend-lag)]),t(predTS[,(1+lag):tend]))
   return(mean(diag(Rcross)))
 }
@@ -190,7 +196,7 @@ getMeanCrosscor<-function(oriTS,predTS,lag=1){
 # Taxa are rows and time points columns.
 getMeanAutocor<-function(ts,lag=1){
   tend=ncol(ts)
-  # correlation between matrices is computed column-wise
+  # correlation between matrices is computed column-wise by default, so transpose
   Rauto=cor(t(ts[,1:(tend-lag)]),t(ts[,(1+lag):tend]))
   return(mean(diag(Rauto)))
 }

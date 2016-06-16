@@ -45,7 +45,7 @@ limits<-function(x, bagging.iter=100, verbose=FALSE){
 #### error : mean of the errors made on evaluation of "y" using the estimated B matrix normalized by the variance of y ("one-time-step evalutaion").
 #### errorF : idem as error but without the normalization by the variance.
 
-# by Sophie de Buyl, translated from a Mathematica code provided by from Charles Fisher and Pankaj Mehta.
+# by Sophie de Buyl, translated from a Mathematica code provided by Charles Fisher and Pankaj Mehta.
 limitscolumnwise <- function(R,i, r=100){
 
   listnumbkeysp<-c(); #list of number species kept. NOT MANDATORY

@@ -16,15 +16,16 @@ compareTS<-function(input.folder="",expIds=c(), timeDecayInterval=20){
       stop("The input folder does not have a settings subfolder!")
     }
     input.timeseries.folder=paste(input.folder,"timeseries",sep="/")
-    if(!file.exists(input.settings.folder) && read.ts==TRUE){
+    if(!file.exists(input.settings.folder)){
       stop("The input folder does not have a time series subfolder!")
     }
+  }else{
+    stop("Please provide the input folder!")
   }
 
   # experiment properties
   taxa=c()
   samples=c()
-  ids=c()
   peps=c()
   initmode=c()
   connectances=c()
@@ -58,8 +59,6 @@ compareTS<-function(input.folder="",expIds=c(), timeDecayInterval=20){
 
     print(paste("Processing identifier",expId))
 
-    ids=c(ids,expId)
-
     input.settings.name=paste(expId,"settings",sep="_")
     input.settings.expId.folder=paste(input.settings.folder,input.settings.name,sep="/")
     if(!file.exists(input.settings.expId.folder)){
@@ -67,14 +66,14 @@ compareTS<-function(input.folder="",expIds=c(), timeDecayInterval=20){
     }
     input.timeseries.name=paste(expId,"timeseries",sep="_")
     input.timeseries.expId.folder=paste(input.timeseries.folder,input.timeseries.name,sep="/")
-    if(!file.exists(input.timeseries.expId.folder) && read.ts==TRUE){
+    if(!file.exists(input.timeseries.expId.folder)){
       stop("The input time series folder does not have a subfolder for the input experiment identifier!")
     }
 
     # read settings file
     input.settings.expId.file=paste(expId,"settings.txt",sep="_")
     settings.path=paste(input.settings.expId.folder,input.settings.expId.file,sep="/")
-    if(!file.exists(settings.path) && read.ts==TRUE){
+    if(!file.exists(settings.path)){
       stop(paste("The settings file",settings.path,"does not exist!"))
     }
     source(settings.path)
@@ -181,7 +180,7 @@ compareTS<-function(input.folder="",expIds=c(), timeDecayInterval=20){
   } # end loop over experiments
 
   # assemble table
-  resulttable=list(ids,samples,algorithms,samplingfreqs,initmode,peps,connectances,sigmas,thetas,migrations, deathrates,individuals,taylorslopes,taylorR2,percentbrown,percentpink,percentwhite,percentmaxautocor0to3,percentmaxautocor3to5,percentmaxautocor5to8,percentmaxautocor8to1, lowHursts, middleHursts, highHursts,veryHighHursts, timedecayslopes, timedecayR2)
+  resulttable=list(expIds,samples,algorithms,samplingfreqs,initmode,peps,connectances,sigmas,thetas,migrations, deathrates,individuals,taylorslopes,taylorR2,percentbrown,percentpink,percentwhite,percentmaxautocor0to3,percentmaxautocor3to5,percentmaxautocor5to8,percentmaxautocor8to1, lowHursts, middleHursts, highHursts,veryHighHursts, timedecayslopes, timedecayR2)
   names(resulttable)=c("id","samplenum","algorithm","interval","initabundmode","pep","c","sigma","theta","m","deaths","I","taylorslope","taylorr2","brown","pink","white","maxautocorbelow03","maxautocor03to05","maxautocor05to08","maxautocor08to1", "lowhurst","middlehurst","highhurst","veryhighhurst","timedecayslope","timedecayr2")
   return(resulttable)
 }

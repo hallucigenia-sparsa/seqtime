@@ -65,7 +65,8 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
       stop("reshape2 is not installed. Please install it.", call. = FALSE)
     }
     scale.plot<-max(c(max(A),-min(A)))
-    p1<-ggplot2::ggplot(reshape2::melt(A), aes(Var1,Var2, fill=value)) + geom_raster()+ scale_fill_gradient2(low = "red", mid = "white", high = "green",limits=c(-scale.plot, scale.plot))+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+ coord_fixed() + coord_fixed() + ggtitle(header)
+    # theme(axis.text.x = element_text(angle = 90, hjust = 1))+ coord_fixed() + coord_fixed()
+    p1<-ggplot2::ggplot(reshape2::melt(A), aes(Var1,Var2, fill=value)) + geom_raster()+ scale_fill_gradient2(low = "red", mid = "white", high = "green",limits=c(-scale.plot, scale.plot)) + ggtitle(header) + labs(x = "",y="")
     plot(p1)
   }
   par=old.par
