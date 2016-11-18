@@ -1,12 +1,22 @@
 #' Compare community time series generated with generateTS
+#' If R package infotheo is installed, the entropy of time series
+#' is computed.
 #'
 #' @param input.folder the folder where results of function generateTS are stored.
 #' @param expIds the experiment identifiers of time series to be considered
 #' @param timeDecayInterval the interval considered to compute the time decay
+#' @param return distributions at the final time point
 #' @return a table with experiment parameters (algorithm, connectance, sigma, theta and so on) and time series properties (noise types, slope of Taylor's law etc.)
 #' @export
 
-compareTS<-function(input.folder="",expIds=c(), timeDecayInterval=20){
+compareTS<-function(input.folder="",expIds=c(), timeDecayInterval=20, returnDistribs=FALSE){
+
+  # infotheo needed for entropy computation
+  infotheoThere=TRUE
+  if (!requireNamespace("infotheo", quietly = TRUE)) {
+    infotheoThere=FALSE
+  }
+
   if(input.folder != ""){
     if(!file.exists(input.folder)){
       stop(paste("The input folder",input.folder,"does not exist!"))
@@ -16,7 +26,7 @@ compareTS<-function(input.folder="",expIds=c(), timeDecayInterval=20){
       stop("The input folder does not have a settings subfolder!")
     }
     input.timeseries.folder=paste(input.folder,"timeseries",sep="/")
-    if(!file.exists(input.settings.folder)){
+    if(!file.exists(input.timeseries.folder)){
       stop("The input folder does not have a time series subfolder!")
     }
   }else{
@@ -53,6 +63,10 @@ compareTS<-function(input.folder="",expIds=c(), timeDecayInterval=20){
   middleHursts=c()
   highHursts=c()
   veryHighHursts=c()
+  entropy=c()
+
+  # distribution list
+  distribList = list()
 
   # collect time series properties
   for(expId in expIds){
@@ -82,26 +96,28 @@ compareTS<-function(input.folder="",expIds=c(), timeDecayInterval=20){
     samplingfreqs=c(samplingfreqs,Sampling_frequency)
 
     # read interaction matrix
-    if(Algorithm == "ricker" || Algorithm == "soc" || Algorithm == "glv"){
-      source.expId = expId
-      interactionmatrix.folder=input.settings.expId.folder
-      # interaction matrix for current experiment was read from another experiment
-      if(!is.na(Input_experiment_identifier)){
-        source.expId=Input_experiment_identifier
-        source.expId.folder=paste(source.expId,"settings",sep="_")
-        interactionmatrix.folder=paste(input.settings.folder,source.expId.folder,sep="/")
+    if(returnDistribs == FALSE){
+      if(Algorithm == "ricker" || Algorithm == "soc" || Algorithm == "glv"){
+        source.expId = expId
+        interactionmatrix.folder=input.settings.expId.folder
+        # interaction matrix for current experiment was read from another experiment
+        if(!is.na(Input_experiment_identifier)){
+          source.expId=Input_experiment_identifier
+          source.expId.folder=paste(source.expId,"settings",sep="_")
+          interactionmatrix.folder=paste(input.settings.folder,source.expId.folder,sep="/")
+        }
+        A.name=paste(source.expId,"interactionmatrix.txt",sep="_")
+        input.path.A=paste(interactionmatrix.folder,A.name,sep="/")
+        print(paste("Reading interaction matrix from:",input.path.A,sep=" "))
+        A=read.table(file=input.path.A,sep="\t",header=FALSE)
+        A=as.matrix(A)
+        # the requested and target PEP differ
+        peps=c(peps,round(getPep(A),2))
+        connectances=c(connectances,getConnectance(A))
+      }else{
+        peps=c(peps,NA)
+        connectances=c(connectances,NA)
       }
-      A.name=paste(source.expId,"interactionmatrix.txt",sep="_")
-      input.path.A=paste(interactionmatrix.folder,A.name,sep="/")
-      print(paste("Reading interaction matrix from:",input.path.A,sep=" "))
-      A=read.table(file=input.path.A,sep="\t",header=FALSE)
-      A=as.matrix(A)
-      # the requested and target PEP differ
-      peps=c(peps,round(getPep(A),2))
-      connectances=c(connectances,getConnectance(A))
-    }else{
-      peps=c(peps,NA)
-      connectances=c(connectances,NA)
     }
 
     initmode=c(initmode,init_abundance_mode)
@@ -124,8 +140,9 @@ compareTS<-function(input.folder="",expIds=c(), timeDecayInterval=20){
       migrations=c(migrations,NA)
       deathrates=c(deathrates,NA)
     }
-    if(Algorithm == "soc" || Algorithm=="hubbell"){
+    if(Algorithm == "soc" || Algorithm == "hubbell"){
       individuals=c(individuals,I)
+      #print(paste("individuals",I))
     }else{
       individuals=c(individuals,NA)
     }
@@ -142,45 +159,69 @@ compareTS<-function(input.folder="",expIds=c(), timeDecayInterval=20){
     taxa=c(taxa,N)
     samples=c(samples,ncol(ts))
 
-    # bin Hurst exponent
-    hursts=binHurst(ts)
-    lowHursts=c(lowHursts,onePerc*(length(hursts$lowH)/100))
-    middleHursts=c(middleHursts,onePerc*(length(hursts$middleH)/100))
-    highHursts=c(highHursts,onePerc*(length(hursts$highH)/100))
-    veryHighHursts=c(veryHighHursts,onePerc*(length(hursts$veryhighH)/100))
-
-    # bin maximal autocorrelations
-    autocorBins=binAutocorrelations(ts)
-    percentmaxautocor8to1=c(percentmaxautocor8to1, onePerc*(length(autocorBins$veryhighmaxautocor)/100))
-    percentmaxautocor5to8=c(percentmaxautocor5to8, onePerc*(length(autocorBins$highmaxautocor)/100))
-    percentmaxautocor3to5=c(percentmaxautocor3to5, onePerc*(length(autocorBins$middlemaxautocor)/100))
-    percentmaxautocor0to3=c(percentmaxautocor0to3, onePerc*(length(autocorBins$lowmaxautocor)/100))
-
-    # calculate taylor's law slope
-    taylorRes=taylor(ts,type="taylor",plot=FALSE, pseudo=0.0000001)
-    #timedecayRes=timeDecay(ts,plot=FALSE)
-    noisetypesRes=identifyNoisetypes(ts,abund.threshold = 0)
-
-    taylorslopes=c(taylorslopes,taylorRes$slope)
-    taylorR2=c(taylorR2,taylorRes$adjR2)
-    percentbrown=c(percentbrown,onePerc*(length(noisetypesRes$brown)/100))
-    percentpink=c(percentpink,onePerc*(length(noisetypesRes$pink)/100))
-    percentwhite=c(percentwhite,onePerc*(length(noisetypesRes$white)/100))
-
-    # if we do not sub-sample, it is very slow for 3000 samples
-    if(!is.na(timeDecayInterval)){
-      if(ncol(ts) < timeDecayInterval){
-        stop(paste("Time series",expId,"has less samples (namely",ncol(ts),") than the given time decay interval!"))
+    if(returnDistribs == FALSE){
+      # entropy
+      if(infotheoThere == TRUE){
+        # discretization needed (also for David data, because of interpolation)
+        if(Algorithm=="glv" || Algorithm == "ricker" || Algorithm == "davida" || Algorithm == "davidb"){
+          disc=discretize(t(ts),disc="equalwidth")
+          ent=entropy(disc)
+        }else{
+          ent=entropy(t(ts))
+        }
+        entropy=c(entropy,ent)
+      }else{
+        entropy=c(entropy,NA)
       }
-     ts=tsubsample(ts, interval=timeDecayInterval)
+
+      # bin Hurst exponent
+      hursts=binHurst(ts)
+      lowHursts=c(lowHursts,onePerc*(length(hursts$lowH)/100))
+      middleHursts=c(middleHursts,onePerc*(length(hursts$middleH)/100))
+      highHursts=c(highHursts,onePerc*(length(hursts$highH)/100))
+      veryHighHursts=c(veryHighHursts,onePerc*(length(hursts$veryhighH)/100))
+
+      # bin maximal autocorrelations
+      autocorBins=binAutocorrelations(ts)
+      percentmaxautocor8to1=c(percentmaxautocor8to1, onePerc*(length(autocorBins$veryhighmaxautocor)/100))
+      percentmaxautocor5to8=c(percentmaxautocor5to8, onePerc*(length(autocorBins$highmaxautocor)/100))
+      percentmaxautocor3to5=c(percentmaxautocor3to5, onePerc*(length(autocorBins$middlemaxautocor)/100))
+      percentmaxautocor0to3=c(percentmaxautocor0to3, onePerc*(length(autocorBins$lowmaxautocor)/100))
+
+      # calculate taylor's law slope
+      taylorRes=taylor(ts,type="taylor",plot=FALSE, pseudo=0.0000001)
+      #timedecayRes=timeDecay(ts,plot=FALSE)
+      noisetypesRes=identifyNoisetypes(ts,abund.threshold = 0)
+
+      taylorslopes=c(taylorslopes,taylorRes$slope)
+      taylorR2=c(taylorR2,taylorRes$adjR2)
+      percentbrown=c(percentbrown,onePerc*(length(noisetypesRes$brown)/100))
+      percentpink=c(percentpink,onePerc*(length(noisetypesRes$pink)/100))
+      percentwhite=c(percentwhite,onePerc*(length(noisetypesRes$white)/100))
+
+      # if we do not sub-sample, it is very slow for 3000 samples
+      if(!is.na(timeDecayInterval)){
+        if(ncol(ts) < timeDecayInterval){
+          stop(paste("Time series",expId,"has less samples (namely",ncol(ts),") than the given time decay interval!"))
+        }
+        ts=tsubsample(ts, interval=timeDecayInterval)
+      }
+      timedecayRes=timeDecay(ts, plot=FALSE)
+      timedecayslopes=c(timedecayslopes,timedecayRes$slope)
+      timedecayR2=c(timedecayR2,timedecayRes$adjR2)
+    }else{
+      # last column
+      name=paste("exp",expId,sep="")
+      distribList[[name]]=ts[,ncol(ts)]
     }
-    timedecayRes=timeDecay(ts, plot=FALSE)
-    timedecayslopes=c(timedecayslopes,timedecayRes$slope)
-    timedecayR2=c(timedecayR2,timedecayRes$adjR2)
   } # end loop over experiments
 
   # assemble table
-  resulttable=list(expIds,samples,algorithms,samplingfreqs,initmode,peps,connectances,sigmas,thetas,migrations, deathrates,individuals,taylorslopes,taylorR2,percentbrown,percentpink,percentwhite,percentmaxautocor0to3,percentmaxautocor3to5,percentmaxautocor5to8,percentmaxautocor8to1, lowHursts, middleHursts, highHursts,veryHighHursts, timedecayslopes, timedecayR2)
-  names(resulttable)=c("id","samplenum","algorithm","interval","initabundmode","pep","c","sigma","theta","m","deaths","I","taylorslope","taylorr2","brown","pink","white","maxautocorbelow03","maxautocor03to05","maxautocor05to08","maxautocor08to1", "lowhurst","middlehurst","highhurst","veryhighhurst","timedecayslope","timedecayr2")
+  if(returnDistribs == FALSE){
+    resulttable=list(expIds,samples,algorithms,samplingfreqs,initmode,peps,connectances,sigmas,thetas,migrations,individuals, deathrates,entropy,taylorslopes,taylorR2,percentbrown,percentpink,percentwhite,percentmaxautocor0to3,percentmaxautocor3to5,percentmaxautocor5to8,percentmaxautocor8to1, lowHursts, middleHursts, highHursts,veryHighHursts, timedecayslopes, timedecayR2)
+    names(resulttable)=c("id","samplenum","algorithm","interval","initabundmode","pep","c","sigma","theta","m","Individuals","deaths","entropy","taylorslope","taylorr2","brown","pink","white","maxautocorbelow03","maxautocor03to05","maxautocor05to08","maxautocor08to1", "lowhurst","middlehurst","highhurst","veryhighhurst","timedecayslope","timedecayr2")
+  }else{
+    resulttable=distribList
+  }
   return(resulttable)
 }
