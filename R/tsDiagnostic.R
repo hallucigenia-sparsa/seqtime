@@ -4,7 +4,7 @@
 #' @param type plot time vs number of species (spec), number of individuals (ind) or the distribution of the species with given index together with its proportion in the metacommunity, if provided
 #' @param spec.index row index of selected species (required for type distrib)
 #' @param spec.meta proportion of selected species in the meta-community (optional)
-#' @example
+#' @examples
 #' N=50
 #' m.vector=generateAbundances(N,mode=5,probabs=TRUE)
 #' outH=simHubbell(N=N,I=1000,m.vector=m.vector,tend=1000)

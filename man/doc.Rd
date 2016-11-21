@@ -26,6 +26,6 @@ doc(x, B = 100, polygons = FALSE, rand = FALSE, lower.conf = 0.03,
 a list with the overlaps, dissimilarities, lowess smoothed overlaps and dissimilarites and lower and upper confidence intervals
 }
 \description{
-Given  matrix of relative taxon abundances, plot the dissimilarity-overlap curve (DOC) sample-wise.
+The DOC method was developed by Bashan and colleagues (Universality of human microbial dynamics, Nature 534, 259-262).
 }
 

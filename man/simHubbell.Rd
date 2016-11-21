@@ -4,19 +4,25 @@
 \alias{simHubbell}
 \title{Simulate species abundances with the basic Hubbell model.}
 \usage{
-simHubbell(N = 50, I = 500, m.vector = runif(N), m = 0.02, d = 10,
-  tend = 100)
+simHubbell(N = 50, M = 500, I = 500, y = rep(1/N, N),
+  m.vector = rep(1/M, M), m = 0.02, d = 10, tskip = 0, tend = 100)
 }
 \arguments{
-\item{N}{species number}
+\item{N}{species number in the local community}
+
+\item{M}{species number in the metacommunity}
 
 \item{I}{number of individuals}
 
-\item{m.vector}{species proportions in the metacommunity}
+\item{y}{initial species probabilities, should sum to one}
+
+\item{m.vector}{species proportions in the metacommunity, should sum to one}
 
 \item{m}{immigration rate (probability that a dead individuum is replaced by an individuum from the metacommunity)}
 
 \item{d}{number of deaths at each time step}
+
+\item{tskip}{number of initial time points to be skipped when returning the result (to avoid the transient)}
 
 \item{tend}{number of time points (i.e. the number of generations)}
 }
@@ -24,6 +30,14 @@ simHubbell(N = 50, I = 500, m.vector = runif(N), m = 0.02, d = 10,
 a matrix with species abundances as rows and time points as columns
 }
 \description{
-Simulate species abundances with the basic Hubbell model.
+For a recent review on the Hubbell model, see Rosindell, Hubbell and Etienne,
+The Unified Neutral Theory of Biodiversity and Biogeography at Age Ten,
+Trends in Ecology and Evolution, vol. 26 (7), 340-348, 2011.
+}
+\examples{
+N=50
+M=500
+metapop=generateAbundances(N=M, mode=5, probabs=TRUE)
+tsplot(simHubbell(N=N, M=M,I=3000,d=N, m.vector=metapop, tskip=500, tend=1000))
 }
 

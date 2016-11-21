@@ -11,6 +11,9 @@
 #' @param oriTS the original time series, with taxa as rows and time points as columns
 #' @param A the estimated interaction matrix
 #' @param A.ori the original interaction matrix (optional)
+#' @param spec.subset either a vector of species indices to keep or a number to indicate how many top-abundant (sum across samples) species should be kept, applied to the matrices and time series
+#' @param norm normalize the original time series by dividing each sample by its sum (carried out before filtering species)
+#' @param plot plot the number of species versus the mean correlation of predicted and observed time series
 #' @param predict.stepwise if TRUE, the predicted time series is computed step by step, else computed with a call to Ricker
 #' @param noSchur do not remove positive eigenvalues
 #' @param ignoreExplosion ignore the occurrence of an explosion (for step-wise prediction only)
@@ -21,18 +24,46 @@
 #' N=20
 #' A=generateA(N,c=0.1)
 #' ts=ricker(N=N,A=A)
+#' ts=normalize(ts)
 #' Aest=limits(ts,verbose=TRUE)
-#' out=plotLimitsQuality(ts,A=Aest,A.ori=A)
+#' out=limitsQuality(ts,A=Aest,A.ori=A, plot=TRUE)
 #' @export
 
-plotLimitsQuality<-function(oriTS, A, A.ori=matrix(), predict.stepwise=TRUE, noSchur=FALSE, ignoreExplosion=FALSE, sigma=-1, explosion.bound=10^8){
+limitsQuality<-function(oriTS, A, A.ori=matrix(), spec.subset=NA, norm=FALSE, plot=FALSE, predict.stepwise=TRUE, noSchur=FALSE, ignoreExplosion=FALSE, sigma=-1, explosion.bound=10^8){
   if(ncol(oriTS) < 2){
     stop("Please provide the original time series.")
   }
   if(ncol(A) < 2){
     stop("Please provide the estimated interaction matrix.")
   }
+
+  # normalize the time series
+  if(norm == TRUE){
+    oriTS=normalize(oriTS)
+  }
+
+  # filter out species if requested
+  if(!is.na(spec.subset)){
+    if(length(spec.subset)==1){
+      # only keep top-abundant species
+      sorted=sort(apply(oriTS,1,sum),decreasing=TRUE,index.return=TRUE)
+      spec.subset=sorted$ix[1:spec.subset]
+    }
+    if(length(spec.subset)>1){
+      oriTS=oriTS[spec.subset,]
+      A=A[spec.subset,spec.subset]
+      if(ncol(A.ori)>1){
+        A.ori=A.ori[spec.subset,spec.subset]
+      }
+    }
+  }
+
   N=ncol(A)
+  corAwithAest=NA
+  rangeAest=range(A)
+  rangeAest=rangeAest[2]-rangeAest[1]
+  slope=NA
+
   if(ncol(A.ori) > 1){
     # compute correlations between the same columns only
     corAwithAest=sum(diag(cor(A,A.ori)))/N
@@ -90,25 +121,33 @@ plotLimitsQuality<-function(oriTS, A, A.ori=matrix(), predict.stepwise=TRUE, noS
   autocorrStep4Vec=autocorrStep4Vec[-1]
   autocorrStep5Vec=autocorrStep5Vec[-1]
 
+  # compute slope between species number and mean cross-correlation
+  reg.data=data.frame(specNumberVec,crosscorVec)
+  linreg = lm(formula = crosscorVec~specNumberVec)
+  slope=linreg$coefficients[2]
+
   # prepare result object
   res=list(specNumberVec,crosscorVec,autocorrStep1Vec,autocorrStep2Vec,autocorrStep3Vec,autocorrStep4Vec,autocorrStep5Vec)
   names(res)=c("taxonnum","meancrosscor","meanautocor1","meanautocor2","meanautocor3","meanautocor4","meanautocor5")
 
-  # do the quality plot
-  mat=matrix(unlist(res),nrow=length(specNumberVec),ncol=length(res))
-  # exclude taxon number column
-  mat=mat[,2:ncol(mat)]
-  colnames(mat)=c("cor(ori.ts,pred.ts)","autocor(ori.ts) lag 1","autocor(ori.ts) lag 2","autocor(ori.ts) lag 3","autocor(ori.ts) lag 4","autocor(ori.ts) lag 5")
-
-  my.colors = c("red","blue","blue4","violet","cyan","cadetblue")
-  # the extra 50 is place for the legend
-  plot(specNumberVec,mat[,ncol(mat)],xlim=c(0,N+100),ylim = c(-1,1), xlab = "Number of taxa considered", ylab = "Mean correlation", main = "Quality of estimated interaction matrix", type = "o", col = my.colors[ncol(mat)])
-  # plot the cross-correlation prediction last
-  for(i in (ncol(mat)-1):1){
-    lines(specNumberVec,mat[,i], col = my.colors[i], type="o")
+  if(plot == TRUE){
+    # do the quality plot
+    mat=matrix(unlist(res),nrow=length(specNumberVec),ncol=length(res))
+    # exclude taxon number column
+    mat=mat[,2:ncol(mat)]
+    colnames(mat)=c("cor(ori.ts,pred.ts)","autocor(ori.ts) lag 1","autocor(ori.ts) lag 2","autocor(ori.ts) lag 3","autocor(ori.ts) lag 4","autocor(ori.ts) lag 5")
+    my.colors = c("red","blue","blue4","violet","cyan","cadetblue")
+    # the extra 50 is place for the legend
+    plot(specNumberVec,mat[,ncol(mat)],xlim=c(0,N+100),ylim = c(-1,1), xlab = "Number of taxa considered", ylab = "Mean correlation", main = "Quality of estimated interaction matrix", type = "o", col = my.colors[ncol(mat)])
+    # plot the cross-correlation prediction last
+    for(i in (ncol(mat)-1):1){
+      lines(specNumberVec,mat[,i], col = my.colors[i], type="o")
+    }
+    legend(x="right",colnames(mat), lty = rep(1,ncol(mat)), col = my.colors, merge = TRUE, bg = "white", text.col="black")
   }
-  legend(x="right",colnames(mat), lty = rep(1,ncol(mat)), col = my.colors, merge = TRUE, bg = "white", text.col="black")
-
+  res["corAAest"]=corAwithAest
+  res["AestR"]=rangeAest
+  res["slope"]=slope
   return(res)
 }
 

@@ -6,15 +6,15 @@
 \usage{
 generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.05,
   clique.size = 5, sigma = 0.05, theta = 0.002, Atype = "klemm",
-  Atweak = "tweak", d = -1, PEP = 30, m = 0.02, algorithm = "dm",
-  interval = 1, output.folder = "", output.expId = "",
+  Atweak = "tweak", d = -1, PEP = 30, m = 0.02, deathrate = 10,
+  algorithm = "dm", interval = 1, output.folder = "", output.expId = "",
   input.folder = "", input.expId = "", read.A = FALSE, read.y = FALSE,
   read.K = FALSE, read.extinct = FALSE, read.ts = FALSE, maxIter = 10)
 }
 \arguments{
-\item{N}{species number}
+\item{N}{species number (for hubbell, refers to the species number in the metacommunity)}
 
-\item{I}{individual number (only for SOC and UNTB)}
+\item{I}{individual number (only for SOC and hubbell)}
 
 \item{tend}{the number of time points to generate}
 
@@ -36,9 +36,11 @@ generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.05,
 
 \item{PEP}{positive edge percentage of interaction matrix (only for SOC, ricker and gLV)}
 
-\item{m}{immigration rate (only for UNTB)}
+\item{m}{immigration rate (only for hubbell)}
 
-\item{algorithm}{how time series should be generated (can be untb, soc, ricker, glv, dm, davida or davidb)}
+\item{deathrate}{number of individuals that are replaced at each time step (only for hubbell)}
+
+\item{algorithm}{how time series should be generated (can be hubbell, soc, ricker, glv, dm, davida or davidb)}
 
 \item{interval}{sampling frequency (if 1, each sample is taken, if 2, every second sample is taken etc.)}
 
@@ -52,7 +54,7 @@ generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.05,
 
 \item{read.A}{read the interaction matrix from the given previous experiment}
 
-\item{read.y}{read the initial abundances/SOC immigration rates from the given previous experiment}
+\item{read.y}{read the initial abundances/SOC immigration rates from the given previous experiment (for hubbell, initial abundances refer to the metacommunity)}
 
 \item{read.K}{read the carrying capacities/growth rates from the given previous experiment}
 
@@ -63,7 +65,7 @@ generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.05,
 \item{maxIter}{maximal iteration number for finding a stable interaction matrix}
 }
 \value{
-list containing the generated interaction matrix, initial abundances (they double as immigration probabilities for soc and untb), carrying capacities (they double as growth rates for glv), extinction probabilities, time series and settings
+list containing the generated interaction matrix, initial abundances (they double as immigration probabilities for soc and metapopulation proportions for hubbell), carrying capacities (they double as growth rates for glv), extinction probabilities, time series and settings
 }
 \description{
 Wrapper function for time series generation.
@@ -88,5 +90,9 @@ On the random generation of parameter values:
 Extinction rates are sampled from the uniform distribution
 with values between 0 and 1. Carrying capacities/growth rates are sampled
 from the uniform distribution with values between 0 and 0.5.
+On the implementation of the neutral model: simHubbell is used to generate
+neutral model time series. The species number of the local community is
+set to 1/10th of the species number in the metacommunity.
+The local community is initialized with even abundances.
 }
 

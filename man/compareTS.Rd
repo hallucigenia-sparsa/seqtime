@@ -2,9 +2,12 @@
 % Please edit documentation in R/compareTS.R
 \name{compareTS}
 \alias{compareTS}
-\title{Compare community time series generated with generateTS}
+\title{Compare community time series generated with generateTS
+If R package infotheo is installed, the entropy of time series
+is computed.}
 \usage{
-compareTS(input.folder = "", expIds = c(), timeDecayInterval = 20)
+compareTS(input.folder = "", expIds = c(), timeDecayInterval = 20,
+  returnDistribs = FALSE)
 }
 \arguments{
 \item{input.folder}{the folder where results of function generateTS are stored.}
@@ -12,11 +15,15 @@ compareTS(input.folder = "", expIds = c(), timeDecayInterval = 20)
 \item{expIds}{the experiment identifiers of time series to be considered}
 
 \item{timeDecayInterval}{the interval considered to compute the time decay}
+
+\item{return}{distributions at the final time point}
 }
 \value{
 a table with experiment parameters (algorithm, connectance, sigma, theta and so on) and time series properties (noise types, slope of Taylor's law etc.)
 }
 \description{
 Compare community time series generated with generateTS
+If R package infotheo is installed, the entropy of time series
+is computed.
 }
 

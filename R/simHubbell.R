@@ -14,7 +14,7 @@
 #' @param tskip number of initial time points to be skipped when returning the result (to avoid the transient)
 #' @param tend number of time points (i.e. the number of generations)
 #' @return a matrix with species abundances as rows and time points as columns
-#' @example
+#' @examples
 #' N=50
 #' M=500
 #' metapop=generateAbundances(N=M, mode=5, probabs=TRUE)
