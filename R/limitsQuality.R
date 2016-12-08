@@ -1,4 +1,4 @@
-#' Quality plot for interaction matrices estimated with LIMITS
+#' Quality scores and plot for estimated interaction matrices
 #'
 #' To avoid explosions, the estimated interaction matrix is modified such
 #' that all its eigen values are negative using the Schur decomposition. The predicted time series is
@@ -7,19 +7,25 @@
 #' estimated interaction matrix with (by default noise-free) Ricker. Carrying capacities are
 #' estimated as mean abundances. If the original interaction matrix is provided,
 #' the mean correlation between estimated and original interaction matrix is computed.
+#' Thus, two main quality scores are considered: the mean correlation between predicted and
+#' observed time series and, if provided, the mean correlation between the original and the
+#' estimated interaction matrix.
 #'
 #' @param oriTS the original time series, with taxa as rows and time points as columns
 #' @param A the estimated interaction matrix
 #' @param A.ori the original interaction matrix (optional)
+#' @param type the model used to predict time series from the interaction matrix, ricker or soc (for soc, predict.stepwise is set to FALSE and noSchur to TRUE)
+#' @param m.vector the immigration rates for soc (optional, if not provided set to the proportions in the first sample)
+#' @param e.vector the extinction rates for soc (optional, if not provided sampled from the uniform distribution)
 #' @param spec.subset either a vector of species indices to keep or a number to indicate how many top-abundant (sum across samples) species should be kept, applied to the matrices and time series
 #' @param norm normalize the original time series by dividing each sample by its sum (carried out before filtering species)
-#' @param plot plot the number of species versus the mean correlation of predicted and observed time series
+#' @param plot plot the number of species versus the mean correlation of predicted and observed time series and the mean auto-correlation
 #' @param predict.stepwise if TRUE, the predicted time series is computed step by step, else computed with a call to Ricker
 #' @param noSchur do not remove positive eigenvalues
 #' @param ignoreExplosion ignore the occurrence of an explosion (for step-wise prediction only)
 #' @param sigma noise factor in Ricker
 #' @param explosion.bound the explosion boundary in Ricker
-#' @return a list with the taxon numbers considered (taxonnum), the mean correlation of observed and predicted time series (meancrosscor) and the mean autocorrelations up to lag 5 (meanautocor1 to meanautocor5)
+#' @return a list with the taxon numbers considered (taxonnum), the mean correlation of observed and predicted time series (meancrosscor), the slope of the former (slope), the value range in the estimated matrix (AestR), the mean correlation between predicted and original matrix (corAAest) and the mean autocorrelations up to lag 5 (meanautocor1 to meanautocor5)
 #' @examples
 #' N=20
 #' A=generateA(N,c=0.1)
@@ -29,7 +35,7 @@
 #' out=limitsQuality(ts,A=Aest,A.ori=A, plot=TRUE)
 #' @export
 
-limitsQuality<-function(oriTS, A, A.ori=matrix(), spec.subset=NA, norm=FALSE, plot=FALSE, predict.stepwise=TRUE, noSchur=FALSE, ignoreExplosion=FALSE, sigma=-1, explosion.bound=10^8){
+limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", m.vector=c(), e.vector=c(), spec.subset=NA, norm=FALSE, plot=FALSE, predict.stepwise=TRUE, noSchur=FALSE, ignoreExplosion=FALSE, sigma=-1, explosion.bound=10^8){
   if(ncol(oriTS) < 2){
     stop("Please provide the original time series.")
   }
@@ -80,8 +86,8 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), spec.subset=NA, norm=FALSE, pl
   autocorrStep3Vec=c()
   autocorrStep4Vec=c()
   autocorrStep5Vec=c()
-  # remove problematic species from the interaction matrix
-  if(noSchur == FALSE){
+  # make interaction matrix more robust to explosions (not needed for soc)
+  if(noSchur == FALSE && type=="ricker"){
     print("Applying Schur decomposition")
     Amodif=modifyA(A,mode="schur")
   }else{
@@ -97,10 +103,10 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), spec.subset=NA, norm=FALSE, pl
       subTS=oriTS[indicesOK,]
       Amodifsub=Amodif[indicesOK,indicesOK]
       # compute cross-correlation of original and step-wise predicted time series
-      if(predict.stepwise == TRUE){
+      if(predict.stepwise == TRUE && type=="ricker"){
         crossres=getCrossCorOriPredStepwise(subTS,A=Amodifsub,sigma=sigma,explosion.bound = explosion.bound, ignoreExplosion=ignoreExplosion)
       }else{
-        crossres=getCrossOriPredFull(subTS,A=Amodifsub,sigma=sigma,explosion.bound = explosion.bound)
+        crossres=getCrossOriPredFull(subTS,A=Amodifsub,sigma=sigma,explosion.bound = explosion.bound, type=type, m.vector=m.vector, e.vector=e.vector)
       }
       crosscorVec=c(crosscorVec,crossres)
       # compute auto-correlations for lag 1 to 5
@@ -151,28 +157,43 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), spec.subset=NA, norm=FALSE, pl
   return(res)
 }
 
-# Generate predicted time series by calling Ricker with the given interaction matrix.
+# Generate predicted time series by calling Ricker or SOC with the given interaction matrix.
 #
 # oriTS: original time series, taxa are rows and time points are columns
 # A: estimated interaction matrix
 # sigma: the noise term
-# explosion.bound the explosion boundary of Ricker
+# explosion.bound: the explosion boundary of Ricker
+# type: ricker or soc model
+# m.vector: the vector of immigration probabilities for SOC (optional)
+# e.vector: the vector of extinction probabilities for SOC (optional)
 #
 # returns the mean cross-correlation of the predicted time series
-getCrossOriPredFull<-function(oriTS, A, sigma=-1, explosion.bound=10^8){
+getCrossOriPredFull<-function(oriTS, A, sigma=-1, explosion.bound=10^8, type="ricker", m.vector=c(), e.vector=c()){
   y=oriTS[,1]
   tend=ncol(oriTS)
   N=nrow(oriTS)
-  # estimate carrying capacity as the mean of the time series
-  K=apply(oriTS,1,mean)
-  stable=testStability(A, method="ricker", K=K, y=y, sigma=sigma, explosion.bound=explosion.bound)
-  if(stable){
-    predTS=ricker(N=N, A=A, sigma=sigma, y=y, tend=tend, K=K, explosion.bound=explosion.bound)
-    crossCor<-getMeanCrosscor(oriTS[,2:tend],predTS[,2:tend],lag=0)
-    return(crossCor)
+  if(type=="glv"){
+    # estimate carrying capacity as the mean of the time series
+    K=apply(oriTS,1,mean)
+    stable=testStability(A, method="ricker", K=K, y=y, sigma=sigma, explosion.bound=explosion.bound)
+    if(stable){
+      predTS=ricker(N=N, A=A, sigma=sigma, y=y, tend=tend, K=K, explosion.bound=explosion.bound)
+    }else{
+      stop("Cannot generate predicted time series because of explosion in Ricker.")
+    }
   }else{
-    stop("Cannot generate predicted time series because of explosion in Ricker.")
+    sums=apply(oriTS,2,sum)
+    I=round(mean(sums))
+    if(length(m.vector)==0){
+      m.vector=oriTS[,1]/sum(oriTS[,1])
+    }
+    if(length(e.vector)==0){
+      e.vector=runif(N,min=0,max=1)
+    }
+    predTS=soc(N, I, A, m.vector=m.vector, e.vector=e.vector, tend)
   }
+  crossCor<-getMeanCrosscor(oriTS[,2:tend],predTS[,2:tend],lag=0)
+  return(crossCor)
 }
 
 # Generate predicted time series step-wise by calculating the abundances for
@@ -227,7 +248,7 @@ getMeanCrosscor<-function(oriTS,predTS,lag=1){
   tend=ncol(oriTS)
   # correlation between matrices is computed column-wise by default, so transpose
   Rcross=cor(t(oriTS[,1:(tend-lag)]),t(predTS[,(1+lag):tend]))
-  return(mean(diag(Rcross)))
+  return(mean(diag(Rcross), na.rm=TRUE))
 }
 
 # Get the mean auto-correlation between the

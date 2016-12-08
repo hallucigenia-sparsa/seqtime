@@ -24,7 +24,10 @@
 #' @param sigma noise term for ricker test
 #' @param explosion.bound explosion boundary for ricker test
 #' @return boolean false if unstable and true if stable
-#' @references Coyte et al., Science 2015: "The ecology of the microbiome: Networks, competition, and stability"
+#' @references Coyte et al. (2015). The ecology of the microbiome: Networks, competition, and stability. Science 350:663-666.
+#' @examples
+#' A=generateA(N=20)
+#' testStability(A)
 #' @export
 
 testStability<-function(A, method="eigen", K=rep(0.1,N), y=runif(N), sigma=0.01, explosion.bound=10^4){

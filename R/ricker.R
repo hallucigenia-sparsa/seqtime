@@ -14,7 +14,7 @@
 #' @return a matrix with species abundances as rows and time points as columns
 #' @examples
 #' tsplot(ricker(10,generateA(10),K=rep(0.01,10)),type="l", header="ricker")
-#' @seealso \code{\link{simuntb}} for the neutral model and \code{\link{glv}} for the generalized Lotka Volterra model
+#' @seealso \code{\link{glv}} for the generalized Lotka Volterra model
 #' @export
 
 ricker<-function(N, A, K=rep(0.1,N), y=runif(N), sigma=0.05, tend=100, tskip=0, explosion.bound=10^8){

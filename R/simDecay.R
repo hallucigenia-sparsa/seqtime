@@ -1,4 +1,6 @@
-#' Plot sample-wise taxon dissimilarities against the abundance difference of selected taxa or metadata.
+#' Plot sample-wise taxon dissimilarities
+#'
+#'  Taxon dissimilarities are plotted sample-wise against the abundance difference of selected taxa or metadata.
 #'
 #' @param x taxon-sample matrix with taxa as rows and samples as columns
 #' @param taxon vector of taxon row indices or row names present in x
@@ -7,7 +9,7 @@
 #' @param samplegroups supposed to assign an integer to each sample, with integers ranging from 1 to group number. If provided, intra-group dissimilarity dots are colored by sample group
 #' @param dissim dissimilarity measure to use
 #' @param header a string to be appended to the plot title (Dissimilarity change)
-#' @param normtaxa divide each taxon vector in x by its sum 
+#' @param normtaxa divide each taxon vector in x by its sum
 #' @param logdissim take the logarithm of the dissimilarity before fitting a line
 #'
 #' @examples
@@ -21,7 +23,7 @@
 #' data("david_stoolA_metadata")
 #' days=david_stoolA_metadata[1,rar[[2]]] # only keep samples that made it through rarefaction
 #' out2=simDecay(data[,1:N],metadata=days[1:N],metadataName=rownames(david_stoolA_metadata)[1])
-#' 
+#'
 #' @export
 
 simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,ncol(x)), dissim="bray", normtaxa=FALSE, logdissim=FALSE, header=""){
@@ -126,7 +128,7 @@ simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,
     ylab=paste("Log community dissimilarity (",dissim,") difference", sep="")
   }else{
     ylab=paste("Community dissimilarity (",dissim,") difference", sep="")
-  }  
+  }
   xlab="Difference"
   if(length(taxa)>0){
     if(length(taxa) > 1){
@@ -135,7 +137,7 @@ simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,
       xlab=paste(xlab,"in taxon",taxonStr)
     }
   }else{
-    xlab=paste(xlab,"in ",metadataName) 
+    xlab=paste(xlab,"in ",metadataName)
   }
   plot(differences,dissimValues, xlab=xlab, ylab=ylab, main=paste("Dissimilarity change",header,"\nP-value",round(pval,3),", R2.adj",round(sum$adj.r.squared,3),", Slope",round(slope,3)),col=colors)
   abline(linreg,bty="n",col="red")

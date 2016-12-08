@@ -7,6 +7,12 @@
 #' @param x a matrix
 #' @param noisetypes the noisetypes of the matrix
 #' @param header header string
+#' N=50
+#' M=500
+#' metapop=generateAbundances(N=M, mode=5, probabs=TRUE)
+#' ts=simHubbell(N=N, M=M,I=1500,d=N, m.vector=metapop, tskip=50, tend=500)
+#' noisetypes=identifyNoisetypes(ts)
+#' noisetypesHurst(ts,noisetypes,header="Hurst exponent stratified by noise type")
 #' @export
 
 noisetypesHurst<-function(x, noisetypes, header=""){
@@ -31,11 +37,19 @@ noisetypesHurst<-function(x, noisetypes, header=""){
       hurst.brown=c(hurst.brown,h)
     }
   }
+  hurst.black=c()
+  if(length(noisetypes$black) > 0){
+    for(i in 1:length(noisetypes$black)){
+      h=FGN::HurstK(x[noisetypes$black[i],])
+      hurst.black=c(hurst.black,h)
+    }
+  }
+  print(paste("white mean Hurst:",mean(hurst.white)))
   print(paste("pink mean Hurst:",mean(hurst.pink)))
   print(paste("brown mean Hurst:",mean(hurst.brown)))
-  print(paste("white mean Hurst:",mean(hurst.white)))
+  print(paste("black mean Hurst:",mean(hurst.black)))
 
-  hursts=list(hurst.white,hurst.brown,hurst.pink)
-  names(hursts)=c("white", "brown", "pink")
-  boxplot(hursts,col=c("white","brown","pink"),ylab="Hurst exponent", main=header)
+  hursts=list(hurst.white,hurst.pink,hurst.brown,hurst.black)
+  names(hursts)=c("white","pink","brown","black")
+  boxplot(hursts,col=c("white","pink","brown","black"),ylab="Hurst exponent", main=header)
 }

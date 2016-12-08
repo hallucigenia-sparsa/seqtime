@@ -8,7 +8,7 @@
 #' @param tend final time point
 #' @param tstep time step
 #' @return a matrix with species abundances as rows and time points as columns, column names give time points
-#' @seealso \code{\link{simuntb}} for the neutral model and \code{\link{ricker}} for the Ricker model
+#' @seealso \code{\link{ricker}} for the Ricker model
 #' @examples
 #' tsplot(glv(N=4,generateA(4)),header="gLV",type="l")
 #' @export

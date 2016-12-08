@@ -28,4 +28,7 @@ Generate time series with the self-organized criticality (SOC) model based on So
 \references{
 Sole et al. 2002 "Self-organized instability in complex ecosystems"
 }
+\seealso{
+\code{\link{ricker}} for the Ricker model
+}
 

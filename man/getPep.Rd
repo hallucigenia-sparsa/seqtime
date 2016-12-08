@@ -7,12 +7,16 @@
 getPep(A)
 }
 \arguments{
-\item{the}{interaction matrix (values on the diagonal should be negative)}
+\item{the}{interaction matrix}
 }
 \value{
 the positive edge percentage
 }
 \description{
-Compute the positive edge percentage of the interaction matrix
+Values on the diagonal are ignored.
+}
+\examples{
+A=cbind(c(-1,0,1),c(0,-1,0),c(-1,0,-1))
+getPep(A)
 }
 

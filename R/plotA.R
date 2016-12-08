@@ -56,13 +56,12 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
     image(A,col=palette(colorNumber),main=header,axes=TRUE,xaxs="r",yaxs="r")
   }else if(method == "ggplot"){
     # check whether ggplot2 is there
-    # thanks to: http://r-pkgs.had.co.nz/description.html
-    if (!requireNamespace("ggplot2", quietly = TRUE)) {
-      stop("ggplot2 is not installed. Please install it.", call. = FALSE)
+    if (!require("ggplot2")) {
+      stop("ggplot2 is not installed. Please install it.")
     }
     # check whether reshape2 is there
-    if (!requireNamespace("reshape2", quietly = TRUE)) {
-      stop("reshape2 is not installed. Please install it.", call. = FALSE)
+    if (!require("reshape2")) {
+      stop("reshape2 is not installed. Please install it.")
     }
     scale.plot<-max(c(max(A),-min(A)))
     # theme(axis.text.x = element_text(angle = 90, hjust = 1))+ coord_fixed() + coord_fixed()

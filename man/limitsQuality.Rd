@@ -2,11 +2,12 @@
 % Please edit documentation in R/limitsQuality.R
 \name{limitsQuality}
 \alias{limitsQuality}
-\title{Quality plot for interaction matrices estimated with LIMITS}
+\title{Quality scores and plot for estimated interaction matrices}
 \usage{
-limitsQuality(oriTS, A, A.ori = matrix(), spec.subset = NA, norm = FALSE,
-  plot = FALSE, predict.stepwise = TRUE, noSchur = FALSE,
-  ignoreExplosion = FALSE, sigma = -1, explosion.bound = 10^8)
+limitsQuality(oriTS, A, A.ori = matrix(), type = "ricker", m.vector = c(),
+  e.vector = c(), spec.subset = NA, norm = FALSE, plot = FALSE,
+  predict.stepwise = TRUE, noSchur = FALSE, ignoreExplosion = FALSE,
+  sigma = -1, explosion.bound = 10^8)
 }
 \arguments{
 \item{oriTS}{the original time series, with taxa as rows and time points as columns}
@@ -15,11 +16,17 @@ limitsQuality(oriTS, A, A.ori = matrix(), spec.subset = NA, norm = FALSE,
 
 \item{A.ori}{the original interaction matrix (optional)}
 
+\item{type}{the model used to predict time series from the interaction matrix, ricker or soc (for soc, predict.stepwise is set to FALSE and noSchur to TRUE)}
+
+\item{m.vector}{the immigration rates for soc (optional, if not provided set to the proportions in the first sample)}
+
+\item{e.vector}{the extinction rates for soc (optional, if not provided sampled from the uniform distribution)}
+
 \item{spec.subset}{either a vector of species indices to keep or a number to indicate how many top-abundant (sum across samples) species should be kept, applied to the matrices and time series}
 
 \item{norm}{normalize the original time series by dividing each sample by its sum (carried out before filtering species)}
 
-\item{plot}{plot the number of species versus the mean correlation of predicted and observed time series}
+\item{plot}{plot the number of species versus the mean correlation of predicted and observed time series and the mean auto-correlation}
 
 \item{predict.stepwise}{if TRUE, the predicted time series is computed step by step, else computed with a call to Ricker}
 
@@ -32,7 +39,7 @@ limitsQuality(oriTS, A, A.ori = matrix(), spec.subset = NA, norm = FALSE,
 \item{explosion.bound}{the explosion boundary in Ricker}
 }
 \value{
-a list with the taxon numbers considered (taxonnum), the mean correlation of observed and predicted time series (meancrosscor) and the mean autocorrelations up to lag 5 (meanautocor1 to meanautocor5)
+a list with the taxon numbers considered (taxonnum), the mean correlation of observed and predicted time series (meancrosscor), the slope of the former (slope), the value range in the estimated matrix (AestR), the mean correlation between predicted and original matrix (corAAest) and the mean autocorrelations up to lag 5 (meanautocor1 to meanautocor5)
 }
 \description{
 To avoid explosions, the estimated interaction matrix is modified such
@@ -42,6 +49,9 @@ original abundances of the preceding time point and the given
 estimated interaction matrix with (by default noise-free) Ricker. Carrying capacities are
 estimated as mean abundances. If the original interaction matrix is provided,
 the mean correlation between estimated and original interaction matrix is computed.
+Thus, two main quality scores are considered: the mean correlation between predicted and
+observed time series and, if provided, the mean correlation between the original and the
+estimated interaction matrix.
 }
 \examples{
 N=20

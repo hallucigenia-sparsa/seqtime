@@ -35,6 +35,6 @@ is reported if any species crosses the explosion bound.
 tsplot(ricker(10,generateA(10),K=rep(0.01,10)),type="l", header="ricker")
 }
 \seealso{
-\code{\link{simuntb}} for the neutral model and \code{\link{glv}} for the generalized Lotka Volterra model
+\code{\link{glv}} for the generalized Lotka Volterra model
 }
 

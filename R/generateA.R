@@ -10,7 +10,6 @@
 #' @param negedge.symm set symmetric negative interactions (only for klemm)
 #' @param clique.size modularity parameter (only for klemm)
 #' @return the interaction matrix
-#' TODO: generate interaction strengths from half-normal distribution
 #' @examples
 #' klemm=generateA(N=10,type="klemm",c=0.5)
 #' @references Klemm & Eguiluz, Growing Scale-Free Networks with Small World Behavior \url{http://arxiv.org/pdf/cond-mat/0107607v1.pdf}

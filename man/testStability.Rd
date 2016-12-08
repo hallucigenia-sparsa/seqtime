@@ -40,7 +40,11 @@ The eigenvalue criterium tests whether all real parts of the eigenvalues
 of the interaction matrix are smaller than zero.
 Ricker simply runs a simulation with Ricker and tests whether an explosion occurs.
 }
+\examples{
+A=generateA(N=20)
+testStability(A)
+}
 \references{
-Coyte et al., Science 2015: "The ecology of the microbiome: Networks, competition, and stability"
+Coyte et al. (2015). The ecology of the microbiome: Networks, competition, and stability. Science 350:663-666.
 }
 

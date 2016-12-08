@@ -2,7 +2,7 @@
 #'
 #' The power law of mean and variance is also known as Taylor's law.
 #' Taylor's law: var(Y) = a*mean(Y)^b, in log-scale: log(var(Y)) = log(a)+b*log(mean(Y))
-#' The slope b of Taylor's law is related to the Hurst exponent by: H=b/2 (Kendal 2013).
+#'
 #' @param x a matrix
 #' @param type the type of plot to do: mean.var (mean vs variance), boxplot (row-wise), taylor (powerlaw fitted to mean vs variance)
 #' @param pseudo add a pseudo count to deal with zeros in log-log plot (for type=taylor)
@@ -10,7 +10,7 @@
 #' @param header header string
 #' @param plot whether to do the plot
 #' @return for type taylor, the slope, p-value and adjusted R2 of the Taylor law are returned (slope, pval, adjR2)
-#' @references Kendal, Journal of Basic and Applied Physics 2013, vol 2, iss 2 pp. 40-49 (eq 32)
+#' @references L.R. Taylor (1961). Aggregation, variance and the mean. Nature 189, 732-735.
 #' @export
 
 taylor<-function(x, type="boxplot", pseudo=0, col="black", header="", plot=TRUE){

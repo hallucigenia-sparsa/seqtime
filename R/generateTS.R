@@ -309,6 +309,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
       # rarefy stool data
       rarefyRes=rarefyFilter(stool,min=david.minsamplesum)
       stool=rarefyRes$rar
+      # discard days with read count below minsamplesum
       days=metadata[1,rarefyRes$colindices]
       # make data equidistant
       stool.interp=interpolate(stool,time.vector=days,interval=1,method=interpolation.method)
@@ -317,6 +318,12 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
         sorted=sort(apply(stool.interp,1,sum),decreasing=TRUE,index.return=TRUE)
         stool.interp=stool.interp[sorted$ix[1:N],]
       }
+      # treat negative values introduced through interpolation
+      negValues=stool.interp[stool.interp<0]
+      meanNegVal=mean(negValues)
+      rangeNegVal=range(negValues)
+      print(paste("The interpolation introduced ",length(negValues)," negative values with a mean value of ",meanNegVal," a minimum of ",rangeNegVal[1]," and a maximum of ",rangeNegVal[2],". These are now set to zero.",sep=""))
+      stool.interp[stool.interp<0]=0
       # starting with the first time point, select as many samples as time points requested
       if(tend <= ncol(stool.interp)){
         ts.out=stool.interp[,1:tend]

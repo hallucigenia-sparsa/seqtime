@@ -1,8 +1,6 @@
 #' Simulate species abundances with the basic Hubbell model.
 #'
-#' For a recent review on the Hubbell model, see Rosindell, Hubbell and Etienne,
-#' The Unified Neutral Theory of Biodiversity and Biogeography at Age Ten,
-#' Trends in Ecology and Evolution, vol. 26 (7), 340-348, 2011.
+#' For a recent review on the Hubbell model, see Rosindell, Hubbell and Etienne, 2011.
 #'
 #' @param N species number in the local community
 #' @param M species number in the metacommunity
@@ -14,6 +12,8 @@
 #' @param tskip number of initial time points to be skipped when returning the result (to avoid the transient)
 #' @param tend number of time points (i.e. the number of generations)
 #' @return a matrix with species abundances as rows and time points as columns
+#' @references Rosindell, Hubbell and Etienne (2011). The Unified Neutral Theory of Biodiversity and Biogeography at Age Ten. Trends in Ecology and Evolution, vol. 26 (7), 340-348.
+#' @seealso \code{\link{simUntb}} for the neutral model with the untb package
 #' @examples
 #' N=50
 #' M=500

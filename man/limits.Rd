@@ -2,8 +2,7 @@
 % Please edit documentation in R/limits.R
 \name{limits}
 \alias{limits}
-\title{LIMITS implementation
-LIMITS is an algorithm developed by Fisher & Mehta to estimate the interaction matrix assuming a Ricker model.}
+\title{LIMITS implementation}
 \usage{
 limits(x, bagging.iter = 100, verbose = FALSE)
 }
@@ -18,7 +17,6 @@ limits(x, bagging.iter = 100, verbose = FALSE)
 the estimated interaction matrix
 }
 \description{
-LIMITS implementation
 LIMITS is an algorithm developed by Fisher & Mehta to estimate the interaction matrix assuming a Ricker model.
 }
 \examples{

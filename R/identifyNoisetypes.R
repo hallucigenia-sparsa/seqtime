@@ -1,12 +1,11 @@
-#' Identify noise types in a count matrix row-wise
+#' Identify noise types in a matrix row-wise
 #'
-#' Row count sums need to be above the given abundance threshold and
-#' the spectrum needs to scale significantly with the frequency below p-value 0.05
-#' in log-log scale.
-#' The periodogram is computed with spectrum.
+#' Row sums need to be above the given abundance threshold and the spectral density
+#' needs to scale significantly with the frequency (p-value below 0.05) in log-log scale.
+#' The periodogram is computed with stats::spectrum.
 #' The function returns a noisetypes object, which groups matrix row indices
 #' by noise type.
-#' @param x a count matrix
+#' @param x a matrix with objects as rows and time points as columns
 #' @param pval.threshold significance threshold for periodogram powerlaw goodness of fit
 #' @param abund.threshold minimum count sum per row
 #' @return S3 noisetypes object
@@ -20,6 +19,7 @@
 identifyNoisetypes<-function(x, pval.threshold = 0.05, abund.threshold=10){
   pink=c()
   brown=c()
+  black=c()
   white=c()
   nonclass=c()
   slopes.nonclass=c()
@@ -31,26 +31,34 @@ identifyNoisetypes<-function(x, pval.threshold = 0.05, abund.threshold=10){
     if(sum.taxon > abund.threshold){
       # spectrum is hidden by igraph, package name required
       out=stats::spectrum(x[i,], plot=FALSE)
-      logfreq=log(out$freq)
-      logspec=log(out$spec)
-      reg.data=data.frame(logfreq,logspec)
-      linreg = lm(formula = logspec~logfreq)
-      slope=linreg$coefficients[2]
-      sum=summary(linreg)
-      pval=1-pf(sum$fstatistic[1], sum$fstatistic[2], sum$fstatistic[3])
-      if(pval < pval.threshold){
-        # white noise: [-0.2, 0.2]
-        if(slope < 0.2 && slope > -0.2){
-          white=c(white,i)
-          # pink noise:  [-1.2,-0.8]
-        }else if(slope < -0.8 && slope > -1.2){
-          pink=c(pink,i)
-          # brown noise: [-2.2, -1.5]
-        }else if(slope < -1.5 && slope > -2.2){
-          brown=c(brown,i)
+      # avoid zeros
+      if(length(which(out$freq==0))==0 && length(which(out$spec==0))==0){
+        logfreq=log(out$freq)
+        logspec=log(out$spec)
+        reg.data=data.frame(logfreq,logspec)
+        linreg = lm(formula = logspec~logfreq)
+        slope=linreg$coefficients[2]
+        sum=summary(linreg)
+        pval=1-pf(sum$fstatistic[1], sum$fstatistic[2], sum$fstatistic[3])
+        if(pval < pval.threshold){
+          # white noise: [-0.2, 0.2]
+          if(slope < 0.2 && slope > -0.2){
+            white=c(white,i)
+            # pink noise:  [-1.2,-0.8]
+          }else if(slope < -0.8 && slope > -1.2){
+            pink=c(pink,i)
+            # brown noise: [-2.2, -1.5]
+          }else if(slope < -1.5 && slope > -2.2){
+            brown=c(brown,i)
+            # black noise
+          }else if(slope < -3){
+            black=c(black,i)
+          }else{
+            nonclass=c(nonclass,i)
+            slopes.nonclass=c(slopes.nonclass,slope)
+          }
         }else{
-          nonclass=c(nonclass,i)
-          slopes.nonclass=c(slopes.nonclass,slope)
+          nonsig=c(nonsig,i)
         }
       }else{
         nonsig=c(nonsig,i)
@@ -62,8 +70,9 @@ identifyNoisetypes<-function(x, pval.threshold = 0.05, abund.threshold=10){
   print(paste("Number of taxa with white noise: ",length(white)))
   print(paste("Number of taxa with pink noise: ",length(pink)))
   print(paste("Number of taxa with brown noise: ",length(brown)))
-  noisetypes=list(white,pink,brown,nonclass,nonsig, slopes.nonclass)
-  names(noisetypes)=c("white","pink","brown","nonclass","nonsig","slopes.nonclass")
+  print(paste("Number of taxa with black noise: ",length(black)))
+  noisetypes=list(white,pink,brown,black,nonclass,nonsig, slopes.nonclass)
+  names(noisetypes)=c("white","pink","brown","black","nonclass","nonsig","slopes.nonclass")
   class(noisetypes) <- "noisetypes"
   return(noisetypes)
 }
