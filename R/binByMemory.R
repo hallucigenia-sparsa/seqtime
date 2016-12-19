@@ -5,6 +5,7 @@
 #' function HurstK in package FGN.
 #'
 #' The function returns an object that groups matrix row indices in different levels.
+#' Rows that could not be binned are classified in bin na.
 #' @param x a matrix with objects as rows and time points as columns
 #' @param thresholds the thresholds by which to bin
 #' @param method autocor or hurst, computing the maximum auto-correlation (omitting lag=0) and the Hurst exponent, respectively
@@ -19,7 +20,7 @@
 #' @export
 
 binByMemory<-function(x, thresholds=c(0.3, 0.5, 0.8), method="autocor"){
-  thresholds=c(0,thresholds,Inf)
+  thresholds=c(-Inf,thresholds,Inf)
   res=list()
   # loop rows in x
   for(i in 1:nrow(x)){
@@ -36,7 +37,11 @@ binByMemory<-function(x, thresholds=c(0.3, 0.5, 0.8), method="autocor"){
       # loop thresholds
       for(tindex in (1:(length(thresholds)-1))){
         if(value >= thresholds[tindex] && value < thresholds[(tindex+1)]){
-          name=paste(method,thresholds[tindex],thresholds[(tindex+1)],sep="")
+          lowerBound=thresholds[tindex]
+          if(tindex==1){
+            lowerBound="negInf"
+          }
+          name=paste(method,lowerBound,thresholds[(tindex+1)],sep="")
           if(name %in% names(res)){
             res[[name]]=c(res[[name]],i)
           }else{
@@ -45,6 +50,14 @@ binByMemory<-function(x, thresholds=c(0.3, 0.5, 0.8), method="autocor"){
         }
       }
     } # skip NA
+    else{
+      name="na"
+      if(name %in% names(res)){
+        res[[name]]=c(res[[name]],i)
+      }else{
+        res[[name]]=c(i)
+      }
+    }
   } # loop taxa
   return(res)
 }

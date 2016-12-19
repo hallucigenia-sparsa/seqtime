@@ -59,6 +59,7 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
     }
   }
 
+  limitsqualautocorslope=c()
   limitsqualslope=c()
   limitsqualmaxcorr=c()
   limitsqualdeltaAest=c()
@@ -216,6 +217,7 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
         corrs=read.table(file=expId.subfolder.corrfile,header=FALSE)
         corrs=as.matrix(corrs)
         specnum=as.numeric(corrs[1,])
+        autocorr1=as.numeric(corrs[2,])
         #print(specnum)
         crosscorr1=as.numeric(corrs[7,])
         expId.subfolder.Aestfile=paste(expId.subfolder, paste(expId, "timeseries_Best.txt", sep="_"), sep="/")
@@ -248,6 +250,7 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
           specnum=limitsQualOut$taxonnum
           print(limitsQualOut$meancrosscor)
           crosscorr1=limitsQualOut$meancrosscor
+          autocorr1=limitsQualOut$meanautocor1
         }else{
           specnum=NA
           crosscorr1=NA
@@ -259,12 +262,20 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
         if(length(unique(crosscorr1))==1 && is.na(unique(crosscorr1))){
           linregslope=NA
         }else{
-          reg.data=data.frame(crosscorr1,specnum)
+          #reg.data=data.frame(crosscorr1,specnum)
           linreg = lm(formula = crosscorr1~specnum)
           linregslope=linreg$coefficients[2]
         }
+        if(length(unique(autocorr1))==1 && is.na(unique(autocorr1))){
+          linregautoslope=NA
+        }else{
+          #reg.data.auto=data.frame(autocorr1,specnum)
+          linreg.auto = lm(formula = autocorr1~specnum)
+          linregautoslope=linreg.auto$coefficients[2]
+        }
       }else{
         linregslope=NA
+        linregautoslope=NA
       }
       deltaAest=max(Aest)-min(Aest)
 
@@ -286,17 +297,19 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
       limitsqualmaxcorr=c(limitsqualmaxcorr,max(crosscorr1,na.rm=TRUE))
       limitsqualslope=c(limitsqualslope,linregslope)
       limitsqualdeltaAest=c(limitsqualdeltaAest,deltaAest)
+      limitsqualautocorslope=c(limitsqualautocorslope, linregautoslope)
     }else{
       # treat gaps
       limitsqualmaxcorr=c(limitsqualmaxcorr,NA)
       limitsqualslope=c(limitsqualslope,NA)
       limitsqualdeltaAest=c(limitsqualdeltaAest,NA)
       limitsqualAcorr=c(limitsqualAcorr,NA)
+      limitsqualautocorslope=c(limitsqualautocorslope,NA)
     }
   }
 
   # assemble table
-  resulttable=list(limitsqualslope, limitsqualmaxcorr, limitsqualdeltaAest, limitsqualAcorr)
-  names(resulttable)=c("slope","maxcorr","deltaAest", "Acorr")
+  resulttable=list(limitsqualslope, limitsqualautocorslope, limitsqualmaxcorr, limitsqualdeltaAest, limitsqualAcorr)
+  names(resulttable)=c("slope","autoslope","maxcorr","deltaAest", "Acorr")
   return(resulttable)
 }

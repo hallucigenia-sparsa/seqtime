@@ -1,4 +1,4 @@
-#' Simulate species abundances with the basic Hubbell model.
+rep#' Simulate species abundances with the basic Hubbell model.
 #'
 #' For a recent review on the Hubbell model, see Rosindell, Hubbell and Etienne, 2011.
 #'
@@ -59,8 +59,11 @@ simHubbell<-function(N=50, M=500, I=500, y=rep(1/N,N), m.vector=rep(1/M,M), m=0.
     z1=ceiling(gridsize*runif(d)) # x positions in the grid, ceil is like round, but guarantees no integer smaller than 1 will occur
     z2=ceiling(gridsize*runif(d)) # y positions in the grid
     z=runif(d) # generate d uniformly distributed values
-    immigrants=as.numeric(z>=m)
-    locals=as.numeric(z<m)
+    # bug spotted by Alex: the smaller the immigration rate, the more immigrants, fixed 09/Dec/2016
+    #immigrants=as.numeric(z>=m)
+    #locals=as.numeric(z<m)
+    immigrants=as.numeric(z<=m)
+    locals=as.numeric(z>m)
     # immigration probabs
     immiprobabs=immigrants*randp(d,m.vector,Smeta)
     # local replacement probabs

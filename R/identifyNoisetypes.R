@@ -7,7 +7,7 @@
 #' by noise type.
 #' @param x a matrix with objects as rows and time points as columns
 #' @param pval.threshold significance threshold for periodogram powerlaw goodness of fit
-#' @param abund.threshold minimum count sum per row
+#' @param abund.threshold minimum sum per row
 #' @return S3 noisetypes object
 #' @examples
 #' N=10
@@ -21,6 +21,7 @@ identifyNoisetypes<-function(x, pval.threshold = 0.05, abund.threshold=10){
   brown=c()
   black=c()
   white=c()
+  belowThreshold=c()
   nonclass=c()
   slopes.nonclass=c()
   nonsig=c()
@@ -64,15 +65,19 @@ identifyNoisetypes<-function(x, pval.threshold = 0.05, abund.threshold=10){
         nonsig=c(nonsig,i)
       }
     } # taxon too rare
+    else{
+      belowThreshold=c(belowThreshold,i)
+    }
   } # end taxon loop
+  print(paste("Number of taxa below the abundance threshold: ",length(belowThreshold)))
   print(paste("Number of taxa with non-significant power spectrum laws: ",length(nonsig)))
   print(paste("Number of taxa with non-classified power spectrum: ",length(nonclass)))
   print(paste("Number of taxa with white noise: ",length(white)))
   print(paste("Number of taxa with pink noise: ",length(pink)))
   print(paste("Number of taxa with brown noise: ",length(brown)))
   print(paste("Number of taxa with black noise: ",length(black)))
-  noisetypes=list(white,pink,brown,black,nonclass,nonsig, slopes.nonclass)
-  names(noisetypes)=c("white","pink","brown","black","nonclass","nonsig","slopes.nonclass")
+  noisetypes=list(white,pink,brown,black,nonclass,nonsig, slopes.nonclass,belowThreshold)
+  names(noisetypes)=c("white","pink","brown","black","nonclass","nonsig","slopes.nonclass","belowT")
   class(noisetypes) <- "noisetypes"
   return(noisetypes)
 }
