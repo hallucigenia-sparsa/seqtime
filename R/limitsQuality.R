@@ -15,6 +15,7 @@
 #' @param A the estimated interaction matrix
 #' @param A.ori the original interaction matrix (optional)
 #' @param type the model used to predict time series from the interaction matrix, ricker or soc (for soc, predict.stepwise is set to FALSE and noSchur to TRUE)
+#' @param autocorOnly only compute step-wise autocorrelations (in this case, A is optional)
 #' @param m.vector the immigration rates for soc (optional, if not provided set to the proportions in the first sample)
 #' @param e.vector the extinction rates for soc (optional, if not provided sampled from the uniform distribution)
 #' @param spec.subset either a vector of species indices to keep or a number to indicate how many top-abundant (sum across samples) species should be kept, applied to the matrices and time series
@@ -35,12 +36,18 @@
 #' out=limitsQuality(ts,A=Aest,A.ori=A, plot=TRUE)
 #' @export
 
-limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", m.vector=c(), e.vector=c(), spec.subset=NA, norm=FALSE, plot=FALSE, predict.stepwise=TRUE, noSchur=FALSE, ignoreExplosion=FALSE, sigma=-1, explosion.bound=10^8){
+limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FALSE, m.vector=c(), e.vector=c(), spec.subset=NA, norm=FALSE, plot=FALSE, predict.stepwise=TRUE, noSchur=FALSE, ignoreExplosion=FALSE, sigma=-1, explosion.bound=10^8){
   if(ncol(oriTS) < 2){
     stop("Please provide the original time series.")
   }
-  if(ncol(A) < 2){
-    stop("Please provide the estimated interaction matrix.")
+  if(autocorOnly==FALSE){
+    if(is.null(A) || ncol(A) < 2){
+      stop("Please provide the estimated interaction matrix.")
+    }
+  }
+  if(autocorOnly==TRUE){
+    # create a dummy matrix
+    A=matrix(0, ncol=nrow(oriTS), nrow=nrow(oriTS))
   }
 
   # normalize the time series
@@ -87,7 +94,7 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", m.vector=c(), e
   autocorrStep4Vec=c()
   autocorrStep5Vec=c()
   # make interaction matrix more robust to explosions (not needed for soc)
-  if(noSchur == FALSE && type=="ricker"){
+  if(noSchur == FALSE && type=="ricker" && autocorOnly==FALSE){
     print("Applying Schur decomposition")
     Amodif=modifyA(A,mode="schur")
   }else{
@@ -103,12 +110,16 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", m.vector=c(), e
       subTS=oriTS[indicesOK,]
       Amodifsub=Amodif[indicesOK,indicesOK]
       # compute cross-correlation of original and step-wise predicted time series
-      if(predict.stepwise == TRUE && type=="ricker"){
-        crossres=getCrossCorOriPredStepwise(subTS,A=Amodifsub,sigma=sigma,explosion.bound = explosion.bound, ignoreExplosion=ignoreExplosion)
+      if(autocorOnly==FALSE){
+        if(predict.stepwise == TRUE && type=="ricker"){
+          crossres=getCrossCorOriPredStepwise(subTS,A=Amodifsub,sigma=sigma,explosion.bound = explosion.bound, ignoreExplosion=ignoreExplosion)
+        }else{
+          crossres=getCrossOriPredFull(subTS,A=Amodifsub,sigma=sigma,explosion.bound = explosion.bound, type=type, m.vector=m.vector, e.vector=e.vector)
+        }
+        crosscorVec=c(crosscorVec,crossres)
       }else{
-        crossres=getCrossOriPredFull(subTS,A=Amodifsub,sigma=sigma,explosion.bound = explosion.bound, type=type, m.vector=m.vector, e.vector=e.vector)
+        crosscorVec=c(crosscorVec,NA)
       }
-      crosscorVec=c(crosscorVec,crossres)
       # compute auto-correlations for lag 1 to 5
       autocorrStep1Vec=c(autocorrStep1Vec, getMeanAutocor(subTS,lag=1))
       autocorrStep2Vec=c(autocorrStep2Vec, getMeanAutocor(subTS,lag=2))
@@ -128,9 +139,17 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", m.vector=c(), e
   autocorrStep5Vec=autocorrStep5Vec[-1]
 
   # compute slope between species number and mean cross-correlation
-  reg.data=data.frame(specNumberVec,crosscorVec)
-  linreg = lm(formula = crosscorVec~specNumberVec)
-  slope=linreg$coefficients[2]
+  if(autocorOnly==FALSE){
+    reg.data=data.frame(specNumberVec,crosscorVec)
+    linreg = lm(formula = crosscorVec~specNumberVec)
+    slope=linreg$coefficients[2]
+  }else{
+    slope=NA
+  }
+  # compute slope between species number and mean auto-correlation of lag 1
+  auto.reg.data=data.frame(specNumberVec,autocorrStep1Vec)
+  auto.linreg = lm(formula = autocorrStep1Vec~specNumberVec)
+  autoslope=auto.linreg$coefficients[2]
 
   # prepare result object
   res=list(specNumberVec,crosscorVec,autocorrStep1Vec,autocorrStep2Vec,autocorrStep3Vec,autocorrStep4Vec,autocorrStep5Vec)
@@ -154,6 +173,7 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", m.vector=c(), e
   res["corAAest"]=corAwithAest
   res["AestR"]=rangeAest
   res["slope"]=slope
+  res["autoslope"]=autoslope
   return(res)
 }
 

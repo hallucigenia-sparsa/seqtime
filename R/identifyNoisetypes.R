@@ -6,6 +6,7 @@
 #' The function returns a noisetypes object, which groups matrix row indices
 #' by noise type.
 #' @param x a matrix with objects as rows and time points as columns
+#' @param epsilon allowed deviation from the expected slope of 0 for white noise, -1 for pink noise and -2 for brown noise (all rows with a slope below -3 are classified as having black noise)
 #' @param pval.threshold significance threshold for periodogram powerlaw goodness of fit
 #' @param abund.threshold minimum sum per row
 #' @return S3 noisetypes object
@@ -16,7 +17,10 @@
 #' plot(ricker.out[noisetypes$brown[1],], main=paste("Simulated OTU",noisetypes$brown[1]),ylab="Abundance")
 #' @export
 
-identifyNoisetypes<-function(x, pval.threshold = 0.05, abund.threshold=10){
+identifyNoisetypes<-function(x, epsilon = 0.2, pval.threshold = 0.05, abund.threshold=10){
+  if(epsilon < 0 || epsilon > 0.5){
+    stop("Please select a value between 0 and 0.5 for epsilon.")
+  }
   pink=c()
   brown=c()
   black=c()
@@ -42,16 +46,16 @@ identifyNoisetypes<-function(x, pval.threshold = 0.05, abund.threshold=10){
         sum=summary(linreg)
         pval=1-pf(sum$fstatistic[1], sum$fstatistic[2], sum$fstatistic[3])
         if(pval < pval.threshold){
-          # white noise: [-0.2, 0.2]
-          if(slope < 0.2 && slope > -0.2){
+          # white noise:
+          if(slope < epsilon && slope > -epsilon){
             white=c(white,i)
-            # pink noise:  [-1.2,-0.8]
-          }else if(slope < -0.8 && slope > -1.2){
+            # pink noise:
+          }else if(slope < -(1-epsilon) && slope > -(1+epsilon)){
             pink=c(pink,i)
-            # brown noise: [-2.2, -1.5]
-          }else if(slope < -1.5 && slope > -2.2){
+            # brown noise:
+          }else if(slope < -(2-epsilon) && slope > -(2+epsilon)){
             brown=c(brown,i)
-            # black noise
+            # black noise:
           }else if(slope < -3){
             black=c(black,i)
           }else{

@@ -71,6 +71,10 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
   burnin = 1000 # burnin period for hubbell, skips the transient where species number increases
   localSpecNumber=round(N/10) # local species number for hubbell is set to one tenth of the species number
 
+  if(m < 0.2){
+    burnin=5000
+  }
+
   # empty objects
   A=matrix() # interaction matrix
   y=c() # initial abundances (they double as immigration probabilities for soc and metapopulation proportions for hubbell)
@@ -134,43 +138,47 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
 
   # generate initial abundances
   if(algorithm == "glv" || algorithm == "ricker" || algorithm == "soc" || algorithm == "dm" || algorithm == "hubbell"){
-    if(input.folder != "" && read.y==TRUE && read.ts == FALSE){
-      y.name=paste(input.expId,"initabund.txt",sep="_")
-      input.path.y=paste(input.settings.expId.folder,y.name,sep="/")
-      print(paste("Reading initial abundances from:",input.path.y,sep=" "))
-      y=as.numeric(scan(input.path.y))
-    }else{
-      # generate initial abundances between 0 and 1
-      y=generateAbundances(N=N,mode=initAbundMode, count=count, k=k, probabs=TRUE)
-      if(output.folder != ""){
-        y.name=paste(output.expId,"initabund.txt",sep="_")
-        y.path=paste(exp.settings.folder,y.name,sep="/")
-        write(t(y),file=y.path,ncolumns=1,sep="\t")
+    if(read.ts == FALSE){
+      if(input.folder != "" && read.y==TRUE){
+        y.name=paste(input.expId,"initabund.txt",sep="_")
+        input.path.y=paste(input.settings.expId.folder,y.name,sep="/")
+        print(paste("Reading initial abundances from:",input.path.y,sep=" "))
+        y=as.numeric(scan(input.path.y))
+      }else{
+        # generate initial abundances between 0 and 1
+        y=generateAbundances(N=N,mode=initAbundMode, count=count, k=k, probabs=TRUE)
+        if(output.folder != ""){
+          y.name=paste(output.expId,"initabund.txt",sep="_")
+          y.path=paste(exp.settings.folder,y.name,sep="/")
+          write(t(y),file=y.path,ncolumns=1,sep="\t")
+        }
       }
-    }
+    } # time series are not read in
   }
 
   # generate carrying capacities/growth rates (needed for soc too, for tests of matrix stability)
   if(algorithm == "ricker" || algorithm == "glv" || algorithm == "soc"){
-    if(input.folder != "" && read.K==TRUE && read.ts == FALSE){
-      K.name=paste(input.expId,"capacities.txt",sep="_")
-      input.path.K=paste(input.settings.expId.folder,K.name,sep="/")
-      print(paste("Reading capacities from:",input.path.K,sep=" "))
-      K=as.numeric(scan(input.path.K))
-    }else{
-      K=runif(N,min=0,max=max.carrying.capacity)
-      # save carrying capacities/growth rates
-      if(output.folder != ""){
-        K.name=paste(output.expId,"capacities.txt",sep="_")
-        K.path=paste(exp.settings.folder,K.name,sep="/")
-        write(t(K),file=K.path,ncolumns=1,sep="\t")
+    if(read.ts == FALSE){
+      if(input.folder != "" && read.K==TRUE){
+        K.name=paste(input.expId,"capacities.txt",sep="_")
+        input.path.K=paste(input.settings.expId.folder,K.name,sep="/")
+        print(paste("Reading capacities from:",input.path.K,sep=" "))
+        K=as.numeric(scan(input.path.K))
+      }else{
+        K=runif(N,min=0,max=max.carrying.capacity)
+        # save carrying capacities/growth rates
+        if(output.folder != ""){
+          K.name=paste(output.expId,"capacities.txt",sep="_")
+          K.path=paste(exp.settings.folder,K.name,sep="/")
+          write(t(K),file=K.path,ncolumns=1,sep="\t")
+        }
       }
-    }
+    } # time series are not read in
   }
 
   # generate extinction probabilities
-  if(algorithm == "soc"){
-    if(input.folder != "" && read.extinct==TRUE && read.ts == FALSE){
+  if(algorithm == "soc" && read.ts == FALSE){
+    if(input.folder != "" && read.extinct==TRUE){
       ext.name=paste(input.expId,"extinction.txt",sep="_")
       input.path.ext=paste(input.settings.expId.folder,ext.name,sep="/")
       print(paste("Reading extinction probabilities from:",input.path.ext,sep=" "))
@@ -288,6 +296,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
     }else if(algorithm == "hubbell"){
       # after reading, for numeric reasons, may not always sum exactly to one
       y=y/sum(y)
+      # local abundance distribution is even (y=rep(1/N,N))
       ts.out=simHubbell(N=localSpecNumber,M=N, I=I, d=deathrate, m.vector=y,m=m, tskip=burnin, tend=(tend+burnin))
     }else if(algorithm == "dm"){
       ts.out=simCountMat(N=N,pi=y, samples=tend, counts=count, distrib="dm", theta=theta)
@@ -345,7 +354,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
   if(input.expId == ""){
     input.expId == "NA"
   }
-  settings.str=paste("Output_experiment_identifier=",output.expId,"\n","Input_experiment_identifier=",input.expId,"\n","Interaction_matrix_read_from_input=",read.A,"\n","Initial_abundances_or_immigration_rates_read_from_input=",read.y,"\n","Growth_rates_or_capacities_read_from_input=",read.K,"\n","Extinction_rates_read_from_input=",read.extinct,"\n","N=",N,"\n","I=",I,"\n","steps=",tend,"\n","init_abundance_mode=",initAbundMode,"\n","sigma=",sigma,"\n","theta=",theta,"\n","clique_size_in_interaction_matrix=",clique.size,"\n","connectance=",c,"\n","Interaction_matrix_generation_method=\"",Atype,"\"\n","Interaction_matrix_tweaking_method=\"",Atweak,"\"\n","diagonal_values_of_interaction_matrix=",d,"\n","immigration_rate_Hubbell=",m,"\n","deathrate_Hubbell=",deathrate,"\n","Requested_positive_edge_percentage_of_interaction_matrix=",PEP,"\n","Algorithm=\"",algorithm,"\"\n","Sampling_frequency=",interval,"\n","Iterations_needed_for_stable_interaction_matrix=",iter,"\n",sep="")
+  settings.str=paste("Output_experiment_identifier=",output.expId,"\n","Input_experiment_identifier=",input.expId,"\n","Interaction_matrix_read_from_input=",read.A,"\n","Initial_abundances_or_immigration_rates_read_from_input=",read.y,"\n","Growth_rates_or_capacities_read_from_input=",read.K,"\n","Extinction_rates_read_from_input=",read.extinct,"\n","Timeseries_read_from_input=",read.ts,"\n","N=",N,"\n","I=",I,"\n","steps=",tend,"\n","init_abundance_mode=",initAbundMode,"\n","sigma=",sigma,"\n","theta=",theta,"\n","clique_size_in_interaction_matrix=",clique.size,"\n","connectance=",c,"\n","Interaction_matrix_generation_method=\"",Atype,"\"\n","Interaction_matrix_tweaking_method=\"",Atweak,"\"\n","diagonal_values_of_interaction_matrix=",d,"\n","immigration_rate_Hubbell=",m,"\n","deathrate_Hubbell=",deathrate,"\n","Requested_positive_edge_percentage_of_interaction_matrix=",PEP,"\n","Algorithm=\"",algorithm,"\"\n","Sampling_frequency=",interval,"\n","Iterations_needed_for_stable_interaction_matrix=",iter,"\n",sep="")
 
   if(output.folder != ""){
     # save time series
