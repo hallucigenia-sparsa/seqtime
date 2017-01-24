@@ -16,6 +16,7 @@
 #' @param A.ori the original interaction matrix (optional)
 #' @param type the model used to predict time series from the interaction matrix, ricker or soc (for soc, predict.stepwise is set to FALSE and noSchur to TRUE)
 #' @param autocorOnly only compute step-wise autocorrelations (in this case, A is optional)
+#' @param all compute auto- and cross-correlations for all species, adding one at each step, in the order of their mean abundance
 #' @param m.vector the immigration rates for soc (optional, if not provided set to the proportions in the first sample)
 #' @param e.vector the extinction rates for soc (optional, if not provided sampled from the uniform distribution)
 #' @param spec.subset either a vector of species indices to keep or a number to indicate how many top-abundant (sum across samples) species should be kept, applied to the matrices and time series
@@ -36,7 +37,7 @@
 #' out=limitsQuality(ts,A=Aest,A.ori=A, plot=TRUE)
 #' @export
 
-limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FALSE, m.vector=c(), e.vector=c(), spec.subset=NA, norm=FALSE, plot=FALSE, predict.stepwise=TRUE, noSchur=FALSE, ignoreExplosion=FALSE, sigma=-1, explosion.bound=10^8){
+limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FALSE, all=FALSE, m.vector=c(), e.vector=c(), spec.subset=NA, norm=FALSE, plot=FALSE, predict.stepwise=TRUE, noSchur=FALSE, ignoreExplosion=FALSE, sigma=-1, explosion.bound=10^8){
   if(ncol(oriTS) < 2){
     stop("Please provide the original time series.")
   }
@@ -101,9 +102,18 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FAL
     Amodif=A
   }
   # loop over the number of species to include (removing the least abundant)
-  percOKlist<-c(.9,.8,.7,.6,.5,.4,.3,.2,.1,0)
+  indicesOK=c()
+  if(all==TRUE){
+    percOKlist=sort(rowMeans,decreasing=TRUE,index.return=TRUE)$ix
+  }else{
+    percOKlist<-c(.9,.8,.7,.6,.5,.4,.3,.2,.1,0)
+  }
   for(percOK in percOKlist){
-    indicesOK<-which(rowMeans>percOK*maxAbundance)
+    if(all==TRUE){
+      indicesOK=c(indicesOK, percOK)
+    }else{
+      indicesOK<-which(rowMeans>percOK*maxAbundance)
+    }
     #print(indicesOK)
     if(length(indicesOK)>1){
       specNumberVec<-cbind(specNumberVec,length(indicesOK))
@@ -147,32 +157,50 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FAL
     slope=NA
   }
   # compute slope between species number and mean auto-correlation of lag 1
-  auto.reg.data=data.frame(specNumberVec,autocorrStep1Vec)
-  auto.linreg = lm(formula = autocorrStep1Vec~specNumberVec)
-  autoslope=auto.linreg$coefficients[2]
+  if(length(which(is.na(autocorrStep1Vec)))<length(autocorrStep1Vec)){
+    auto.reg.data=data.frame(specNumberVec,autocorrStep1Vec)
+    auto.linreg = lm(formula = autocorrStep1Vec~specNumberVec)
+    autoslope=auto.linreg$coefficients[2]
+  }else{
+    autoslope=NA
+  }
 
   # prepare result object
-  res=list(specNumberVec,crosscorVec,autocorrStep1Vec,autocorrStep2Vec,autocorrStep3Vec,autocorrStep4Vec,autocorrStep5Vec)
-  names(res)=c("taxonnum","meancrosscor","meanautocor1","meanautocor2","meanautocor3","meanautocor4","meanautocor5")
+  if(autocorOnly==TRUE){
+    res=list(specNumberVec,autocorrStep1Vec,autocorrStep2Vec,autocorrStep3Vec,autocorrStep4Vec,autocorrStep5Vec)
+    names(res)=c("taxonnum","meanautocor1","meanautocor2","meanautocor3","meanautocor4","meanautocor5")
+  }else{
+    res=list(specNumberVec,crosscorVec,autocorrStep1Vec,autocorrStep2Vec,autocorrStep3Vec,autocorrStep4Vec,autocorrStep5Vec)
+    names(res)=c("taxonnum","meancrosscor","meanautocor1","meanautocor2","meanautocor3","meanautocor4","meanautocor5")
+  }
 
   if(plot == TRUE){
     # do the quality plot
     mat=matrix(unlist(res),nrow=length(specNumberVec),ncol=length(res))
     # exclude taxon number column
     mat=mat[,2:ncol(mat)]
-    colnames(mat)=c("cor(ori.ts,pred.ts)","autocor(ori.ts) lag 1","autocor(ori.ts) lag 2","autocor(ori.ts) lag 3","autocor(ori.ts) lag 4","autocor(ori.ts) lag 5")
-    my.colors = c("red","blue","blue4","violet","cyan","cadetblue")
+    if(autocorOnly==FALSE){
+      main="Quality of estimated interaction matrix"
+      colnames(mat)=c("cor(ori.ts,pred.ts)","autocor(ori.ts) lag 1","autocor(ori.ts) lag 2","autocor(ori.ts) lag 3","autocor(ori.ts) lag 4","autocor(ori.ts) lag 5")
+      my.colors = c("red","blue","blue4","violet","cyan","cadetblue")
+    }else{
+      main="Auto-correlation versus species number"
+      colnames(mat)=c("autocor(ori.ts) lag 1","autocor(ori.ts) lag 2","autocor(ori.ts) lag 3","autocor(ori.ts) lag 4","autocor(ori.ts) lag 5")
+      my.colors = c("blue","blue4","violet","cyan","cadetblue")
+    }
     # the extra 50 is place for the legend
-    plot(specNumberVec,mat[,ncol(mat)],xlim=c(0,N+100),ylim = c(-1,1), xlab = "Number of taxa considered", ylab = "Mean correlation", main = "Quality of estimated interaction matrix", type = "o", col = my.colors[ncol(mat)])
+    plot(specNumberVec,mat[,ncol(mat)],xlim=c(0,N+100),ylim = c(-1,1), xlab = "Number of taxa (in decreasing abundance)", ylab = "Mean correlation", main = main, type = "o", col = my.colors[ncol(mat)])
     # plot the cross-correlation prediction last
     for(i in (ncol(mat)-1):1){
       lines(specNumberVec,mat[,i], col = my.colors[i], type="o")
     }
     legend(x="right",colnames(mat), lty = rep(1,ncol(mat)), col = my.colors, merge = TRUE, bg = "white", text.col="black")
   }
-  res["corAAest"]=corAwithAest
-  res["AestR"]=rangeAest
-  res["slope"]=slope
+  if(autocorOnly==FALSE){
+    res["corAAest"]=corAwithAest
+    res["AestR"]=rangeAest
+    res["slope"]=slope
+  }
   res["autoslope"]=autoslope
   return(res)
 }
@@ -192,7 +220,7 @@ getCrossOriPredFull<-function(oriTS, A, sigma=-1, explosion.bound=10^8, type="ri
   y=oriTS[,1]
   tend=ncol(oriTS)
   N=nrow(oriTS)
-  if(type=="glv"){
+  if(type=="ricker"){
     # estimate carrying capacity as the mean of the time series
     K=apply(oriTS,1,mean)
     stable=testStability(A, method="ricker", K=K, y=y, sigma=sigma, explosion.bound=explosion.bound)

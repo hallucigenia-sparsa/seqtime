@@ -7,9 +7,12 @@
 # real parameters.
 # The following quality scores are computed:
 # slope: The slope of the mean correlation of predicted and real time series versus species sub-set considered
-# maxcorr: The maximum among the mean correlations for different species sub-sets
+# autoslope: The slope of the mean auto-correlation with lag 1 versus increasing species number, added in decreasing order of abundance
+# corrAll: The mean cross-correlation between predicted and observed time series for all species considered
+# maxcorr: The maximum among the mean cross-correlations between predicted and observed time series for different species sub-sets
 # deltaAest: The range of values predicted for the estimated interaction matrx
 # Acorr: The mean correlation of values in the predicted and the original interaction matrix (requires the input.folder).
+# Note that each point of the predicted time series is obtained from the preceding point of the observed time series using Ricker with the inferred interaction matrix
 #
 # @param fit.folder the folder where fitting results are stored
 # @param input.folder (optional) the folder where input settings for time series generated with function generateTS are stored
@@ -21,7 +24,7 @@
 # param fit.method the fitting method (limits or soc)
 # param fit.type the part of the time series used (all, selected, first), first only for limits
 # param limits.round the round of LIMITs fitting (changes some folder names)
-# return a table with goodness of fit scores, including slope, maxcorr, deltaAest and Acorr (Acorr is only computed if the input.folder is provided)
+# return a table with goodness of fit scores, including slope, autoslope, corrAll, maxcorr, deltaAest and Acorr (Acorr is only computed if the input.folder is provided)
 
 compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(), dryRun=FALSE, setMissingIdsToNA=FALSE, maxId=NA, fit.method="limits", fit.type="all", limits.round=2){
   if(fit.folder != ""){
@@ -62,6 +65,7 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
   limitsqualautocorslope=c()
   limitsqualslope=c()
   limitsqualmaxcorr=c()
+  limitsqualcrosscorAll=c()
   limitsqualdeltaAest=c()
   limitsqualAcorr=c()
 
@@ -175,11 +179,11 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
       # select fitting result
       if(fit.method=="limits"){
         subfolder = ""
-        if((expId >= 25 && expId <= 30) || expId >= 44){
+        if((expId >= 25 && expId <= 30) || (expId >= 44 && expId <= 50)){
           subfolder=paste(expId,"ts_full_N60_skip1_tmax",sep="_")
           # special settings for second LIMITs round on slices
           if(limits.round==2){
-            if(expId==25 || expId==28 || expId==44 || expId==45 || expId==46 || expId==47 || expId==48 || expId==49 || expId==50){
+            if(expId==25 || expId==28 || expId>=44){
               subfolder=paste(expId,"ts_N60_skip1_tmax100",sep="_")
             }else if(expId==26){
               subfolder=paste(expId,"ts_full_N60_skip1_tmax73",sep="_")
@@ -193,7 +197,11 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
           }
         }else{
           if(fit.type=="all"){
-            subfolder=paste(expId,"ts_N60_skip1_tmax3000",sep="_")
+            if(expId==56){
+              subfolder=paste(expId,"ts_N60_skip1_tmax600",sep="_")
+            }else{
+              subfolder=paste(expId,"ts_N60_skip1_tmax3000",sep="_")
+            }
           }else if(fit.type=="first"){
             # subfolder ID_ts_transcient_N60_skip_1_tmax100 is the first 100 time points
             subfolder=paste(expId,"ts_transcient_N60_skip1_tmax100",sep="_")
@@ -205,21 +213,27 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
         expId.subfolder.corrfile=paste(expId.subfolder, paste(expId, "timeseries_corr.txt", sep="_"), sep="/")
 
         # format corrfile:
-        # the first line labels the columns (number of species)
+        # the first line labels the columns (number of species in ascending order)
         # the second the auto-correlation 1 step ahead
-        # the 3rd, the auto-correlaion 2 steps ahead
-        # the 4th, the auto-correlaion 3 steps ahead
-        # the 5th, the auto-correlaion 4 steps ahead
+        # the 3rd, the auto-correlation 2 steps ahead
+        # the 4th, the auto-correlation 3 steps ahead
+        # the 5th, the auto-correlation 4 steps ahead
         # the 6th, the auto-correlation 5 steps ahead
-        # the 7th, the correlation 1 step ahead,
-        # ...
-        # the 11th, the correlation 5 steps ahead
+        # the 7th, the cross-correlation 1 step ahead
+        # the 8th, the cross-correlation 2 steps ahead
+        # the 9th, the cross-correlation 3 steps ahead
+        # the 10th, the cross-correlation 4 steps ahead
+        # the 11th, the cross-correlation 5 steps ahead
+        # Step ahead in cross-correlation: each time point of the predicted time series
+        # was obtained from the preceding time point in the observed time series, but predicted
+        # and observed time series are not shifted when computing their correlation
         corrs=read.table(file=expId.subfolder.corrfile,header=FALSE)
         corrs=as.matrix(corrs)
         specnum=as.numeric(corrs[1,])
         autocorr1=as.numeric(corrs[2,])
         #print(specnum)
         crosscorr1=as.numeric(corrs[7,])
+        crosscorr1All=crosscorr1[length(crosscorr1)]
         expId.subfolder.Aestfile=paste(expId.subfolder, paste(expId, "timeseries_Best.txt", sep="_"), sep="/")
         Aest=read.table(file=expId.subfolder.Aestfile,header=FALSE)
         Aest=as.matrix(Aest)
@@ -250,10 +264,12 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
           specnum=limitsQualOut$taxonnum
           print(limitsQualOut$meancrosscor)
           crosscorr1=limitsQualOut$meancrosscor
+          crosscorr1All=crosscorr1[length(crosscorr1)]
           autocorr1=limitsQualOut$meanautocor1
         }else{
           specnum=NA
           crosscorr1=NA
+          crosscorr1All=NA
         }
       }
 
@@ -295,11 +311,13 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
         limitsqualAcorr=c(limitsqualAcorr,Acorr)
       }
       limitsqualmaxcorr=c(limitsqualmaxcorr,max(crosscorr1,na.rm=TRUE))
+      limitsqualcrosscorAll=c(limitsqualcrosscorAll,crosscorr1All)
       limitsqualslope=c(limitsqualslope,linregslope)
       limitsqualdeltaAest=c(limitsqualdeltaAest,deltaAest)
       limitsqualautocorslope=c(limitsqualautocorslope, linregautoslope)
     }else{
       # treat gaps
+      limitsqualcrosscorAll=c(limitsqualcrosscorAll,crosscorr1All)
       limitsqualmaxcorr=c(limitsqualmaxcorr,NA)
       limitsqualslope=c(limitsqualslope,NA)
       limitsqualdeltaAest=c(limitsqualdeltaAest,NA)
@@ -309,7 +327,7 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
   }
 
   # assemble table
-  resulttable=list(limitsqualslope, limitsqualautocorslope, limitsqualmaxcorr, limitsqualdeltaAest, limitsqualAcorr)
-  names(resulttable)=c("slope","autoslope","maxcorr","deltaAest", "Acorr")
+  resulttable=list(limitsqualslope, limitsqualautocorslope,limitsqualcrosscorAll, limitsqualmaxcorr, limitsqualdeltaAest, limitsqualAcorr)
+  names(resulttable)=c("slope","autoslope","corrAll","maxcorr","deltaAest", "Acorr")
   return(resulttable)
 }

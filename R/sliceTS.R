@@ -7,13 +7,14 @@
 #' generateTS.R (timeseries subfolder containing experiment subfolders).
 #' Sliced time series are stored in the output folder without subfolders.
 #'
-#' @param slices a matrix with rows and 2 columns, where each row codes the time series identifier, the first column the start and the second the end time point, NA means until end of the time series
+#' @param slices a matrix with rows and 2 columns, where each row codes the time series identifier, the first column the start and the second the end time point; NA means until end of the time series
+#' @param slice.def.path path to a slice definition file, which has two columns for the start and end time points, respectively; NA means until end of the time series
 #' @param input.folder location of time series and settings sub folders
 #' @param output.folder folder in which all slices go (no sub-folders)
 #' @param expIds set of experiment identifiers to process
 #' @export
 
-sliceTS<-function(slices, input.folder="", output.folder="", expIds=c()){
+sliceTS<-function(slices=NULL, slice.def.path="", input.folder="", output.folder="", expIds=c()){
   if(input.folder != ""){
     if(!file.exists(input.folder)){
       stop(paste("The input folder",input.folder,"does not exist!"))
@@ -32,6 +33,20 @@ sliceTS<-function(slices, input.folder="", output.folder="", expIds=c()){
     }
   }else{
     stop("Please provide the output folder!")
+  }
+
+  if(is.null(slices) && slice.def.path==""){
+    stop("Please provide either the matrix with slice definitions or the path to the slice definition file.")
+  }
+
+  if(!is.null(slices) && slice.def.path!=""){
+    warn("Both the matrix with slice definitions and the path to the slice definition file is provided. The latter is ignored.")
+    slice.def.path=""
+  }
+
+  if(slice.def.path!=""){
+    print(paste("Reading slice definitions from",slice.def.path))
+    slices=read.table(slice.def.path,header=FALSE)
   }
 
   for(expId in expIds){

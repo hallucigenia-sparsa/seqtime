@@ -56,7 +56,7 @@ identifyNoisetypes<-function(x, epsilon = 0.2, pval.threshold = 0.05, abund.thre
           }else if(slope < -(2-epsilon) && slope > -(2+epsilon)){
             brown=c(brown,i)
             # black noise:
-          }else if(slope < -3){
+          }else if(slope <= -3){
             black=c(black,i)
           }else{
             nonclass=c(nonclass,i)

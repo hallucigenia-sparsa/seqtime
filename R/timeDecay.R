@@ -51,7 +51,7 @@ timeDecay<-function(x, time=c(1:ncol(x)), dissim="bray", normtaxa=FALSE, logdiss
   if(logtime==TRUE){
     intervals=log(intervals)
   }
-  if(length(dissimValues) > 1){
+  if(length(dissimValues) > 1 && length(which(is.na(dissimValues)))==0 && length(which(is.infinite(dissimValues)))==0){
     linreg = lm(formula = dissimValues~intervals)
     intersection = linreg$coefficients[1]
     slope=linreg$coefficients[2]

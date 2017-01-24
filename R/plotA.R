@@ -8,21 +8,27 @@
 #' Method ggplot requires ggplot2 and reshape2.
 #'
 #' @param A interaction matrix
-#' @param method image or ggplot (ggplot requires ggplot2 and reshape2, image is therefore default)
-#' @param header the title of the plot
-#' @param scale.weight scale interaction strengths between -1 and 1
-#' @param original plot original values
+#' @param method image, ggplot or network (ggplot requires ggplot2 and reshape2, image is therefore default), image and ggplot will plot the matrix, network will plot the network with igraph
+#' @param header the title of the plot (does not apply to method network)
+#' @param scale.weight scale interaction strengths between -1 and 1 (does not apply to method network)
+#' @param original plot original values (does not apply to method network)
+#' @param removeOrphans remove orphan nodes (method network)
+#' @param removeLoops remove loops (method network)
+#' @param returnNetwork return the network for manual adjustment with tkplot (method network)
 #' @examples
 #' plotA(generateA(20,c=0.1))
 #' @export
 
-plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE){
+plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE, removeOrphans=TRUE, removeLoops=FALSE, returnNetwork=FALSE){
   A=as.matrix(A)
-
+  if(method=="network"){
+    scale.weight=FALSE
+    original=TRUE
+  }
   old.par=par()
   # scale values from -1 to 1
-  max=max(A)
-  min=min(A)
+  max=max(A,na.rm=TRUE)
+  min=min(A,na.rm=TRUE)
   print(paste("Largest value:",max))
   print(paste("Smallest value:",min))
   min=abs(min)
@@ -30,13 +36,13 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
     for(i in 1:nrow(A)){
       for(j in 1:ncol(A)){
         val=A[i,j]
-        if(val > 0){
+        if(!is.na(val) && val > 0){
           if(scale.weight == TRUE){
             val=val/max
           }else{
             val=1
           }
-        }else if(val < 0){
+        }else if(!is.na(val) && val < 0){
           if(scale.weight == TRUE){
             val = val/min
           }else{
@@ -67,6 +73,35 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
     # theme(axis.text.x = element_text(angle = 90, hjust = 1))+ coord_fixed() + coord_fixed()
     p1<-ggplot2::ggplot(reshape2::melt(A), aes(Var1,Var2, fill=value)) + geom_raster()+ scale_fill_gradient2(low = "red", mid = "white", high = "green",limits=c(-scale.plot, scale.plot)) + ggtitle(header) + labs(x = "",y="")
     plot(p1)
+  }else if(method=="network"){
+    if(removeOrphans==TRUE){
+      A=modifyA(A,mode="removeorphans")
+    }
+    g=graph.adjacency(A, mode="directed",weighted=TRUE)
+    if(removeLoops==TRUE){
+      g=simplify(g, remove.multiple = F, remove.loops = T)
+    }
+    colors=c()
+    for(weight in E(g)$weight){
+      if(is.na(weight)){
+        colors=append(colors,"gray")
+      }else if(weight<0){
+        colors=append(colors,"red")
+      }else if(weight>0){
+        colors=append(colors,"green")
+      }
+    }
+    # attributes can be placed in plot also, but this has the advantage of easier transfer to tkplot, see http://kateto.net/network-visualization
+    E(g)$arrow.size=0.3
+    E(g)$color=colors
+    V(g)$color="white"
+    V(g)$frame.color="black"
+    V(g)$label.color="black"
+    # http://kateto.net/network-visualization
+    plot(g,layout=layout.fruchterman.reingold(g))
+    if(returnNetwork==TRUE){
+      return(g)
+    }
   }
   par=old.par
 }
