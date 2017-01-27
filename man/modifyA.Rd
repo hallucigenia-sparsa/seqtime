@@ -10,7 +10,7 @@ modifyA(A, mode = "adjustc", strength = "binary", factor = 2,
 \arguments{
 \item{A}{the interaction matrix}
 
-\item{mode}{modification mode, adjustc (adjust connectance to reach target connectance), schur (remove positive eigenvalues using the Schur decomposition), negpercent (set the specified percentage of negative edges), tweak (multiply a randomly chosen positive interaction strength with -1), enforceneg (multiply negative interaction strengths with given factor, but keep diagonal as is)}
+\item{mode}{modification mode, values: adjustc (adjust connectance to reach target connectance), schur (remove positive eigenvalues using the Schur decomposition), negpercent (set the specified percentage of negative edges), tweak (multiply a randomly chosen positive interaction strength with -1), enforceneg (multiply negative interaction strengths with given factor, but keep diagonal as is), removeorphans (remove all species that do not interact with other species), mergeposlinks, mergeneglinks, mergelinks (merge positive/negative/all links of all taxa with the same name)}
 
 \item{strength}{interaction strength, binary (0/1) or uniform (sampled from uniform distribution from minstrength to 1)}
 

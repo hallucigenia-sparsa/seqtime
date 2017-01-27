@@ -23,6 +23,11 @@ a matrix with species abundances as rows and time points as columns
 \description{
 This function just provides a wrapper around the untb function in the untb package.
 }
+\examples{
+N=50
+y=generateAbundances(N, mode=5)
+tsplot(simUntb(N,y=y,tend=1000))
+}
 \seealso{
 \code{\link{ricker}} for the Ricker model and \code{\link{glv}} for the generalized Lotka Volterra model
 }

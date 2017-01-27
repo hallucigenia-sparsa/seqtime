@@ -12,6 +12,7 @@
 #' @param header the title of the plot (does not apply to method network)
 #' @param scale.weight scale interaction strengths between -1 and 1 (does not apply to method network)
 #' @param original plot original values (does not apply to method network)
+#' @param setNAToZero set missing values to zeros
 #' @param removeOrphans remove orphan nodes (method network)
 #' @param removeLoops remove loops (method network)
 #' @param returnNetwork return the network for manual adjustment with tkplot (method network)
@@ -19,8 +20,11 @@
 #' plotA(generateA(20,c=0.1))
 #' @export
 
-plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE, removeOrphans=TRUE, removeLoops=FALSE, returnNetwork=FALSE){
+plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE, setNAToZero=FALSE, removeOrphans=TRUE, removeLoops=FALSE, returnNetwork=FALSE){
   A=as.matrix(A)
+  if(setNAToZero==TRUE){
+    A[is.na(A)]=0
+  }
   if(method=="network"){
     scale.weight=FALSE
     original=TRUE
@@ -97,6 +101,7 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
     V(g)$color="white"
     V(g)$frame.color="black"
     V(g)$label.color="black"
+    # alternative: https://www.ggplot2-exts.org/ggraph.html
     # http://kateto.net/network-visualization
     plot(g,layout=layout.fruchterman.reingold(g))
     if(returnNetwork==TRUE){

@@ -4,10 +4,11 @@
 \alias{limitsQuality}
 \title{Quality scores and plot for estimated interaction matrices}
 \usage{
-limitsQuality(oriTS, A, A.ori = matrix(), type = "ricker", m.vector = c(),
-  e.vector = c(), spec.subset = NA, norm = FALSE, plot = FALSE,
-  predict.stepwise = TRUE, noSchur = FALSE, ignoreExplosion = FALSE,
-  sigma = -1, explosion.bound = 10^8)
+limitsQuality(oriTS, A, A.ori = matrix(), type = "ricker",
+  autocorOnly = FALSE, all = FALSE, m.vector = c(), e.vector = c(),
+  spec.subset = NA, norm = FALSE, plot = FALSE, predict.stepwise = TRUE,
+  noSchur = FALSE, ignoreExplosion = FALSE, sigma = -1,
+  explosion.bound = 10^8)
 }
 \arguments{
 \item{oriTS}{the original time series, with taxa as rows and time points as columns}
@@ -17,6 +18,10 @@ limitsQuality(oriTS, A, A.ori = matrix(), type = "ricker", m.vector = c(),
 \item{A.ori}{the original interaction matrix (optional)}
 
 \item{type}{the model used to predict time series from the interaction matrix, ricker or soc (for soc, predict.stepwise is set to FALSE and noSchur to TRUE)}
+
+\item{autocorOnly}{only compute step-wise autocorrelations (in this case, A is optional)}
+
+\item{all}{compute auto- and cross-correlations for all species, adding one at each step, in the order of their mean abundance}
 
 \item{m.vector}{the immigration rates for soc (optional, if not provided set to the proportions in the first sample)}
 

@@ -4,10 +4,13 @@
 \alias{sliceTS}
 \title{Slice time series}
 \usage{
-sliceTS(slices, input.folder = "", output.folder = "", expIds = c())
+sliceTS(slices = NULL, slice.def.path = "", input.folder = "",
+  output.folder = "", expIds = c())
 }
 \arguments{
-\item{slices}{a matrix with rows and 2 columns, where each row codes the time series identifier, the first column the start and the second the end time point, NA means until end of the time series}
+\item{slices}{a matrix with rows and 2 columns, where each row codes the time series identifier, the first column the start and the second the end time point; NA means until end of the time series}
+
+\item{slice.def.path}{path to a slice definition file, which has two columns for the start and end time points, respectively; NA means until end of the time series}
 
 \item{input.folder}{location of time series and settings sub folders}
 

@@ -59,6 +59,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
 
   # CONSTANTS
   negedge.symm=FALSE # negative interactions are not forced to be symmetric
+  A.max=1 # maximal absolute interaction strength in the interaction matrix
   count=1000 # number of read counts per sample (for generation of Dirichlet-Multinomial time series)
   k=0.5 # parameter for initAbundMode=6 (evenness of geometric series, does not affect any other initAbundMode)
   tstep=1 # step size for glv
@@ -211,7 +212,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
       # try to generate a stable A
       while(stable == FALSE && iter < maxIter){
         iter = iter + 1
-        A=generateA(N=N,type=Atype,c=c,d=d,pep=PEP,clique.size=clique.size,negedge.symm=negedge.symm)
+        A=generateA(N=N,type=Atype,c=c,d=d,pep=PEP,clique.size=clique.size,negedge.symm=negedge.symm, max.strength=A.max)
         stable=testStability(A,method=stability.method, K=K, y=y, sigma=sigma, explosion.bound=explosion.bound)
         if(stable == FALSE){
           if(Atweak == "tweak"){

@@ -9,11 +9,12 @@
 #' @param A the interaction matrix
 #' @param statsType interactions, degree or network
 #' @param plot.degree plot the degree distribution (for statsType network)
-#' @return for degree a matrix with positive, negative and total degree (including self-loops), else a list; for statsType interactions: meanstrength = average interaction strength, varstrength = variance of interaction strength, nbinteractions = total interaction number (excluding diagonal), nbmut = number of mutualisms, nbcomp = number of competitions, nbcom = number of commensalisms, nbam = number of amensalisms, nbexp = number of exploitations, for statsType network: nodenum (node number), arcnum (arc number, including diagonal), mod (fast greedy modularity), cc (average clustering coefficient), avgpathlength (average shortest path length)
+#' @param collapse.degree sum degrees for taxa with the same name (for statsType degree)
+#' @return for degree a matrix with positive, negative and total degree (including self-loops, excluding missing values), else a list; for statsType interactions: meanstrength = average interaction strength, varstrength = variance of interaction strength, nbinteractions = total interaction number (excluding diagonal), nbmut = number of mutualisms, nbcomp = number of competitions, nbcom = number of commensalisms, nbam = number of amensalisms, nbexp = number of exploitations, for statsType network: nodenum (node number), arcnum (arc number, including diagonal), mod (fast greedy modularity), cc (average clustering coefficient), avgpathlength (average shortest path length)
 #' @references Coyte et al., Science 2015: "The ecology of the microbiome: Networks, competition, and stability"
 #' @export
 
-getAStats<-function(A, statsType = "interactions", plot.degree=FALSE){
+getAStats<-function(A, statsType = "interactions", plot.degree=FALSE, collapse.degree=FALSE){
 
   if(statsType == "interactions"){
     # numbers of interaction types, excluding diagonal
@@ -90,15 +91,17 @@ getAStats<-function(A, statsType = "interactions", plot.degree=FALSE){
     A[is.na(A)]=0
     # includes loops
     for(i in 1:nrow(A)){
-      # outgoing plus incoming minus 1, because else diagonal is counted twice
-      degrees[i,1]=(length(which(A[i,]>0))+length(which(A[,i]>0))-1)
-      # can be -1 if there are no arcs at all
-      if(degrees[i,1]==-1){
-        degrees[i,1]=0
+      diagVal=A[i,i]
+      # outgoing plus incoming arcs are counted
+      degrees[i,1]=length(which(A[i,]>0))+length(which(A[,i]>0))
+      if(diagVal>0 && degrees[i,1]!=0){
+        # subtract diagonal, else diagonal is counted twice (for incoming and outgoing arcs)
+        degrees[i,1]=degrees[i,1]-1
       }
-      degrees[i,2]=(length(which(A[i,]<0))+length(which(A[,i]<0))-1)
-      if(degrees[i,2]==-1){
-        degrees[i,2]=0
+      # outgoing plus incoming arcs are counted
+      degrees[i,2]=length(which(A[i,]<0))+length(which(A[,i]<0))
+      if(diagVal < 0 && degrees[i,2]!=0){
+        degrees[i,2]=degrees[i,2]-1
       }
       degrees[i,3]=degrees[i,1]+degrees[i,2]
     }
@@ -109,6 +112,23 @@ getAStats<-function(A, statsType = "interactions", plot.degree=FALSE){
     print(paste(rownames(degrees)[negindex]," has a maximal negative degree of ",max(degrees[,2]),sep=""))
     index=which(degrees[,3]==max(degrees[,3]))
     print(paste(rownames(degrees)[index]," has a maximal total degree of ",max(degrees[,3]),sep=""))
+
+    if(collapse.degree==TRUE){
+      entries=unique(rownames(degrees))
+      collapsed=matrix(nrow=length(entries),ncol=ncol(degrees))
+      entryCounter=1
+      for(entry in entries){
+        print(paste("Processing entry",entry))
+        indices=which(rownames(degrees)==entry)
+        for(colIndex in 1:ncol(degrees)){
+          collapsed[entryCounter,colIndex]=sum(degrees[indices,colIndex])
+        }
+        entryCounter=entryCounter+1
+      }
+      rownames(collapsed)=entries
+      degrees=collapsed
+    }
+    colnames(degrees)=c("pos","neg","total")
     res=degrees
   }
   else if(statsType == "network"){

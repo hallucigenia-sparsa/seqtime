@@ -12,12 +12,13 @@
 #' @param hurstBins binning thresholds for Hurst exponent (three thresholds required for four bins)
 #' @param maxautocorBins binning thresholds for maximal autocorrelation (three thresholds required for four bins)
 #' @param timeDecaySliceDef the time series subset considered to compute the time decay, a vector with the start and the end time point (if the end time point is NA, the entire time series is used)
+#' @param varEvolSliceDef the time series subset considered to compute the evolution of variance, a vector with the start and the end time point (if the end time point is NA, the entire time series is used)
 #' @param returnDistribs return distributions at the final time point (no time series properties are computed, cannot be used together with returnTS)
 #' @param returnTS return the time series (no time series properties are computed, cannot be used together with returnDistribs)
 #' @return a table with experiment parameters (algorithm, connectance, sigma, theta and so on) and time series properties (noise types, slope of Taylor's law etc.); if returnDistrib is true, a list with the abundances at the last time point, if returnTS is true, a list with the time series
 #' @export
 
-compareTS<-function(input.folder="",expIds=c(), sliced.folder="", sliceDef=c(1,NA), epsilon=0.2, norm=FALSE, hurstBins=c(0.5,0.7,0.9), maxautocorBins=c(0.3,0.5,0.8), timeDecaySliceDef=c(1,50), returnDistribs=FALSE, returnTS=FALSE){
+compareTS<-function(input.folder="",expIds=c(), sliced.folder="", sliceDef=c(1,NA), epsilon=0.2, norm=FALSE, hurstBins=c(0.5,0.7,0.9), maxautocorBins=c(0.3,0.5,0.8), timeDecaySliceDef=c(1,50), varEvolSliceDef=c(1,1000), returnDistribs=FALSE, returnTS=FALSE){
 
   # infotheo needed for entropy computation
   infotheoThere=TRUE
@@ -78,6 +79,8 @@ compareTS<-function(input.folder="",expIds=c(), sliced.folder="", sliceDef=c(1,N
   taylorR2=c()
   timedecayslopes=c()
   timedecayR2=c()
+  varevolslopes=c()
+  varevolR2=c()
   percentblack=c()
   percentbrown=c()
   percentpink=c()
@@ -266,6 +269,30 @@ compareTS<-function(input.folder="",expIds=c(), sliced.folder="", sliceDef=c(1,N
       percentwhite=c(percentwhite,onePerc*(length(noisetypesRes$white)/100))
       percentblack=c(percentblack,onePerc*(length(noisetypesRes$black)/100))
 
+      # evolution of variance
+      if(length(varEvolSliceDef)==2){
+        startTD=varEvolSliceDef[1]
+        stopTD=varEvolSliceDef[2]
+        if(is.na(stopTD)){
+          stopTD=ncol(ts)
+        }
+        if(ncol(ts) < startTD){
+          stop(paste("Time series",expId,"has less samples (namely",ncol(ts),") than the given start point for variance evolution!"))
+        }
+        if(ncol(ts) < stopTD){
+          warning(paste("Time series",expId,"has less samples (namely",ncol(ts),") than the given end point for variance evolution! The last time point is used instead!"))
+          stopTD=ncol(ts)
+        }
+        varEvolSlice=ts[,startTD:stopTD]
+        varEvolRes=varEvol(varEvolSlice, plot=FALSE)
+        varevolslopes=c(varevolslopes,varEvolRes$slope)
+        varevolR2=c(varevolR2,varEvolRes$adjR2)
+      }else{
+        warning("The variance evolution slice is not defined correctly!")
+        varevolslopes=c(varevolslopes,NA)
+        varevolR2=c(varevolR2,NA)
+      }
+
       # time decay
       if(length(timeDecaySliceDef)==2){
         startTD=timeDecaySliceDef[1]
@@ -301,8 +328,8 @@ compareTS<-function(input.folder="",expIds=c(), sliced.folder="", sliceDef=c(1,N
 
   # assemble table
   if(returnDistribs == FALSE && returnTS == FALSE){
-    resulttable=list(expIds,samples,algorithms,samplingfreqs,initmode,peps,connectances,sigmas,thetas,migrations,individuals, deathrates,entropy,taylorslopes,taylorR2, percentblack,percentbrown,percentpink,percentwhite,percentmaxautocorbin1,percentmaxautocorbin2,percentmaxautocorbin3,percentmaxautocorbin4, lowHursts, middleHursts, highHursts,veryHighHursts, timedecayslopes, timedecayR2, autoslopes)
-    names(resulttable)=c("id","samplenum","algorithm","interval","initabundmode","pep","c","sigma","theta","m","individuals","deaths","entropy","taylorslope","taylorr2","black","brown","pink","white","maxautocorbin1","maxautocorbin2","maxautocorbin3","maxautocorbin4", "lowhurst","middlehurst","highhurst","veryhighhurst","timedecayslope","timedecayr2","autoslope")
+    resulttable=list(expIds,samples,algorithms,samplingfreqs,initmode,peps,connectances,sigmas,thetas,migrations,individuals, deathrates,entropy,taylorslopes,taylorR2, percentblack,percentbrown,percentpink,percentwhite,percentmaxautocorbin1,percentmaxautocorbin2,percentmaxautocorbin3,percentmaxautocorbin4, lowHursts, middleHursts, highHursts,veryHighHursts, timedecayslopes, timedecayR2, varevolslopes, varevolR2, autoslopes)
+    names(resulttable)=c("id","samplenum","algorithm","interval","initabundmode","pep","c","sigma","theta","m","individuals","deaths","entropy","taylorslope","taylorr2","black","brown","pink","white","maxautocorbin1","maxautocorbin2","maxautocorbin3","maxautocorbin4", "lowhurst","middlehurst","highhurst","veryhighhurst","timedecayslope","timedecayr2","varevolslope","varevolr2","autoslope")
   }else if(returnDistribs == TRUE){
     resulttable=distribList
   }else if(returnTS == TRUE){

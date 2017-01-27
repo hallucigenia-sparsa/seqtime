@@ -17,7 +17,7 @@
 # analyseTSComparison(table,algorithm="dm",property1 = "taylorslope",property2="initabundmode",method="wilcoxon")
 # differences=analyseTSComparison(table, timeseries, method="diff")
 
-analyseTSComparison<-function(data, timeseries, algorithm="ricker", property1="taylorr2", property2="sigma", method="spearman"){
+analyseTSComparison<-function(data, timeseries=NULL, algorithm="ricker", property1="taylorr2", property2="sigma", method="spearman"){
   if(!is.data.frame(data)){
     data=as.data.frame(data)
   }

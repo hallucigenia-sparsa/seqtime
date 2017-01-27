@@ -23,6 +23,7 @@ function HurstK in package FGN.
 }
 \details{
 The function returns an object that groups matrix row indices in different levels.
+Rows that could not be binned are classified in bin na.
 }
 \examples{
 N=10

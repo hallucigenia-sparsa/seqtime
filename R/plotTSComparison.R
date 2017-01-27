@@ -18,6 +18,7 @@
 # useGgplot: use ggplot2 to create the summary plot (summary), requires ggplot2 and reshape2
 # skipIntervals: only plot time series with interval 1, supported for box plot, pca and summary plot
 # skipHighDeathrate: avoid hubbell time series with high death rate (> 100), supported for box plot, pca and summary plot
+# skipGenerators: list of generators to skip, supported for box plot, pca and summary plot
 # addInitAbund: add broken-stick-distributed initial abundances (rankabund)
 # norm: normalize abundances (rankabund)
 # taxonNum: the number of taxa to plot, if NA, all are plotted (rankabund)
@@ -27,11 +28,12 @@
 # hurstBins: the bins used for the Hurst exponent, needed to set labels correctly (boxplot)
 #
 # Examples:
-# plotTSComparison(table,property="black")
+# plotTSComparison(table,property="taylorslope", colorBy="pep", jitter.width = 0.01)
+# plotTSComparison(table,type="summary",colorBy ="algorithm")
 # plotTSComparison(table,distribs, type="rankabund", norm=TRUE, taxonNum=10)
 # plotTSComparison(table,distribs, type="rankabund", generator="dm", colorBy="initabundmode", addInitAbund = TRUE,norm = TRUE, taxonNum=15)
 
-plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", property="pink", summary.type="noise", jitter.width=0.1, dot.size=3, pcs=c(1,2), useGgplot=FALSE, skipIntervals=FALSE, skipHighDeathrate=FALSE, addInitAbund=FALSE, norm=FALSE, taxonNum=NA, generator="all", pch="", maxautocorBins=c(0.3,0.5,0.8), hurstBins=c(0.5,0.7,0.9)){
+plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", property="pink", summary.type="noise", jitter.width=0.1, dot.size=3, pcs=c(1,2), useGgplot=FALSE, skipIntervals=FALSE, skipHighDeathrate=FALSE, skipGenerators=c(), addInitAbund=FALSE, norm=FALSE, taxonNum=NA, generator="all", pch="", maxautocorBins=c(0.3,0.5,0.8), hurstBins=c(0.5,0.7,0.9)){
   if(!is.data.frame(data)){
     data=as.data.frame(data)
   }
@@ -65,13 +67,17 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
     descript=paste("percentage of OTUs in Hurst exponent bin [",hurstBins[2],",",hurstBins[3],")",sep="")
   }else if(property=="veryhighhurst"){
     descript=paste("percentage of OTUs in Hurst exponent bin [",hurstBins[3],",1]",sep="")
+  }else if(property=="varevolslope"){
+    descript="slope of the variance over time"
+  }else if(property=="varevolr2"){
+    descript="R2 of variance over time"
   }else if(property == "Acorr"){
     descript="mean correlation between known and predicted interaction matrix"
   }else if(property=="corrAll"){
     # for all species considered for fit
     descript="mean cross-correlation between known and predicted time series"
   }else if(property=="neutralfull" || property=="neutralslice"){
-    descript="p-property"
+    descript="p-value"
   }else if(property=="maxcorr"){
     # for the sub-set of species giving the maximum cross-correlation
     descript="maximum mean cross-correlation between predicted and observed time series"
@@ -101,8 +107,8 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
     colorByDescript="interaction matrix connectance"
   }
 
-  if(skipIntervals==TRUE || skipHighDeathrate==TRUE){
-    data=filterData(data, type=type, summary.type = summary.type, property = property, colorBy = colorBy, skipIntervals = skipIntervals, skipHighDeathrate = skipHighDeathrate)
+  if(skipIntervals==TRUE || skipHighDeathrate==TRUE || length(skipGenerators)>0){
+    data=filterData(data, type=type, summary.type = summary.type, property = property, colorBy = colorBy, skipIntervals = skipIntervals, skipHighDeathrate = skipHighDeathrate, skipGenerators = skipGenerators)
   }
 
   # check whether ggplot2 is there
@@ -347,7 +353,7 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
 
 # filter out intervals > 1 and/or death rate > 100
 # returns the filtered data frame containing only the data necessary for the selected plot
-filterData<-function(data, type="boxplot", summary.type="noise", property="pink", colorBy="interval", skipIntervals=FALSE, skipHighDeathrate=FALSE){
+filterData<-function(data, type="boxplot", summary.type="noise", property="pink", colorBy="interval", skipIntervals=FALSE, skipHighDeathrate=FALSE, skipGenerators=c()){
   keepIndices=c()
   if(skipIntervals==TRUE){
     keepIndices=which(data$interval==1)
@@ -359,6 +365,13 @@ filterData<-function(data, type="boxplot", summary.type="noise", property="pink"
     deaths[is.na(deaths)]=0
     temp=which(deaths<1000)
     keepIndices=intersect(keepIndices,temp)
+  }
+  if(length(skipGenerators)>0){
+    for(generator in skipGenerators){
+      generators=data$algorithm
+      temp=which(generators!=generator)
+      keepIndices=intersect(keepIndices,temp)
+    }
   }
   if(type=="summary"){
     if(summary.type=="noise"){
