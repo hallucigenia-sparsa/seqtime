@@ -145,3 +145,7 @@ dm.even=simCountMat(N,samples=100,mode=1)
 dm.even.taylor=taylor(dm.even, pseudo=0.0001, col="orange", type="taylor", header="Even Dirichlet-Multinomial")
 ```
 
+
+## Noise simulation
+
+For further examples on simulating noise, see [noise_simulations.md](noise_simulations.md).

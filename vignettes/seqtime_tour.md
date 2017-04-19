@@ -100,7 +100,7 @@ ricker.taylor=taylor(out.ricker, pseudo=0.0001, col="green", type="taylor")
 ```
 
 ```
-## [1] "Adjusted R2: 0.0894328821042024"
+## [1] "Adjusted R2: 0.0966239532658427"
 ```
 
 ![plot of chunk unnamed-chunk-6](figure_seqtime_tour/unnamed-chunk-6-1.png)
@@ -146,7 +146,7 @@ soi.taylor=taylor(out.soi, pseudo=0.0001, col="blue", type="taylor")
 ```
 
 ```
-## [1] "Adjusted R2: 0.944993569638869"
+## [1] "Adjusted R2: 0.936739696709805"
 ```
 
 ![plot of chunk unnamed-chunk-9](figure_seqtime_tour/unnamed-chunk-9-1.png)
@@ -160,11 +160,11 @@ soi.noise=identifyNoisetypes(out.soi,abund.threshold=0)
 
 ```
 ## [1] "Number of taxa below the abundance threshold:  1"
-## [1] "Number of taxa with non-significant power spectrum laws:  12"
-## [1] "Number of taxa with non-classified power spectrum:  25"
+## [1] "Number of taxa with non-significant power spectrum laws:  10"
+## [1] "Number of taxa with non-classified power spectrum:  23"
 ## [1] "Number of taxa with white noise:  0"
-## [1] "Number of taxa with pink noise:  12"
-## [1] "Number of taxa with brown noise:  0"
+## [1] "Number of taxa with pink noise:  13"
+## [1] "Number of taxa with brown noise:  3"
 ## [1] "Number of taxa with black noise:  0"
 ```
 
@@ -192,7 +192,7 @@ hubbell.taylor=taylor(out.hubbell, pseudo=0.0001, col="blue", type="taylor")
 ```
 
 ```
-## [1] "Adjusted R2: 0.801515418306707"
+## [1] "Adjusted R2: 0.930394571102972"
 ```
 
 ![plot of chunk unnamed-chunk-12](figure_seqtime_tour/unnamed-chunk-12-1.png)
@@ -205,12 +205,12 @@ hubbell.noise=identifyNoisetypes(out.hubbell,abund.threshold=0)
 ```
 
 ```
-## [1] "Number of taxa below the abundance threshold:  0"
+## [1] "Number of taxa below the abundance threshold:  1"
 ## [1] "Number of taxa with non-significant power spectrum laws:  0"
-## [1] "Number of taxa with non-classified power spectrum:  31"
+## [1] "Number of taxa with non-classified power spectrum:  25"
 ## [1] "Number of taxa with white noise:  0"
 ## [1] "Number of taxa with pink noise:  0"
-## [1] "Number of taxa with brown noise:  19"
+## [1] "Number of taxa with brown noise:  24"
 ## [1] "Number of taxa with black noise:  0"
 ```
 
@@ -240,7 +240,7 @@ dm.uneven.taylor=taylor(dm.uneven, pseudo=0.0001, col="orange", type="taylor", h
 ```
 
 ```
-## [1] "Adjusted R2: 0.973665097700279"
+## [1] "Adjusted R2: 0.977863431074107"
 ```
 
 ![plot of chunk unnamed-chunk-15](figure_seqtime_tour/unnamed-chunk-15-1.png)
@@ -254,8 +254,8 @@ dm.uneven.noise=identifyNoisetypes(dm.uneven,abund.threshold=0)
 
 ```
 ## [1] "Number of taxa below the abundance threshold:  0"
-## [1] "Number of taxa with non-significant power spectrum laws:  44"
-## [1] "Number of taxa with non-classified power spectrum:  6"
+## [1] "Number of taxa with non-significant power spectrum laws:  46"
+## [1] "Number of taxa with non-classified power spectrum:  4"
 ## [1] "Number of taxa with white noise:  0"
 ## [1] "Number of taxa with pink noise:  0"
 ## [1] "Number of taxa with brown noise:  0"
@@ -277,8 +277,12 @@ dm.even.taylor=taylor(dm.even, pseudo=0.0001, col="orange", type="taylor", heade
 ```
 
 ```
-## [1] "Adjusted R2: 0.28006338913238"
+## [1] "Adjusted R2: 0.13042010400971"
 ```
 
 ![plot of chunk unnamed-chunk-17](figure_seqtime_tour/unnamed-chunk-17-1.png)
 
+
+## Noise simulation
+
+For further examples on simulating noise, see [noise_simulations.md](noise_simulations.md).
