@@ -13,7 +13,7 @@ install_github("hallucigenia-sparsa/seqtime")
 library(seqtime)  
 ```
 
-For usage examples, see the package [vignette](https://github.com/hallucigenia-sparsa/seqtime/seqtime_tour.md).
+For usage examples, see the package [vignette](https://github.com/hallucigenia-sparsa/seqtime/vignettes/seqtime_tour.md).
 
 ### Contribute
 
@@ -25,9 +25,9 @@ Contributions are very welcome:
 
 ### Acknowledgements
 
-**Kindly cite this work** as follows: Karoline Faust, Leo Lahti, and others. The seqtime R package 2017. R package version 1.1.1. URL: [https://github.com/hallucigenia-sparsa/seqtime](https://github.com/hallucigenia-sparsa/seqtime)
+**Kindly cite this work** as follows: Karoline Faust, Leo Lahti, and [others](https://github.com/hallucigenia-sparsa/seqtime/graphs/contributors). The seqtime R package 2017. R package version 1.1.1. URL: [https://github.com/hallucigenia-sparsa/seqtime](https://github.com/hallucigenia-sparsa/seqtime)
 
-We are greatful to all [contributors](https://github.com/hallucigenia-sparsa/seqtime/graphs/contributors).
+
 
 
 
