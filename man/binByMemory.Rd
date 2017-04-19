@@ -33,4 +33,3 @@ memBinned.bars=c(length(memBinned$autocor0.8Inf),length(memBinned$autocor0.50.8)
 names(memBinned.bars)=names(memBinned)
 barplot(memBinned.bars,main="Auto-correlation bins", ylab="Number of rows")
 }
-

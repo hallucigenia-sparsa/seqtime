@@ -2,7 +2,7 @@
 % Please edit documentation in R/tsDiagnostic.R
 \name{tsDiagnostic}
 \alias{tsDiagnostic}
-\title{Diagnostic plots for the outcome of a community simulation.}
+\title{Diagnostic Plot for Community Simulation}
 \usage{
 tsDiagnostic(x, type = "ind", spec.index = 1, spec.meta = NA)
 }
@@ -19,11 +19,13 @@ tsDiagnostic(x, type = "ind", spec.index = 1, spec.meta = NA)
 Diagnostic plots for the outcome of a community simulation.
 }
 \examples{
-N=50
-m.vector=generateAbundances(N,mode=5,probabs=TRUE)
-outH=simHubbell(N=N,I=1000,m.vector=m.vector,tend=1000)
-tsDiagnostic(outH,type="distrib",spec.index = 4,spec.meta = m.vector[4])
-tsDiagnostic(outH,type="spec")
-tsDiagnostic(outH,type="ind")
+\dontrun{
+  # FIXME
+  N=50
+  m.vector=generateAbundances(N,mode=5,probabs=TRUE)
+  outH=simHubbell(N=N,I=1000,m.vector=m.vector,tend=1000)
+  tsDiagnostic(outH,type="distrib",spec.index = 4,spec.meta = m.vector[4])
+  tsDiagnostic(outH,type="spec")
+  tsDiagnostic(outH,type="ind")
 }
-
+}

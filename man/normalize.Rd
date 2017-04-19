@@ -15,4 +15,3 @@ a normalized matrix
 \description{
 Normalize a matrix column-wise by dividing each entry by its corresponding column sum
 }
-

@@ -2,10 +2,10 @@
 % Please edit documentation in R/tsplot.R
 \name{tsplot}
 \alias{tsplot}
-\title{Plot the time series row-wise}
+\title{Time Series Plot}
 \usage{
-tsplot(x, time.given = FALSE, num = nrow(x), legend = FALSE, pch = "+",
-  type = "l", header = "")
+tsplot(x, time.given = FALSE, num = nrow(x), sample.points = c(),
+  legend = FALSE, pch = "+", lty = 1, type = "l", header = "")
 }
 \arguments{
 \item{x}{the matrix of time series}
@@ -14,15 +14,18 @@ tsplot(x, time.given = FALSE, num = nrow(x), legend = FALSE, pch = "+",
 
 \item{num}{the number of rows to plot (starting from the first row)}
 
+\item{sample.points}{sample.points}
+
 \item{legend}{add a legend}
 
 \item{pch}{plot parameter}
+
+\item{lty}{line type}
 
 \item{type}{pot parameter}
 
 \item{header}{header string}
 }
 \description{
-Plot the time series row-wise
+Plot the time series row-wise.
 }
-

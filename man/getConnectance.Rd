@@ -2,24 +2,26 @@
 % Please edit documentation in R/getConnectance.R
 \name{getConnectance}
 \alias{getConnectance}
-\title{Compute connectance of an interaction matrix.}
+\title{Connectance}
 \usage{
 getConnectance(A)
 }
 \arguments{
-\item{A}{interaction matrix}
+\item{A}{an interaction matrix}
 }
 \value{
 the connectance
 }
 \description{
-The connectance is defined as E/N<U+02C6>2-N, where E is the number
+Compute connectance of an interaction matrix.
+}
+\details{
+The connectance is defined as $E/N^2-N$, where $E$ is the number
 of realized arcs (the number of non-zero entries in the interaction matrix)
-and N*(N-1) the number of possible arcs.
+and $N*(N-1)$ the number of possible arcs.
 The diagonal (self-arcs) is excluded.
 }
 \examples{
-A=cbind(c(-1,0,1),c(0,-1,0),c(-1,0,-1))
-getConnectance(A)
+  A <- cbind(c(-1,0,1),c(0,-1,0),c(-1,0,-1))
+  x <- getConnectance(A)
 }
-

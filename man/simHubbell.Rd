@@ -2,7 +2,7 @@
 % Please edit documentation in R/simHubbell.R
 \name{simHubbell}
 \alias{simHubbell}
-\title{Simulate species abundances with the basic Hubbell model.}
+\title{Hubbell Simulation}
 \usage{
 simHubbell(N = 50, M = 500, I = 500, y = rep(1/N, N),
   m.vector = rep(1/M, M), m = 0.02, d = 10, tskip = 0, tend = 100)
@@ -30,18 +30,20 @@ simHubbell(N = 50, M = 500, I = 500, y = rep(1/N, N),
 a matrix with species abundances as rows and time points as columns
 }
 \description{
+Simulate species abundances with the basic Hubbell model.
+}
+\details{
 For a recent review on the Hubbell model, see Rosindell, Hubbell and Etienne, 2011.
 }
 \examples{
-N=50
-M=500
-metapop=generateAbundances(N=M, mode=5, probabs=TRUE)
-tsplot(simHubbell(N=N, M=M,I=3000,d=N, m.vector=metapop, tskip=500, tend=1000))
+  N <- 50
+  M <- 500
+  metapop <- generateAbundances(N = M, mode = 5, probabs = TRUE)
+  x <- tsplot(simHubbell(N = N, M = M, I = 3000, d = N, m.vector = metapop, tskip=500, tend=1000))
 }
 \references{
 Rosindell, Hubbell and Etienne (2011). The Unified Neutral Theory of Biodiversity and Biogeography at Age Ten. Trends in Ecology and Evolution, vol. 26 (7), 340-348.
 }
 \seealso{
-\code{\link{simUntb}} for the neutral model with the untb package
+\code{\link{simUntb}} for the neutral model with the \pkg{untb} package
 }
-

@@ -25,4 +25,3 @@ data(david_stool_lineages)
 sorted=sort(apply(david_stoolA_otus,1,sum),decreasing=TRUE)[1:10]
 getTaxonomy(names(sorted),david_stool_lineages,level="family")
 }
-

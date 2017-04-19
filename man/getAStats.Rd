@@ -29,4 +29,3 @@ are computed using igraph functions.
 \references{
 Coyte et al., Science 2015: "The ecology of the microbiome: Networks, competition, and stability"
 }
-

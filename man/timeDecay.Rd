@@ -38,4 +38,3 @@ data("david_stoolA_otus")
 data=rarefyFilter(david_stoolA_otus,min=10000)[[1]]
 out.decay=timeDecay(data[,1:50], header="Stool subject A")
 }
-

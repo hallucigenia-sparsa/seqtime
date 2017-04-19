@@ -1,16 +1,19 @@
-#' Diagnostic plots for the outcome of a community simulation.
-#'
+#' @title Diagnostic Plot for Community Simulation
+#' @description Diagnostic plots for the outcome of a community simulation.
 #' @param x community time series, rows are species and columns are time points
 #' @param type plot time vs number of species (spec), number of individuals (ind) or the distribution of the species with given index together with its proportion in the metacommunity, if provided
 #' @param spec.index row index of selected species (required for type distrib)
 #' @param spec.meta proportion of selected species in the meta-community (optional)
 #' @examples
-#' N=50
-#' m.vector=generateAbundances(N,mode=5,probabs=TRUE)
-#' outH=simHubbell(N=N,I=1000,m.vector=m.vector,tend=1000)
-#' tsDiagnostic(outH,type="distrib",spec.index = 4,spec.meta = m.vector[4])
-#' tsDiagnostic(outH,type="spec")
-#' tsDiagnostic(outH,type="ind")
+#' \dontrun{
+#'   # FIXME
+#'   N=50
+#'   m.vector=generateAbundances(N,mode=5,probabs=TRUE)
+#'   outH=simHubbell(N=N,I=1000,m.vector=m.vector,tend=1000)
+#'   tsDiagnostic(outH,type="distrib",spec.index = 4,spec.meta = m.vector[4])
+#'   tsDiagnostic(outH,type="spec")
+#'   tsDiagnostic(outH,type="ind")
+#' }
 #' @export
 
 tsDiagnostic<-function(x, type="ind", spec.index=1, spec.meta=NA){

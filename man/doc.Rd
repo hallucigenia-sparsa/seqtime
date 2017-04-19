@@ -42,4 +42,3 @@ out2=doc(ts,B=10) # apply the DOC method to the Hubbell time series
 \references{
 A. Bashan et al. (2016). Universality of human microbial dynamics, Nature 534, 259-262.
 }
-

@@ -1,10 +1,6 @@
-#' Identify noise types in a matrix row-wise
-#'
-#' Row sums need to be above the given abundance threshold and the spectral density
-#' needs to scale significantly with the frequency (p-value below 0.05) in log-log scale.
-#' The periodogram is computed with stats::spectrum.
-#' The function returns a noisetypes object, which groups matrix row indices
-#' by noise type.
+#' @title Identify Noise Types
+#' @description Identify noise types in a matrix row-wise.
+#' @details Row sums need to be above the given abundance threshold and the spectral density needs to scale significantly with the frequency (p-value below 0.05) in log-log scale. The periodogram is computed with \code{\link{spectrum}} from the \pkg{stats} package. The function returns a noisetypes object, which groups matrix row indices by noise type.
 #' @param x a matrix with objects as rows and time points as columns
 #' @param epsilon allowed deviation from the expected slope of 0 for white noise, -1 for pink noise and -2 for brown noise (all rows with a slope below -3 are classified as having black noise)
 #' @param permut permute time points before computing noise types
@@ -12,13 +8,16 @@
 #' @param abund.threshold minimum sum per row
 #' @return S3 noisetypes object
 #' @examples
-#' N=10
-#' ricker.out=ricker(N,generateA(N),K=rep(0.01,N))
-#' noisetypes=identifyNoisetypes(ricker.out)
-#' plot(ricker.out[noisetypes$brown[1],], main=paste("Simulated OTU",noisetypes$brown[1]),ylab="Abundance")
+#' N <- 10
+#' ricker.out <- ricker(N,generateA(N),K=rep(0.01,N))
+#' noisetypes <- identifyNoisetypes(ricker.out)
+#' # Plot the results (FIXME) 
+#' #plot(ricker.out[noisetypes$brown[1],],
+#' #       main = paste("Simulated OTU",noisetypes$brown[1]),
+#' #	ylab = "Abundance")
+#'
 #' @export
-
-identifyNoisetypes<-function(x, epsilon = 0.2, pval.threshold = 0.05, permut=FALSE, abund.threshold=10){
+identifyNoisetypes <- function(x, epsilon = 0.2, pval.threshold = 0.05, permut=FALSE, abund.threshold=10){
   if(epsilon < 0 || epsilon > 0.5){
     stop("Please select a value between 0 and 0.5 for epsilon.")
   }

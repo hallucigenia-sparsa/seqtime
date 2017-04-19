@@ -1,18 +1,32 @@
 Package: seqtime
 Title: Time Series Analysis of Sequencing Data
-Version: 0.1
+Version: 0.1.1
 Authors@R: c(person("Karoline", "Faust", email = "karoline.faust@vib-kuleuven.be", role = c("aut", "cre")),
              person("Franziska", "Bauchinger", role = "aut"),
              person("Didier", "Gonze", role = "aut"),
              person("Sophie", "De Buyl", role = "aut"),
-             person("Leo", "Lahti", role = "aut"),
-             person("Stefanie", "Widder", role = "aut"))
-Description: Provides functions to analyse sequencing data time series and to simulate community dynamics.
+             person("Leo", "Lahti", role = "aut"),	     
+             person("Stefanie", "Widder", role = "aut")
+	     )
+Description: Functions to analyse sequencing data time series and to simulate community dynamics.
 Depends:
     R (>= 3.2.1),
-    vegan, FGN, deSolve, igraph, untb, gtools, Voss, stinepack, MASS, geigen
-Suggests: ggplot2, reshape2
+    deSolve,    
+    FGN,
+    geigen,
+    gtools,    
+    igraph,
+    MASS,    
+    stinepack,    
+    untb,
+    vegan,    
+    Voss
+Suggests:
+    ggplot2,
+    knitr,    
+    reshape2
 License: BSD_2_clause + file LICENSE
 LazyData: true
 URL: https://github.com/hallucigenia-sparsa/seqtime
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
+VignetteBuilder: knitr

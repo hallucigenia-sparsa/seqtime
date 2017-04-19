@@ -2,18 +2,20 @@
 % Please edit documentation in R/tsubsample.R
 \name{tsubsample}
 \alias{tsubsample}
-\title{Subsample a time series}
+\title{Subsample Time Series}
 \usage{
 tsubsample(x, target = NA, interval = NA)
 }
 \arguments{
 \item{x}{a matrix}
 
-\item{num}{the resulting number of time points (defaults to 100)}
+\item{target}{target}
+
+\item{interval}{interval}
 }
 \description{
-Subsample the given time series down to a target time point number using equal intervals
-or select the time points with the given interval.
-Assumes that time points are columns and time points are equidistant.
+Subsample a time series.
 }
-
+\details{
+Subsample the given time series down to a target time point number using equal intervals or select the time points with the given interval. Assumes that time points are columns and time points are equidistant.
+}

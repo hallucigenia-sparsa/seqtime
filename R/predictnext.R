@@ -93,7 +93,7 @@ predictnext<-function(x, y, time=c(1:ncol(x)), group.membership=c(), lag=1, meth
     rownames(data)[1]="y"
     df=data.frame(t(data))
     y=df[["y"]]
-    rf.out=randomForest::randomForest(df$y~.,data=df,importance=TRUE, proximity=TRUE, ntree=ntree)
+    rf.out <- randomForest(df$y~.,data=df,importance=TRUE, proximity=TRUE, ntree=ntree)
     imp=importance(rf.out)
     # http://stats.stackexchange.com/questions/161709/interpreting-var-explained-in-random-forest-output
     # tested with ozone data set
