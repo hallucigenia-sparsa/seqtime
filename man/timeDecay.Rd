@@ -5,7 +5,8 @@
 \title{Do a time-decay plot of a taxon matrix}
 \usage{
 timeDecay(x, time = c(1:ncol(x)), dissim = "bray", normtaxa = FALSE,
-  logdissim = FALSE, header = "", units = "", plot = TRUE)
+  logdissim = FALSE, logtime = FALSE, header = "", units = "",
+  plot = TRUE)
 }
 \arguments{
 \item{x}{a taxon matrix with rows representing taxa and columns samples}
@@ -17,6 +18,8 @@ timeDecay(x, time = c(1:ncol(x)), dissim = "bray", normtaxa = FALSE,
 \item{normtaxa}{divide each taxon vector in x by its sum}
 
 \item{logdissim}{take the logarithm of the dissimilarity before fitting a line}
+
+\item{logtime}{take the logarithm of the time interval before fitting a line}
 
 \item{header}{a string to be appended to the plot title (Time decay)}
 

@@ -9,7 +9,7 @@
 #' @param header header string
 #' @export
 
-tsplot<-function(x, time.given=FALSE, num=nrow(x), legend=FALSE, pch="+", type="l", header=""){
+tsplot<-function(x, time.given=FALSE, num=nrow(x), sample.points=c(), legend=FALSE, pch="+", lty=1, type="l", header=""){
   col.vec = seq(0,1,1/nrow(x))
   my.colors = hsv(col.vec)
   main=paste("Community time series",header)
@@ -20,10 +20,16 @@ tsplot<-function(x, time.given=FALSE, num=nrow(x), legend=FALSE, pch="+", type="
   }else{
     time=c(1:ncol(x))
   }
-  plot(time,as.numeric(x[1,]),ylim = range(x, na.rm = T),xlab = xlab, ylab = ylab, main = main, type = type, col = my.colors[1], pch=pch)
+  plot(time,as.numeric(x[1,]),ylim = range(x, na.rm = T),xlab = xlab, ylab = ylab, main = main, type = type, col = my.colors[1], pch=pch, lty=lty)
   # loop over rows in data
   for(i in 2:num){
-    lines(time,as.numeric(x[i,]), col = my.colors[i], type = type, pch=pch)
+    lines(time,as.numeric(x[i,]), col = my.colors[i], type = type, pch=pch, lty=lty)
+  }
+  # if non-empty, loop over sample points
+  if(length(sample.points)>0){
+    for(i in 1:length(sample.points)){
+        abline(v=sample.points[i],col="gray", lty=lty)
+    }
   }
   if(legend == TRUE){
     legend("right",legend=rownames(x), lty = rep(1,nrow(x)), col = my.colors, merge = TRUE, bg = "white", text.col="black")

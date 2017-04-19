@@ -2,25 +2,27 @@
 % Please edit documentation in R/identifyNoisetypes.R
 \name{identifyNoisetypes}
 \alias{identifyNoisetypes}
-\title{Identify noise types in a count matrix row-wise}
+\title{Identify noise types in a matrix row-wise}
 \usage{
-identifyNoisetypes(x, pval.threshold = 0.05, abund.threshold = 10)
+identifyNoisetypes(x, epsilon = 0.2, pval.threshold = 0.05,
+  abund.threshold = 10)
 }
 \arguments{
-\item{x}{a count matrix}
+\item{x}{a matrix with objects as rows and time points as columns}
+
+\item{epsilon}{allowed deviation from the expected slope of 0 for white noise, -1 for pink noise and -2 for brown noise (all rows with a slope below -3 are classified as having black noise)}
 
 \item{pval.threshold}{significance threshold for periodogram powerlaw goodness of fit}
 
-\item{abund.threshold}{minimum count sum per row}
+\item{abund.threshold}{minimum sum per row}
 }
 \value{
 S3 noisetypes object
 }
 \description{
-Row count sums need to be above the given abundance threshold and
-the spectrum needs to scale significantly with the frequency below p-value 0.05
-in log-log scale.
-The periodogram is computed with spectrum.
+Row sums need to be above the given abundance threshold and the spectral density
+needs to scale significantly with the frequency (p-value below 0.05) in log-log scale.
+The periodogram is computed with stats::spectrum.
 The function returns a noisetypes object, which groups matrix row indices
 by noise type.
 }

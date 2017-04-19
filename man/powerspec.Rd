@@ -16,7 +16,7 @@ powerspec(v, plot.log = FALSE, header = "", col = "blue")
 \item{col}{color used in periodogram if plot.log is true}
 }
 \description{
-The function uses spectrum to compute the periodogram. It also reports the significance
+The function uses stats::spectrum to compute the periodogram. It also reports the significance
 and goodness of fit of the power law.
 }
 

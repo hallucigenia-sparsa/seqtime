@@ -7,7 +7,7 @@
 #' is counted only in one triangle of the interaction matrix.
 #'
 #' @param A the interaction matrix
-#' @param mode modification mode, adjustc (adjust connectance to reach target connectance), schur (remove positive eigenvalues using the Schur decomposition), negpercent (set the specified percentage of negative edges), tweak (multiply a randomly chosen positive interaction strength with -1), enforceneg (multiply negative interaction strengths with given factor, but keep diagonal as is)
+#' @param mode modification mode, values: adjustc (adjust connectance to reach target connectance), schur (remove positive eigenvalues using the Schur decomposition), negpercent (set the specified percentage of negative edges), tweak (multiply a randomly chosen positive interaction strength with -1), enforceneg (multiply negative interaction strengths with given factor, but keep diagonal as is), removeorphans (remove all species that do not interact with other species), mergeposlinks, mergeneglinks, mergelinks (merge positive/negative/all links of all taxa with the same name)
 #' @param strength interaction strength, binary (0/1) or uniform (sampled from uniform distribution from minstrength to 1)
 #' @param factor multiplication factor for enforceneg mode
 #' @param minstrength minimum interaction strength for uniform mode (maximum is 1)
@@ -60,6 +60,47 @@ modifyA<-function(A, mode="adjustc", strength="binary", factor=2, minstrength=0.
       print(paste("Number of edges removed", edgeNumRemoved))
     }
     print(paste("Final connectance", c_obs))
+  }else if(mode=="mergeposlinks" || mode=="mergeneglinks" || mode=="mergelinks"){
+    entries=unique(rownames(A))
+    mergedlinks=matrix(0,nrow=length(entries),ncol=length(entries))
+    rownames(mergedlinks)=entries
+    colnames(mergedlinks)=entries
+    for(i in 1 : nrow(A)){
+      for(j in 1 : ncol(A)){
+        if(!is.na(A[i,j]) && A[i,j]!=0){
+          merge=FALSE
+          xIndex=which(entries==rownames(A)[i])
+          yIndex=which(entries==rownames(A)[j])
+          #print(paste("x index:",xIndex))
+          #print(paste("y index:",yIndex))
+          if(mode=="mergeposlinks" && A[i,j]>0){
+            merge=TRUE
+          }else if(mode=="mergeneglinks" && A[i,j]<0){
+            merge=TRUE
+          }else if(mode=="mergelinks"){
+            merge=TRUE
+          }
+          if(merge==TRUE){
+            mergedlinks[xIndex,yIndex]=mergedlinks[xIndex,yIndex]+1
+          }
+        } # interaction is not zero
+      } # column loop
+    } # row loop
+    A=mergedlinks
+  }else if(mode=="removeorphans"){
+    # since A can be asymmetric, only those species can be removed for which rows and columns are simultaneously zero (except for diagonal)
+    toKeep=c()
+    diagvals=diag(A)
+    diag(A)=0
+    for(i in 1:nrow(A)){
+      rowsum=sum(abs(A[i,]))
+      colsum=sum(abs(A[,i]))
+      if(rowsum != 0 || colsum!=0){
+        toKeep=append(toKeep,i)
+      }
+    }
+    A=A[toKeep,toKeep]
+    diag(A)=diagvals[toKeep]
   }else if(mode == "negpercent"){
     # arc number: number of non-zero entries in the interaction matrix
     num.edge=length(A[A!=0])
@@ -67,9 +108,11 @@ modifyA<-function(A, mode="adjustc", strength="binary", factor=2, minstrength=0.
     # symmetric interactions: we will count negative edges, not arcs
     if(symmetric == TRUE){
       num.perc=round(num.perc/2)
+    }else{
+      num.perc=round(num.perc)
     }
     print(paste("Converting",num.perc,"edges into negative edges",sep=" "))
-    indices=which(A==1,arr.ind=T)
+    indices=which(A>0,arr.ind=T)
     # randomly select indices
     rand=sample(c(1:nrow(indices)))
     xyposAlreadySeen = c()

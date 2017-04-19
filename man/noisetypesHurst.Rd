@@ -11,7 +11,13 @@ noisetypesHurst(x, noisetypes, header = "")
 
 \item{noisetypes}{the noisetypes of the matrix}
 
-\item{header}{header string}
+\item{header}{header string
+N=50
+M=500
+metapop=generateAbundances(N=M, mode=5, probabs=TRUE)
+ts=simHubbell(N=N, M=M,I=1500,d=N, m.vector=metapop, tskip=50, tend=500)
+noisetypes=identifyNoisetypes(ts)
+noisetypesHurst(ts,noisetypes,header="Hurst exponent stratified by noise type")}
 }
 \description{
 Given a matrix and the output of noise type classification, compute the

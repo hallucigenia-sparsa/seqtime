@@ -4,7 +4,7 @@
 \alias{generateAbundances}
 \title{Generate abundance vector}
 \usage{
-generateAbundances(N, count = 1000, mode = 1, k = 0.5)
+generateAbundances(N, count = 1000, mode = 1, k = 0.5, probabs = FALSE)
 }
 \arguments{
 \item{N}{number of species}
@@ -14,6 +14,8 @@ generateAbundances(N, count = 1000, mode = 1, k = 0.5)
 \item{mode}{1=each species receives round(count/N) counts, 2=sampled from uniform distribution with 0 as lower and count as upper bound, 3=dominant species takes 95 percent of the counts and all others split the remaining counts equally, 4=counts are sampled from a Poisson distribution with lambda set to count/N, 5=using bstick function from vegan, 6=using geometric series with parameter k, 7=sample from the exponential distribution and scale with count/N}
 
 \item{k}{evenness parameter of geometric series}
+
+\item{probabs}{if true, return probabilities instead of abundances}
 }
 \value{
 species abundances
@@ -21,6 +23,11 @@ species abundances
 \description{
 Generate a vector of species abundances that can be used
 as initial species abundance vector in models.
+}
+\details{
+Note: The geometric series (a niche apportionment model) is for instance described in
+"Comments about some species abundance patterns: classic, neutral, and niche partitioning models"
+by Ferreira and Petrere-Jr., Braz. J. Biol. 2008
 }
 \examples{
 round(generateAbundances(10,mode=6))

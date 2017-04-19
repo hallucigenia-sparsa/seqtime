@@ -4,17 +4,20 @@
 \alias{getAStats}
 \title{Analyse an interaction matrix}
 \usage{
-getAStats(A, statsType = "interactions", plot.degree = FALSE)
+getAStats(A, statsType = "interactions", plot.degree = FALSE,
+  collapse.degree = FALSE)
 }
 \arguments{
 \item{A}{the interaction matrix}
 
-\item{statsType}{interactions or network}
+\item{statsType}{interactions, degree or network}
 
 \item{plot.degree}{plot the degree distribution (for statsType network)}
+
+\item{collapse.degree}{sum degrees for taxa with the same name (for statsType degree)}
 }
 \value{
-a list, for statsType interactions: meanstrength = average interaction strength, varstrength = variance of interaction strength, nbinteractions = total interaction number,nbmut = number of mutualisms, nbcomp = number of competitions, nbcom = number of commensalisms, nbam = number of amensalisms, nbexp = number of exploitations, for statsType network: nodenum (node number), arcnum (arc number), mod (fast greedy modularity), cc (average clustering coefficient), avgpathlength (average shortest path length)
+for degree a matrix with positive, negative and total degree (including self-loops, excluding missing values), else a list; for statsType interactions: meanstrength = average interaction strength, varstrength = variance of interaction strength, nbinteractions = total interaction number (excluding diagonal), nbmut = number of mutualisms, nbcomp = number of competitions, nbcom = number of commensalisms, nbam = number of amensalisms, nbexp = number of exploitations, for statsType network: nodenum (node number), arcnum (arc number, including diagonal), mod (fast greedy modularity), cc (average clustering coefficient), avgpathlength (average shortest path length)
 }
 \description{
 Count interaction types or compute network properties of interaction matrix.

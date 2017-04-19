@@ -14,11 +14,12 @@ the connectance
 }
 \description{
 The connectance is defined as E/N<U+02C6>2-N, where E is the number
-of realized arcs (the number of non-zero entries in the interaction matrix) 
-and N*(N-1) the number of possible arcs. 
+of realized arcs (the number of non-zero entries in the interaction matrix)
+and N*(N-1) the number of possible arcs.
 The diagonal (self-arcs) is excluded.
 }
 \examples{
-getConnectance(adjustc(generateA(N=10),c=0.5))
+A=cbind(c(-1,0,1),c(0,-1,0),c(-1,0,-1))
+getConnectance(A)
 }
 

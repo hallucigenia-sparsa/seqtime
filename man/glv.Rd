@@ -32,6 +32,6 @@ Generalized Lotka-Volterra model
 tsplot(glv(N=4,generateA(4)),header="gLV",type="l")
 }
 \seealso{
-\code{\link{simuntb}} for the neutral model and \code{\link{ricker}} for the Ricker model
+\code{\link{ricker}} for the Ricker model
 }
 

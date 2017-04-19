@@ -5,18 +5,27 @@
 \title{Plot an interaction matrix.}
 \usage{
 plotA(A, method = "image", header = "", scale.weight = FALSE,
-  original = FALSE)
+  original = FALSE, setNAToZero = FALSE, removeOrphans = TRUE,
+  removeLoops = FALSE, returnNetwork = FALSE)
 }
 \arguments{
 \item{A}{interaction matrix}
 
-\item{method}{image or ggplot (ggplot requires ggplot2 and reshape2, image is therefore default)}
+\item{method}{image, ggplot or network (ggplot requires ggplot2 and reshape2, image is therefore default), image and ggplot will plot the matrix, network will plot the network with igraph}
 
-\item{header}{the title of the plot}
+\item{header}{the title of the plot (does not apply to method network)}
 
-\item{scale.weight}{scale interaction strengths between -1 and 1}
+\item{scale.weight}{scale interaction strengths between -1 and 1 (does not apply to method network)}
 
-\item{original}{plot original values}
+\item{original}{plot original values (does not apply to method network)}
+
+\item{setNAToZero}{set missing values to zeros}
+
+\item{removeOrphans}{remove orphan nodes (method network)}
+
+\item{removeLoops}{remove loops (method network)}
+
+\item{returnNetwork}{return the network for manual adjustment with tkplot (method network)}
 }
 \description{
 By default, the interaction strengths are set to -1 or 1. Negative values

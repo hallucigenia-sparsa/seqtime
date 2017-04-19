@@ -4,19 +4,24 @@
 \alias{generateA}
 \title{Generate an interaction matrix}
 \usage{
-generateA(N = 100, type = "random", c = 0.02, ignore.c = FALSE,
-  d = -0.5, pep = 50, negedge.symm = FALSE, clique.size = 5)
+generateA(N = 100, type = "random", pep = 50, d = -0.5,
+  max.strength = 0.5, c = 0.02, ignore.c = FALSE, negedge.symm = FALSE,
+  clique.size = 5)
 }
 \arguments{
+\item{N}{number of species}
+
 \item{type}{random (sample a uniform distribution), klemm (generate a Klemm-Eguiluz matrix) or empty (zero everywhere, except for diagonal which is set to d)}
+
+\item{pep}{desired positive edge percentage (only for klemm)}
+
+\item{d}{diagonal values (should be negative)}
+
+\item{max.strength}{maximal absolute off-diagonal interaction strength}
 
 \item{c}{desired connectance (interaction probability)}
 
 \item{ignore.c}{do not adjust connectance}
-
-\item{d}{diagonal values (should be negative)}
-
-\item{pep}{desired positive edge percentage (only for klemm)}
 
 \item{negedge.symm}{set symmetric negative interactions (only for klemm)}
 
@@ -24,7 +29,6 @@ generateA(N = 100, type = "random", c = 0.02, ignore.c = FALSE,
 }
 \value{
 the interaction matrix
-TODO: generate interaction strengths from half-normal distribution
 }
 \description{
 Generate an interaction matrix, either randomly from a uniform distribution or

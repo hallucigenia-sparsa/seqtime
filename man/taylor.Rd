@@ -26,9 +26,8 @@ for type taylor, the slope, p-value and adjusted R2 of the Taylor law are return
 \description{
 The power law of mean and variance is also known as Taylor's law.
 Taylor's law: var(Y) = a*mean(Y)^b, in log-scale: log(var(Y)) = log(a)+b*log(mean(Y))
-The slope b of Taylor's law is related to the Hurst exponent by: H=b/2 (Kendal 2013).
 }
 \references{
-Kendal, Journal of Basic and Applied Physics 2013, vol 2, iss 2 pp. 40-49 (eq 32)
+L.R. Taylor (1961). Aggregation, variance and the mean. Nature 189, 732-735.
 }
 

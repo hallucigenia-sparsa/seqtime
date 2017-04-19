@@ -1,6 +1,6 @@
-#' Self-organized critical model
+#' Self-organized instable model
 #'
-#' Generate time series with the self-organized criticality (SOC) model based on Sole et al.
+#' Generate time series with the self-organized instable (SOI) model based on Sole et al. (model B).
 #'
 #' @param N number of species
 #' @param I number of individuals
@@ -9,10 +9,11 @@
 #' @param e.vector species-specific extinction probabilities
 #' @param tend number of time points (i.e. the number of generations)
 #' @return a matrix with species abundances as rows and time points as columns
+#' @seealso \code{\link{ricker}} for the Ricker model
 #' @references Sole et al. 2002 "Self-organized instability in complex ecosystems"
 #' @export
 
-soc<-function(N, I, A, m.vector=runif(N), e.vector=runif(N), tend){
+soi<-function(N, I, A, m.vector=runif(N), e.vector=runif(N), tend){
 
   results<-generate.parameters(N, I, A, m.vector, e.vector)
 

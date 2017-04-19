@@ -14,7 +14,7 @@
 #' @param norm normalize matrix column-wise, such that the entries in each column add to one
 #' @param shuffle.samples shuffle each sample
 #' @return a count matrix or relative abundance matrix
-#' @examples tsplot(simCountMat(taxa=10,samples=50,mode=6,k=0.5),type="l", header="Dirichlet-Multinomial")
+#' @examples tsplot(simCountMat(N=10,samples=50,mode=6,k=0.5),type="l", header="Dirichlet-Multinomial")
 #' @seealso \code{\link{generateAbundances}}
 #' @export
 
@@ -29,7 +29,7 @@ simCountMat<-function(N, pi=c(), samples=100, counts=1000, distrib="dm", maxcoun
     stop("There should be at least one sample.")
   }
   if(length(pi) < N){
-    pi = generateAbundances(taxa=N, mode=mode, k=k, probabs=TRUE)
+    pi = generateAbundances(N=N, mode=mode, k=k, probabs=TRUE)
   }
   mat=matrix(nrow=N,ncol=samples)
   # get taxon probabilities for each column

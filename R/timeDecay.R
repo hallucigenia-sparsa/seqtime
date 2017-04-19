@@ -5,8 +5,9 @@
 #' @param x a taxon matrix with rows representing taxa and columns samples
 #' @param time vector with time steps
 #' @param dissim sample dissimilarity to use, should be supported by vegdist
-#' @param normtaxa divide each taxon vector in x by its sum 
+#' @param normtaxa divide each taxon vector in x by its sum
 #' @param logdissim take the logarithm of the dissimilarity before fitting a line
+#' @param logtime take the logarithm of the time interval before fitting a line
 #' @param header a string to be appended to the plot title (Time decay)
 #' @param units a string to describe the units of the time points (days, weeks etc)
 #' @param plot whether to do the plot
@@ -17,7 +18,7 @@
 #' out.decay=timeDecay(data[,1:50], header="Stool subject A")
 #' @export
 
-timeDecay<-function(x, time=c(1:ncol(x)), dissim="bray", normtaxa=FALSE, logdissim=FALSE, header="", units="", plot=TRUE){
+timeDecay<-function(x, time=c(1:ncol(x)), dissim="bray", normtaxa=FALSE, logdissim=FALSE, logtime=FALSE, header="", units="", plot=TRUE){
   if(length(time) != ncol(x)){
     stop("The time vector has not as many entries as x has columns!")
   }
@@ -47,7 +48,10 @@ timeDecay<-function(x, time=c(1:ncol(x)), dissim="bray", normtaxa=FALSE, logdiss
   if(logdissim==TRUE){
     dissimValues=log(dissimValues)
   }
-  if(length(dissimValues) > 1){
+  if(logtime==TRUE){
+    intervals=log(intervals)
+  }
+  if(length(dissimValues) > 1 && length(which(is.na(dissimValues)))==0 && length(which(is.infinite(dissimValues)))==0){
     linreg = lm(formula = dissimValues~intervals)
     intersection = linreg$coefficients[1]
     slope=linreg$coefficients[2]
@@ -65,6 +69,9 @@ timeDecay<-function(x, time=c(1:ncol(x)), dissim="bray", normtaxa=FALSE, logdiss
       ylab=paste("Log community dissimilarity (",dissim,")", sep="")
     }else{
       ylab=paste("Community dissimilarity (",dissim,")", sep="")
+    }
+    if(logtime == TRUE){
+      xlab="Log(interval)"
     }
     if(plot == TRUE){
       plot(intervals,dissimValues, xlab=xlab, ylab=ylab, main=paste("Time decay",header,"\nP-value",round(pval,3),", R2.adj",round(sum$adj.r.squared,3),", Slope",round(slope,3)))

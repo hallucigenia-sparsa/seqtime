@@ -2,7 +2,7 @@
 % Please edit documentation in R/simDecay.R
 \name{simDecay}
 \alias{simDecay}
-\title{Plot sample-wise taxon dissimilarities against the abundance difference of selected taxa or metadata.}
+\title{Plot sample-wise taxon dissimilarities}
 \usage{
 simDecay(x, taxa = c(), metadata = c(), metadataName = "",
   samplegroups = rep(1, ncol(x)), dissim = "bray", normtaxa = FALSE,
@@ -28,7 +28,7 @@ simDecay(x, taxa = c(), metadata = c(), metadataName = "",
 \item{taxon}{vector of taxon row indices or row names present in x}
 }
 \description{
-Plot sample-wise taxon dissimilarities against the abundance difference of selected taxa or metadata.
+Taxon dissimilarities are plotted sample-wise against the abundance difference of selected taxa or metadata.
 }
 \examples{
 N=50

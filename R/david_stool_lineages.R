@@ -15,4 +15,9 @@
 #' @examples
 #' # list the families with most OTUs in the David stool data
 #' rev(sort(table(david_stool_lineages[,6])))[1:10]
+#' # get the genus of the top abundant OTU in the stool A data set
+#' data(david_stoolA_otus)
+#' sorted=sort(apply(david_stoolA_otus,1,sum),index.return=TRUE, decreasing=TRUE)
+#' index=which(david_stool_lineages[,1]==rownames(david_stoolA_otus)[sorted$ix[1]])
+#' david_stool_lineages[index,7]
 "david_stool_lineages"
