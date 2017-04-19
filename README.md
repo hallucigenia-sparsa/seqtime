@@ -13,7 +13,7 @@ install_github("hallucigenia-sparsa/seqtime")
 library(seqtime)  
 ```
 
-For usage examples, see the package [vignette](https://github.com/hallucigenia-sparsa/seqtime/vignettes/seqtime_tour.md).
+For usage examples, see the package [vignette](vignettes/seqtime_tour.md).
 
 ### Contribute
 
