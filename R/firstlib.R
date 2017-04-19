@@ -1,16 +1,19 @@
+#' @importFrom FGN HurstK
 #' @importFrom graphics boxplot
+#' @importFrom gtools rdirichlet
 #' @importFrom randomForest randomForest
 #' @importFrom sde GBM
-#' @import ggplot2
-#' @import infotheo
-#' @import reshape2
-#' @import FGN
-#' @import MASS
-#' @import Voss
+#' @importFrom vegan rrarefy
+#' @importFrom vegan bstick
 #' @import deSolve
 #' @import geigen
-#' @import gtools
+#' @import ggplot2
 #' @import igraph
+#' @import infotheo
+#' @import MASS
+#' @import reshape2
 #' @import stinepack
 #' @import untb
-#' @import vegan
+#' @import Voss
+
+
