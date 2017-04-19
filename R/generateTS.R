@@ -12,7 +12,7 @@
 #' stored in settings. The idea is that the time
 #' series can be re-created from the information
 #' stored in the settings folder (though not
-#' exactly, since the SOC, Ricker and neutral models have random components).
+#' exactly, since the SOI, Ricker and neutral models have random components).
 #' Furthermore, a plot of the time series and (if required by the model) the interaction
 #' matrix is stored in settings, for control. Properties of the interaction matrix
 #' are also stored there.
@@ -27,20 +27,20 @@
 #' The local community is initialized with even abundances.
 #'
 #' @param N species number (for hubbell, refers to the species number in the metacommunity)
-#' @param I individual number (only for SOC and hubbell)
+#' @param I individual number (only for SOI and hubbell)
 #' @param tend the number of time points to generate
 #' @param initAbundMode the mode in which initial abundances are generated (described in function generateAbundances)
-#' @param c connectivity of interaction matrix (only for SOC, ricker and gLV)
-#' @param clique.size parameter for interaction matrix generation (only for SOC, ricker and glv and Atype mode klemm)
+#' @param c connectivity of interaction matrix (only for SOI, ricker and gLV)
+#' @param clique.size parameter for interaction matrix generation (only for SOI, ricker and glv and Atype mode klemm)
 #' @param sigma noise term (only for ricker)
 #' @param theta Dirichlet-Multinomial overdispersion parameter (only for dm)
 #' @param Atype method to generate the interaction matrix (described in function generateA)
 #' @param Atweak tweaking method for instable interaction matrix, either tweak (convert positive into negative arcs until the matrix is stable or one third of the positive arcs have been converted) or schur (apply Schur decomposition, does not guarantee a stable matrix)
 #' @param d diagonal value of the interaction matrix
-#' @param PEP positive edge percentage of interaction matrix (only for SOC, ricker and gLV)
+#' @param PEP positive edge percentage of interaction matrix (only for SOI, ricker and gLV)
 #' @param m immigration rate (only for hubbell)
 #' @param deathrate number of individuals that are replaced at each time step (only for hubbell)
-#' @param algorithm how time series should be generated (can be hubbell, soc, ricker, glv, dm, davida or davidb)
+#' @param algorithm how time series should be generated (can be hubbell, soi, ricker, glv, dm, davida or davidb)
 #' @param interval sampling frequency (if 1, each sample is taken, if 2, every second sample is taken etc.)
 #' @param output.folder path to result folder, if specified, input parameter and time series are exported to the output folder
 #' @param output.expId the identifier of the time series generation experiment
@@ -48,14 +48,18 @@
 #' @param input.expId the identifier of a previous experiment whose results will be read
 #' @param read.A read the interaction matrix from the given previous experiment
 #' @param read.K read the carrying capacities/growth rates from the given previous experiment
-#' @param read.y read the initial abundances/SOC immigration rates from the given previous experiment (for hubbell, initial abundances refer to the metacommunity)
-#' @param read.extinct read the SOC extinction rates from the given previous experiment
+#' @param read.y read the initial abundances/SOI immigration rates from the given previous experiment (for hubbell, initial abundances refer to the metacommunity)
+#' @param read.extinct read the SOI extinction rates from the given previous experiment
 #' @param read.ts read the previously generated time series from the given previous experiment
 #' @param maxIter maximal iteration number for finding a stable interaction matrix
-#' @return list containing the generated interaction matrix, initial abundances (they double as immigration probabilities for soc and metapopulation proportions for hubbell), carrying capacities (they double as growth rates for glv), extinction probabilities, time series and settings
+#' @return list containing the generated interaction matrix, initial abundances (they double as immigration probabilities for soi and metapopulation proportions for hubbell), carrying capacities (they double as growth rates for glv), extinction probabilities, time series and settings
 #' @export
 
 generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size=5, sigma=0.05, theta=0.002, Atype="klemm", Atweak="tweak",d=-1, PEP=30, m=0.02, deathrate=10, algorithm="dm", interval=1, output.folder="", output.expId="", input.folder="", input.expId="", read.A=FALSE, read.y=FALSE, read.K=FALSE, read.extinct=FALSE, read.ts=FALSE, maxIter=10){
+
+  if(algorithm=="soi" || algorithm=="SOI"){
+    algorithm="soc"
+  }
 
   # CONSTANTS
   negedge.symm=FALSE # negative interactions are not forced to be symmetric
@@ -211,6 +215,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
       stable = FALSE
       # try to generate a stable A
       while(stable == FALSE && iter < maxIter){
+        print(paste("Generating A, iter",iter))
         iter = iter + 1
         A=generateA(N=N,type=Atype,c=c,d=d,pep=PEP,clique.size=clique.size,negedge.symm=negedge.symm, max.strength=A.max)
         stable=testStability(A,method=stability.method, K=K, y=y, sigma=sigma, explosion.bound=explosion.bound)
@@ -293,7 +298,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
       ts.out=glv(N=N, A=A, b=K, y=y,tstart=0, tend=tend, tstep=tstep)
     }else if(algorithm == "soc"){
       # initial abundances serve as immigration probabilities
-      ts.out=soc(N=N, I=I, A=A, m.vector=y, e.vector=extinction.probab, tend=tend)
+      ts.out=soi(N=N, I=I, A=A, m.vector=y, e.vector=extinction.probab, tend=tend)
     }else if(algorithm == "hubbell"){
       # after reading, for numeric reasons, may not always sum exactly to one
       y=y/sum(y)

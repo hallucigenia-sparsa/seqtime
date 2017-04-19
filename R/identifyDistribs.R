@@ -62,3 +62,56 @@ identifyDistribs<-function(x){
   print(paste("Not successfully fitted to tested distributions: ",length(distribsummary$none)))
   return(distribsummary)
 }
+
+# Plot histograms of observed and estimated abundances.
+# Abundances are estimated with a random distribution.
+#
+# Note that density estimation with function density does not work
+# well. We also need to manually tune the adjust value
+# (6 was OK for test time series) and the band width (default
+# did not work well, but SJ is too slow for 100x3000 matrices).
+#
+# x: matrix with species as rows and time points as columns
+# distrib: distribution used to estimate abundances, can be pois (Poisson), norm (Gaussian) or negbin (negative binomial)
+# data: a string describing the data type for the plot title
+#
+# Example:
+# fitDistrib(timeseries$exp36, data="SOI 36")
+fitDistrib<-function(x, distrib="pois", data=""){
+  pooled=as.numeric(x)
+  mean=mean(pooled)
+  var=var(pooled)
+  N=length(pooled)
+  distribName=""
+  print(paste("mean:",mean))
+  print(paste("var:",var))
+  print(paste("Distribution:",distrib))
+  if(distrib=="pois"){
+    sim=rpois(N,mean)
+    distribName="Poisson"
+  }else if(distrib=="norm"){
+    sim=rnorm(N,mean=mean,sd=sqrt(var))
+    distribName="Gaussian"
+  }else if(distrib=="negbin"){
+    sim=rpois(N,rgamma(N,mean))
+    distribName="negative Binomial"
+  }
+  col1=rgb(0,1,0,0.5)
+  col2=rgb(1,0,0,0.5)
+  # limits
+  xmax=max(pooled,na.rm=TRUE)
+  xmin=min(pooled,na.rm=TRUE)
+  ymax=max(sim,na.rm=TRUE)
+  ymin=min(sim,na.rm=TRUE)
+  max=max(xmax,ymax)
+  min=min(ymin,xmin)
+  xmaxD=max(hist(pooled,breaks="FD",plot=FALSE)$density)
+  ymaxD=max(hist(sim,breaks="FD",plot=FALSE)$density)
+  maxD=max(xmaxD,ymaxD)
+  maxD=maxD+0.5 # add a margin
+  title=paste("Histogram of observed abundances and \nabundances estimated with ",distribName," for ",data,sep="")
+  hist(pooled,breaks="FD",xlim=c(min,max), ylim=c(0,maxD), prob=TRUE,col=col1, border=col1,xlab="Abundances", main=title)
+  hist(sim,breaks="FD",prob=TRUE,col=col2, border=col2,add=TRUE)
+  legend("right",legend=c("Observed","Estimated"), lty = rep(1,2), col = c(col1,col2), merge = TRUE, bg = "white", text.col="black")
+}
+

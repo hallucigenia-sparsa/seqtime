@@ -10,15 +10,17 @@
 # autoslope: The slope of the mean auto-correlation with lag 1 versus increasing species number, added in decreasing order of abundance
 # corrAll: The mean cross-correlation between predicted and observed time series for all species considered
 # maxcorr: The maximum among the mean cross-correlations between predicted and observed time series for different species sub-sets
-# deltaAest: The range of values predicted for the estimated interaction matrx
-# Acorr: The mean correlation of values in the predicted and the original interaction matrix (requires the input.folder).
+# deltaAest: The range of values predicted for the estimated interaction matrix
+# Acorr: The mean correlation of values in the predicted and the original interaction matrix (requires the input.folder)
 # Note that each point of the predicted time series is obtained from the preceding point of the observed time series using Ricker with the inferred interaction matrix
 #
-# @param fit.folder the folder where fitting results are stored
-# @param input.folder (optional) the folder where input settings for time series generated with function generateTS are stored
+# param fit.folder the folder where fitting results are stored
+# param input.folder (optional) the folder where input settings and time series generated with function generateTS are stored
 # param path.slices location of table that stores slice definitions (format: first column: start, second column: stop, NA: until end of time series, row: experiment identifier), if not provided, fit.method selected gives an error for soc
 # param expIds the experiment identifiers of time series to be considered
-# param dryRun skip time-consuming analyses: only deltaAest and Acorr are computed
+# param norm normalize time series (has only an impact if recomputeQual is TRUE)
+# param sim similarity to use to assess discrepancy between observed and predicted time series (either r or kld, has only an impact if recomputeQual is TRUE)
+# param recomputeQual if FALSE, quality scores involving time series prediction are read in from peviously generated files (limits) or are omitted (soc)
 # param setMissingIdsToNA if experimental identifiers have gaps, fill the gaps with NA values, e.g. c(1,3,4) will be filled to c(1,2,3,4) with missing values for experiment identifier 2
 # param maxId to be used optionally in combination with setMissingIdsToNA (last identifier is not in the identifier set provided)
 # param fit.method the fitting method (limits or soc)
@@ -26,13 +28,16 @@
 # param limits.round the round of LIMITs fitting (changes some folder names)
 # return a table with goodness of fit scores, including slope, autoslope, corrAll, maxcorr, deltaAest and Acorr (Acorr is only computed if the input.folder is provided)
 
-compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(), dryRun=FALSE, setMissingIdsToNA=FALSE, maxId=NA, fit.method="limits", fit.type="all", limits.round=2){
+compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(), norm=TRUE, sim="r", recomputeQual=FALSE, setMissingIdsToNA=FALSE, maxId=NA, fit.method="limits", fit.type="all", limits.round=2){
   if(fit.folder != ""){
     if(!file.exists(fit.folder)){
       stop(paste("The fitting result folder",fit.folder,"does not exist!"))
     }
     if(fit.method=="limits"){
       input.timeseries.folder=paste(fit.folder,"timeseries",sep="/")
+      if(fit.type=="noise"){
+        input.timeseries.folder=paste(fit.folder,"Poisson",sep="/")
+      }
       if(!file.exists(input.timeseries.folder)){
         stop("The fitting result folder does not have a time series subfolder!")
       }
@@ -41,6 +46,14 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
     }
   }else{
     stop("Please provide the fitting result folder!")
+  }
+
+  if(recomputeQual == TRUE && input.folder==""){
+    stop("To recompute the quality, the input folder is needed!")
+  }
+
+  if(fit.method == "soc" && recomputeQual == FALSE && input.folder==""){
+    stop("To compute SOC fitting quality scores without recomputing time series, the input folder is needed for matrix quality computation!")
   }
 
   slices=matrix()
@@ -59,6 +72,11 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
     input.settings.folder=paste(input.folder,"settings",sep="/")
     if(!file.exists(input.settings.folder)){
       stop("The input folder does not have a settings subfolder!")
+    }
+    input.ori.timeseries.folder=paste(input.folder,"timeseries",sep="/")
+    print(paste("Observed time series folder:",input.ori.timeseries.folder))
+    if(!file.exists(input.ori.timeseries.folder)){
+      stop("The input folder does not have a timeseries subfolder with original time series!")
     }
   }
 
@@ -96,6 +114,8 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
     loop = expIds
   }
 
+  print(gaps)
+
   for(expId in loop){
 
     print(paste("Processing identifier",expId))
@@ -111,7 +131,9 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
 
       if(fit.method=="limits"){
         input.timeseries.name=paste(expId,"timeseries",sep="_")
-
+        if(fit.type=="noise"){
+          input.timeseries.name=paste(expId,"pois","timeseries",sep="_")
+        }
       }else{
         internalNumber=2
         if(expId>24){
@@ -150,6 +172,12 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
           stop("The input settings folder does not have a subfolder for the input experiment identifier!")
         }
 
+        input.ori.timeseries.name=paste(expId,"timeseries",sep="_")
+        input.ori.timeseries.expId.folder=paste(input.ori.timeseries.folder,input.ori.timeseries.name,sep="/")
+        if(!file.exists(input.ori.timeseries.expId.folder)){
+          stop("The input timeseries folder with original time series does not have a subfolder for the input experiment identifier!")
+        }
+
         # read settings file
         input.settings.expId.file=paste(expId,"settings.txt",sep="_")
         settings.path=paste(input.settings.expId.folder,input.settings.expId.file,sep="/")
@@ -157,6 +185,13 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
           stop(paste("The settings file",settings.path,"does not exist!"))
         }
         source(settings.path)
+
+        # read time series
+        input.ori.timeseries.expId.file=paste(expId,"timeseries.txt",sep="_")
+        ori.timeseries.path=paste(input.ori.timeseries.expId.folder,input.ori.timeseries.expId.file,sep="/")
+        if(!file.exists(ori.timeseries.path)){
+          stop(paste("The timeseries file",ori.timeseries.path,"does not exist!"))
+        }
 
         # read input matrix
         if(Algorithm == "ricker" || Algorithm == "soc" || Algorithm == "glv"){
@@ -170,7 +205,7 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
           }
           A.name=paste(source.expId,"interactionmatrix.txt",sep="_")
           input.path.A=paste(interactionmatrix.folder,A.name,sep="/")
-          print(paste("Reading interaction matrix from:",input.path.A,sep=" "))
+          print(paste("Reading known interaction matrix from:",input.path.A,sep=" "))
           A=read.table(file=input.path.A,sep="\t",header=FALSE)
           A=as.matrix(A)
         }
@@ -179,65 +214,100 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
       # select fitting result
       if(fit.method=="limits"){
         subfolder = ""
-        if((expId >= 25 && expId <= 30) || (expId >= 44 && expId <= 50)){
-          subfolder=paste(expId,"ts_full_N60_skip1_tmax",sep="_")
-          # special settings for second LIMITs round on slices
-          if(limits.round==2){
-            if(expId==25 || expId==28 || expId>=44){
-              subfolder=paste(expId,"ts_N60_skip1_tmax100",sep="_")
-            }else if(expId==26){
-              subfolder=paste(expId,"ts_full_N60_skip1_tmax73",sep="_")
-            }else if(expId==27){
-              subfolder=paste(expId,"ts_full_N60_skip1_tmax37",sep="_")
-            }else if(expId==29){
-              subfolder=paste(expId,"ts_full_N60_skip1_tmax51",sep="_")
-            }else if(expId==30){
-              subfolder=paste(expId,"ts_full_N60_skip1_tmax26",sep="_")
-            }
+        if(fit.type=="noise"){
+          subfolder=paste(expId,"ts_N_60_skip_1_tmax_3000",sep="_")
+          if(expId==45 || expId==46 || expId==47 || expId==48){
+            subfolder=paste(expId,"ts_N_60_skip_1_tmax_300",sep="_")
+          }
+          if(expId==57){
+            subfolder=paste(expId,"ts_N_60_skip_1_tmax_600",sep="_")
           }
         }else{
-          if(fit.type=="all"){
-            if(expId==56){
-              subfolder=paste(expId,"ts_N60_skip1_tmax600",sep="_")
-            }else{
-              subfolder=paste(expId,"ts_N60_skip1_tmax3000",sep="_")
+          if((expId >= 25 && expId <= 30) || (expId >= 44 && expId <= 50)){
+            subfolder=paste(expId,"ts_full_N60_skip1_tmax",sep="_")
+            # special settings for second LIMITs round on slices
+            if(limits.round==2){
+              if(expId==25 || expId==28 || expId>=44){
+                subfolder=paste(expId,"ts_N60_skip1_tmax100",sep="_")
+              }else if(expId==26){
+                subfolder=paste(expId,"ts_full_N60_skip1_tmax73",sep="_")
+              }else if(expId==27){
+                subfolder=paste(expId,"ts_full_N60_skip1_tmax37",sep="_")
+              }else if(expId==29){
+                subfolder=paste(expId,"ts_full_N60_skip1_tmax51",sep="_")
+              }else if(expId==30){
+                subfolder=paste(expId,"ts_full_N60_skip1_tmax26",sep="_")
+              }
             }
-          }else if(fit.type=="first"){
-            # subfolder ID_ts_transcient_N60_skip_1_tmax100 is the first 100 time points
-            subfolder=paste(expId,"ts_transcient_N60_skip1_tmax100",sep="_")
-          }else if(fit.type=="selected"){
-            subfolder=paste(expId,"ts_N60_skip1_tmax100",sep="_")
+          }else{
+            if(fit.type=="all"){
+              if(expId==56){
+                subfolder=paste(expId,"ts_N60_skip1_tmax600",sep="_")
+              }else{
+                subfolder=paste(expId,"ts_N60_skip1_tmax3000",sep="_")
+              }
+            }else if(fit.type=="first"){
+              # subfolder ID_ts_transcient_N60_skip_1_tmax100 is the first 100 time points
+              subfolder=paste(expId,"ts_transcient_N60_skip1_tmax100",sep="_")
+            }else if(fit.type=="selected"){
+              subfolder=paste(expId,"ts_N60_skip1_tmax100",sep="_")
+            }
           }
         }
         expId.subfolder = paste(input.timeseries.expId.folder,subfolder,sep="/")
         expId.subfolder.corrfile=paste(expId.subfolder, paste(expId, "timeseries_corr.txt", sep="_"), sep="/")
-
-        # format corrfile:
-        # the first line labels the columns (number of species in ascending order)
-        # the second the auto-correlation 1 step ahead
-        # the 3rd, the auto-correlation 2 steps ahead
-        # the 4th, the auto-correlation 3 steps ahead
-        # the 5th, the auto-correlation 4 steps ahead
-        # the 6th, the auto-correlation 5 steps ahead
-        # the 7th, the cross-correlation 1 step ahead
-        # the 8th, the cross-correlation 2 steps ahead
-        # the 9th, the cross-correlation 3 steps ahead
-        # the 10th, the cross-correlation 4 steps ahead
-        # the 11th, the cross-correlation 5 steps ahead
-        # Step ahead in cross-correlation: each time point of the predicted time series
-        # was obtained from the preceding time point in the observed time series, but predicted
-        # and observed time series are not shifted when computing their correlation
-        corrs=read.table(file=expId.subfolder.corrfile,header=FALSE)
-        corrs=as.matrix(corrs)
-        specnum=as.numeric(corrs[1,])
-        autocorr1=as.numeric(corrs[2,])
-        #print(specnum)
-        crosscorr1=as.numeric(corrs[7,])
-        crosscorr1All=crosscorr1[length(crosscorr1)]
+        qualType="ricker"
+        m.vector=c()
+        e.vector=c()
+        predict.stepwise=TRUE
+        expId.subfolder.selectedSpecFile=paste(expId.subfolder,paste(expId,"timeseries_name_species_kept.txt", sep="_"),sep="/")
+        if(fit.type=="noise"){
+          expId.subfolder.selectedSpecFile=paste(expId.subfolder,paste("my_results_name_species_kept.txt"),sep="/")
+          expId.subfolder.corrfile=paste(expId.subfolder, paste("my_results_corr.txt"), sep="/")
+        }
+        selectedSpec=as.matrix(read.table(file=expId.subfolder.selectedSpecFile,header=FALSE))
+        if(recomputeQual==FALSE){
+          # format corrfile:
+          # the first line labels the columns (number of species in ascending order)
+          # the second the auto-correlation 1 step ahead
+          # the 3rd, the auto-correlation 2 steps ahead
+          # the 4th, the auto-correlation 3 steps ahead
+          # the 5th, the auto-correlation 4 steps ahead
+          # the 6th, the auto-correlation 5 steps ahead
+          # the 7th, the cross-correlation 1 step ahead
+          # the 8th, the cross-correlation 2 steps ahead
+          # the 9th, the cross-correlation 3 steps ahead
+          # the 10th, the cross-correlation 4 steps ahead
+          # the 11th, the cross-correlation 5 steps ahead
+          # Step ahead in cross-correlation: each time point of the predicted time series
+          # was obtained from the preceding time point in the observed time series, but predicted
+          # and observed time series are not shifted when computing their correlation
+          corrs=read.table(file=expId.subfolder.corrfile,header=FALSE)
+          corrs=as.matrix(corrs)
+          specnum=as.numeric(corrs[1,])
+          autocorr1=as.numeric(corrs[2,])
+          #print(specnum)
+          crosscorr1=as.numeric(corrs[7,])
+          crosscorr1All=crosscorr1[length(crosscorr1)]
+        }else{
+          oriTS=as.matrix(read.table(file=ori.timeseries.path))
+          if(norm==TRUE){
+            # normalize before discarding taxa
+            oriTS=normalize(oriTS)
+          }
+          # only keep selected species
+          oriTS=oriTS[selectedSpec[,1],]
+          print(paste("Reading original time series from file:",ori.timeseries.path))
+        }
         expId.subfolder.Aestfile=paste(expId.subfolder, paste(expId, "timeseries_Best.txt", sep="_"), sep="/")
+        if(fit.type=="noise"){
+          expId.subfolder.Aestfile=paste(expId.subfolder, paste("my_results_Best.txt"), sep="/")
+        }
+        print(paste("Reading predicted interaction matrix from:",expId.subfolder.Aestfile))
         Aest=read.table(file=expId.subfolder.Aestfile,header=FALSE)
         Aest=as.matrix(Aest)
         print(paste("Number of selected species",nrow(Aest)))
+
       }else{
         # read SOC fitting results
         expId.subfolder.Aestfile=paste(input.timeseries.expId.folder, AestSOCName, sep="/")
@@ -250,6 +320,21 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
         e.vector=as.numeric(e.vector[,2])
         TS.location=paste(input.timeseries.expId.folder, TSSOCName, sep="/")
         oriTS=t(as.matrix(read.table(file=TS.location, header=TRUE)))
+        if(norm==TRUE){
+          oriTS=normalize(oriTS)
+        }
+        qualType="soc"
+        predict.stepwise=FALSE
+        if(recomputeQual==FALSE){
+          specnum=NA
+          crosscorr1=NA
+          crosscorr1All=NA
+        }
+      }
+
+      if(recomputeQual==TRUE && input.folder != ""){
+
+        # select sub-set
         if(fit.type=="selected"){
           start=slices[expId,1]
           end=slices[expId,2]
@@ -259,22 +344,19 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
           oriTS=oriTS[,start:end]
           print(paste("Time series sub-set length:",ncol(oriTS)))
         }
-        if(dryRun==FALSE){
-          limitsQualOut=limitsQuality(oriTS, Aest, norm=FALSE, type="soc", m.vector=m.vector, e.vector=e.vector, plot=FALSE, predict.stepwise=FALSE, noSchur=TRUE)
-          specnum=limitsQualOut$taxonnum
-          print(limitsQualOut$meancrosscor)
-          crosscorr1=limitsQualOut$meancrosscor
-          crosscorr1All=crosscorr1[length(crosscorr1)]
-          autocorr1=limitsQualOut$meanautocor1
-        }else{
-          specnum=NA
-          crosscorr1=NA
-          crosscorr1All=NA
-        }
+
+        # normalizing is done before, because for LIMITS, some taxa are discarded
+        limitsQualOut=limitsQuality(oriTS, Aest, norm=FALSE, sim=sim, type=qualType, m.vector=m.vector, e.vector=e.vector, plot=FALSE, predict.stepwise=predict.stepwise, noSchur=TRUE)
+        specnum=limitsQualOut$taxonnum
+        print("Agreement observed and predicted time series:")
+        print(limitsQualOut$meancrosscor)
+        crosscorr1=limitsQualOut$meancrosscor
+        crosscorr1All=crosscorr1[length(crosscorr1)]
+        autocorr1=limitsQualOut$meanautocor1
       }
 
       # compute quality scores
-      if(dryRun==FALSE){
+      if(fit.method=="limits" || (fit.method=="soc" && recomputeQual==TRUE)){
         if(length(unique(crosscorr1))==1 && is.na(unique(crosscorr1))){
           linregslope=NA
         }else{
@@ -299,8 +381,6 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
         if(Algorithm == "glv" || Algorithm == "soc" || Algorithm == "ricker"){
           if(fit.method=="limits"){
             # get selected sub-set of A
-            expId.subfolder.selectedSpecFile=paste(expId.subfolder,paste(expId,"timeseries_name_species_kept.txt", sep="_"),sep="/")
-            selectedSpec=as.matrix(read.table(file=expId.subfolder.selectedSpecFile,header=FALSE))
             #print(selectedSpec[1:2,])
             A=A[selectedSpec[,1],selectedSpec[,1]]
           }
@@ -317,7 +397,7 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
       limitsqualautocorslope=c(limitsqualautocorslope, linregautoslope)
     }else{
       # treat gaps
-      limitsqualcrosscorAll=c(limitsqualcrosscorAll,crosscorr1All)
+      limitsqualcrosscorAll=c(limitsqualcrosscorAll,NA)
       limitsqualmaxcorr=c(limitsqualmaxcorr,NA)
       limitsqualslope=c(limitsqualslope,NA)
       limitsqualdeltaAest=c(limitsqualdeltaAest,NA)

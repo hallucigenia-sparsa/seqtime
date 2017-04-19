@@ -7,6 +7,7 @@
 #' by noise type.
 #' @param x a matrix with objects as rows and time points as columns
 #' @param epsilon allowed deviation from the expected slope of 0 for white noise, -1 for pink noise and -2 for brown noise (all rows with a slope below -3 are classified as having black noise)
+#' @param permut permute time points before computing noise types
 #' @param pval.threshold significance threshold for periodogram powerlaw goodness of fit
 #' @param abund.threshold minimum sum per row
 #' @return S3 noisetypes object
@@ -17,7 +18,7 @@
 #' plot(ricker.out[noisetypes$brown[1],], main=paste("Simulated OTU",noisetypes$brown[1]),ylab="Abundance")
 #' @export
 
-identifyNoisetypes<-function(x, epsilon = 0.2, pval.threshold = 0.05, abund.threshold=10){
+identifyNoisetypes<-function(x, epsilon = 0.2, pval.threshold = 0.05, permut=FALSE, abund.threshold=10){
   if(epsilon < 0 || epsilon > 0.5){
     stop("Please select a value between 0 and 0.5 for epsilon.")
   }
@@ -29,6 +30,10 @@ identifyNoisetypes<-function(x, epsilon = 0.2, pval.threshold = 0.05, abund.thre
   nonclass=c()
   slopes.nonclass=c()
   nonsig=c()
+  if(permut==TRUE){
+    indices=sample(1:ncol(x))
+    x=x[,indices]
+  }
   # loop over rows of x
   for(i in 1:nrow(x)){
     sum.taxon=sum(x[i,])

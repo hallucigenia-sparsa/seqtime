@@ -108,9 +108,11 @@ modifyA<-function(A, mode="adjustc", strength="binary", factor=2, minstrength=0.
     # symmetric interactions: we will count negative edges, not arcs
     if(symmetric == TRUE){
       num.perc=round(num.perc/2)
+    }else{
+      num.perc=round(num.perc)
     }
     print(paste("Converting",num.perc,"edges into negative edges",sep=" "))
-    indices=which(A==1,arr.ind=T)
+    indices=which(A>0,arr.ind=T)
     # randomly select indices
     rand=sample(c(1:nrow(indices)))
     xyposAlreadySeen = c()

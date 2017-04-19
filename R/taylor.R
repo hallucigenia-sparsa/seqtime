@@ -13,7 +13,7 @@
 #' @references L.R. Taylor (1961). Aggregation, variance and the mean. Nature 189, 732-735.
 #' @export
 
-taylor<-function(x, type="boxplot", pseudo=0, col="black", header="", plot=TRUE){
+taylor<-function(x, type="taylor", pseudo=0, col="black", header="", plot=TRUE){
   pval=NA
   slope=NA
   adjR2=NA
@@ -48,7 +48,7 @@ taylor<-function(x, type="boxplot", pseudo=0, col="black", header="", plot=TRUE)
       }
     } # mean variance end
   } # no box plot
-  res=list(slope,pval,adjR2)
-  names(res)=c("slope","pval","adjR2")
+  res=list(slope,pval,adjR2,logmeans,logvars)
+  names(res)=c("slope","pval","adjR2","logmeans","logvars")
   return(res)
 }

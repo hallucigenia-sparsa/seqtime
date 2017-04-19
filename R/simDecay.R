@@ -3,7 +3,7 @@
 #'  Taxon dissimilarities are plotted sample-wise against the abundance difference of selected taxa or metadata.
 #'
 #' @param x taxon-sample matrix with taxa as rows and samples as columns
-#' @param taxon vector of taxon row indices or row names present in x
+#' @param taxa vector of taxon row indices or row names present in x
 #' @param metadata vector with values in the same order as samples in the taxon matrix
 #' @param metadataName name of the metadata vector (e.g. age)
 #' @param samplegroups supposed to assign an integer to each sample, with integers ranging from 1 to group number. If provided, intra-group dissimilarity dots are colored by sample group
@@ -11,6 +11,7 @@
 #' @param header a string to be appended to the plot title (Dissimilarity change)
 #' @param normtaxa divide each taxon vector in x by its sum
 #' @param logdissim take the logarithm of the dissimilarity before fitting a line
+#' @param intragroupsOnly only take sample pairs within the same group into account for dissimilarity computation
 #'
 #' @examples
 #' N=50
@@ -26,7 +27,7 @@
 #'
 #' @export
 
-simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,ncol(x)), dissim="bray", normtaxa=FALSE, logdissim=FALSE, header=""){
+simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,ncol(x)), dissim="bray", normtaxa=FALSE, logdissim=FALSE, intragroupsOnly=FALSE, header=""){
   if(length(taxa)==0 && length(metadata) == 0){
     stop("Please provide at least the index or the name of one taxon or alternatively provide a metadata vector.")
   }
@@ -92,24 +93,32 @@ simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,
   # plot dissimilarities against abundance difference
   for(index1 in 1:(ncol(x)-1)){
     for(index2 in (index1+1):ncol(x)){
-      if(length(taxa) > 0){
-        difference = sum(abs(abundances[,index2]-abundances[,index1]))
-      }else{
-        difference = abs(abundances[index2]-abundances[index1])
+      proceed=TRUE
+      if(intragroupsOnly==TRUE){
+        if(samplegroups[index1]!=samplegroups[index2]){
+          proceed=FALSE
+        }
       }
-      # symmetric
-      dissimVal = dissimMat[index1,index2]
-      differences=c(differences,difference)
-      dissimValues=c(dissimValues,dissimVal)
-      # color
-      if(samplegroups[index1] == samplegroups[index2]){
-        group=samplegroups[index1]
-        col=hues[group]
-        colorlookup[[paste("group",group)]]=col
-        colors=c(colors,col)
-      }else{
-        colors=c(colors,"grey")
-        #colorlookup[["intergroup"]]="grey"
+      if(proceed==TRUE){
+        if(length(taxa) > 0){
+          difference = sum(abs(abundances[,index2]-abundances[,index1]))
+        }else{
+          difference = abs(abundances[index2]-abundances[index1])
+        }
+        # symmetric
+        dissimVal = dissimMat[index1,index2]
+        differences=c(differences,difference)
+        dissimValues=c(dissimValues,dissimVal)
+        # color
+        if(samplegroups[index1] == samplegroups[index2]){
+          group=samplegroups[index1]
+          col=hues[group]
+          colorlookup[[paste("group",group)]]=col
+          colors=c(colors,col)
+        }else{
+          colors=c(colors,"grey")
+          #colorlookup[["intergroup"]]="grey"
+        }
       }
     } # inner loop
   } # outer loop
@@ -141,6 +150,7 @@ simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,
   }
   plot(differences,dissimValues, xlab=xlab, ylab=ylab, main=paste("Dissimilarity change",header,"\nP-value",round(pval,3),", R2.adj",round(sum$adj.r.squared,3),", Slope",round(slope,3)),col=colors)
   abline(linreg,bty="n",col="red")
+  #lines(seq(0,1,by=0.1),seq(0,1,by=0.1),col="gray")
   if(groupNum > 1){
     legendnames=c()
     legendcolors=c()

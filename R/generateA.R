@@ -6,7 +6,8 @@
 #' @param type random (sample a uniform distribution), klemm (generate a Klemm-Eguiluz matrix) or empty (zero everywhere, except for diagonal which is set to d)
 #' @param pep desired positive edge percentage (only for klemm)
 #' @param d diagonal values (should be negative)
-#' @param max.strength maximal absolute off-diagonal interaction strength
+#' @param min.strength random: minimal off-diagonal interaction strength
+#' @param max.strength random: maximal off-diagonal interaction strength, klemm: maximal absolute off-diagonal interaction strength
 #' @param c desired connectance (interaction probability)
 #' @param ignore.c do not adjust connectance
 #' @param negedge.symm set symmetric negative interactions (only for klemm)
@@ -17,7 +18,7 @@
 #' @references Klemm & Eguiluz, Growing Scale-Free Networks with Small World Behavior \url{http://arxiv.org/pdf/cond-mat/0107607v1.pdf}
 #' @export
 
-generateA<-function(N=100, type="random",pep=50,  d=-0.5, max.strength=0.5, c=0.02, ignore.c=FALSE, negedge.symm=FALSE, clique.size=5){
+generateA<-function(N=100, type="random",pep=50,  d=-0.5, min.strength=-0.5, max.strength=0.5, c=0.02, ignore.c=FALSE, negedge.symm=FALSE, clique.size=5){
   A=matrix(0,nrow=N,ncol=N)      # init species interaction matrix
   if(type=="random"){
     for (i in 1:N){
@@ -25,7 +26,7 @@ generateA<-function(N=100, type="random",pep=50,  d=-0.5, max.strength=0.5, c=0.
         if(i==j){
           A[i,j]=d
         }else{
-          A[i,j] = runif(1,min=-0.5,max=max.strength)
+          A[i,j] = runif(1,min=min.strength,max=max.strength)
         }
       }
     }
@@ -60,12 +61,12 @@ generateA<-function(N=100, type="random",pep=50,  d=-0.5, max.strength=0.5, c=0.
 
     # convert binary interaction strengths (-1/1) into continuous ones using uniform distribution
     # zero would remove the edge, so the minimum strength is small, but non-zero
-    min.strength=0.00001
+    min.klemm.strength=0.00001
     for(i in 1:nrow(A)){
       for(j in 1:nrow(A)){
         # skip diagonal
         if(i != j){
-          A[i,j]=A[i,j]*runif(1,min=min.strength,max=max.strength)
+          A[i,j]=A[i,j]*runif(1,min=min.klemm.strength,max=max.strength)
         }
       }
     }

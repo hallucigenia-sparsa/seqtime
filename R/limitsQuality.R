@@ -23,6 +23,7 @@
 #' @param norm normalize the original time series by dividing each sample by its sum (carried out before filtering species)
 #' @param plot plot the number of species versus the mean correlation of predicted and observed time series and the mean auto-correlation
 #' @param predict.stepwise if TRUE, the predicted time series is computed step by step, else computed with a call to Ricker
+#' @param sim similarity measure to compare predicted and observed time series, either Pearson (r, default) or Kullback-Leibler dissimilarity (kld)
 #' @param noSchur do not remove positive eigenvalues
 #' @param ignoreExplosion ignore the occurrence of an explosion (for step-wise prediction only)
 #' @param sigma noise factor in Ricker
@@ -37,7 +38,7 @@
 #' out=limitsQuality(ts,A=Aest,A.ori=A, plot=TRUE)
 #' @export
 
-limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FALSE, all=FALSE, m.vector=c(), e.vector=c(), spec.subset=NA, norm=FALSE, plot=FALSE, predict.stepwise=TRUE, noSchur=FALSE, ignoreExplosion=FALSE, sigma=-1, explosion.bound=10^8){
+limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FALSE, all=FALSE, m.vector=c(), e.vector=c(), spec.subset=NA, norm=FALSE, plot=FALSE, predict.stepwise=TRUE, sim="r", noSchur=FALSE, ignoreExplosion=FALSE, sigma=-1, explosion.bound=10^8){
   if(ncol(oriTS) < 2){
     stop("Please provide the original time series.")
   }
@@ -45,6 +46,9 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FAL
     if(is.null(A) || ncol(A) < 2){
       stop("Please provide the estimated interaction matrix.")
     }
+  }
+  if(sim!="kld" && sim!="r"){
+    stop("sim should be either r (Pearson) or kld (Kullback-Leibler dissimilarity).")
   }
   if(autocorOnly==TRUE){
     # create a dummy matrix
@@ -122,20 +126,28 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FAL
       # compute cross-correlation of original and step-wise predicted time series
       if(autocorOnly==FALSE){
         if(predict.stepwise == TRUE && type=="ricker"){
-          crossres=getCrossCorOriPredStepwise(subTS,A=Amodifsub,sigma=sigma,explosion.bound = explosion.bound, ignoreExplosion=ignoreExplosion)
+          crossres=getCrossCorOriPredStepwise(subTS,A=Amodifsub,sim=sim,sigma=sigma,explosion.bound = explosion.bound, ignoreExplosion=ignoreExplosion)
         }else{
-          crossres=getCrossOriPredFull(subTS,A=Amodifsub,sigma=sigma,explosion.bound = explosion.bound, type=type, m.vector=m.vector, e.vector=e.vector)
+          crossres=getCrossOriPredFull(subTS,A=Amodifsub,sim=sim,sigma=sigma,explosion.bound = explosion.bound, type=type, m.vector=m.vector, e.vector=e.vector)
         }
         crosscorVec=c(crosscorVec,crossres)
       }else{
         crosscorVec=c(crosscorVec,NA)
       }
       # compute auto-correlations for lag 1 to 5
-      autocorrStep1Vec=c(autocorrStep1Vec, getMeanAutocor(subTS,lag=1))
-      autocorrStep2Vec=c(autocorrStep2Vec, getMeanAutocor(subTS,lag=2))
-      autocorrStep3Vec=c(autocorrStep3Vec, getMeanAutocor(subTS,lag=3))
-      autocorrStep4Vec=c(autocorrStep4Vec, getMeanAutocor(subTS,lag=4))
-      autocorrStep5Vec=c(autocorrStep5Vec, getMeanAutocor(subTS,lag=5))
+      if(sim=="kld"){
+        autocorrStep1Vec=c(autocorrStep1Vec, getMeanAutoKLD(subTS,lag=1))
+        autocorrStep2Vec=c(autocorrStep2Vec, getMeanAutoKLD(subTS,lag=2))
+        autocorrStep3Vec=c(autocorrStep3Vec, getMeanAutoKLD(subTS,lag=3))
+        autocorrStep4Vec=c(autocorrStep4Vec, getMeanAutoKLD(subTS,lag=4))
+        autocorrStep5Vec=c(autocorrStep5Vec, getMeanAutoKLD(subTS,lag=5))
+      }else if(sim=="r"){
+        autocorrStep1Vec=c(autocorrStep1Vec, getMeanAutocor(subTS,lag=1))
+        autocorrStep2Vec=c(autocorrStep2Vec, getMeanAutocor(subTS,lag=2))
+        autocorrStep3Vec=c(autocorrStep3Vec, getMeanAutocor(subTS,lag=3))
+        autocorrStep4Vec=c(autocorrStep4Vec, getMeanAutocor(subTS,lag=4))
+        autocorrStep5Vec=c(autocorrStep5Vec, getMeanAutocor(subTS,lag=5))
+      }
     } # got more than one species
   } # loop over species numbers to consider
 
@@ -209,6 +221,7 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FAL
 #
 # oriTS: original time series, taxa are rows and time points are columns
 # A: estimated interaction matrix
+# sim: similarity to use to assess discrepancy between observed and predicted time series
 # sigma: the noise term
 # explosion.bound: the explosion boundary of Ricker
 # type: ricker or soc model
@@ -216,7 +229,7 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FAL
 # e.vector: the vector of extinction probabilities for SOC (optional)
 #
 # returns the mean cross-correlation of the predicted time series
-getCrossOriPredFull<-function(oriTS, A, sigma=-1, explosion.bound=10^8, type="ricker", m.vector=c(), e.vector=c()){
+getCrossOriPredFull<-function(oriTS, A, sim="r", sigma=-1, explosion.bound=10^8, type="ricker", m.vector=c(), e.vector=c()){
   y=oriTS[,1]
   tend=ncol(oriTS)
   N=nrow(oriTS)
@@ -240,7 +253,11 @@ getCrossOriPredFull<-function(oriTS, A, sigma=-1, explosion.bound=10^8, type="ri
     }
     predTS=soc(N, I, A, m.vector=m.vector, e.vector=e.vector, tend)
   }
-  crossCor<-getMeanCrosscor(oriTS[,2:tend],predTS[,2:tend],lag=0)
+  if(sim=="kld"){
+    crossCor<-getMeanKLD(oriTS[,2:tend],predTS[,2:tend],lag=0)
+  }else if(sim=="r"){
+    crossCor<-getMeanCrosscor(oriTS[,2:tend],predTS[,2:tend],lag=0)
+  }
   return(crossCor)
 }
 
@@ -250,12 +267,13 @@ getCrossOriPredFull<-function(oriTS, A, sigma=-1, explosion.bound=10^8, type="ri
 #
 # oriTS: original time series, taxa are rows and time points are columns
 # A: estimated interaction matrix
+# sim: similarity to use to assess discrepancy between observed and predicted time series
 # lag: the predecing time point to consider (1 = one step before current, 2 = two steps before current etc.)
 # sigma: the noise term
 # explosion.bound the explosion boundary of Ricker
 #
 # returns the mean cross-correlation of the predicted time series
-getCrossCorOriPredStepwise<-function(oriTS,A,lag=1,sigma=-1, explosion.bound=10^8, ignoreExplosion=FALSE){
+getCrossCorOriPredStepwise<-function(oriTS, A, sim="r", lag=1,sigma=-1, explosion.bound=10^8, ignoreExplosion=FALSE){
   tend=ncol(oriTS)
   N=nrow(oriTS)
   # estimate carrying capacity as the mean of the time series
@@ -281,8 +299,114 @@ getCrossCorOriPredStepwise<-function(oriTS,A,lag=1,sigma=-1, explosion.bound=10^
     }
     predTS[,t]=y
   }
-  crossCor<-getMeanCrosscor(oriTS[,2:tend],predTS[,2:tend],lag=0)
+  if(sim=="kld"){
+    crossCor<-getMeanKLD(oriTS[,2:tend],predTS[,2:tend],lag=0)
+  }else if(sim=="r"){
+    crossCor<-getMeanCrosscor(oriTS[,2:tend],predTS[,2:tend],lag=0)
+  }
   return(crossCor)
+}
+
+# Get the mean KL dissimilarity between the
+# time series, with a shift given by lag.
+# Taxa are rows and time points columns.
+getMeanAutoKLD<-function(ts, lag=1){
+  tend=ncol(ts)
+  # correlation between matrices is computed column-wise by default, so transpose
+  return(getMeanKLD(ts[,1:(tend-lag)],ts[,(1+lag):tend]))
+}
+
+# Get the mean KL dissimilarity between the observed and predicted
+# time series, with a shift given by lag.
+# oriTS, predTS: observed and predicted community time series with taxa as rows and time points as columns
+# lag: lag between observed and predicted
+getMeanKLD<-function(oriTS, predTS, lag=0){
+  tend=ncol(oriTS)
+  # compute probabilities
+  probabOri=getProbab(oriTS[,1:(tend-lag)])
+  probabPred=getProbab(predTS[,(1+lag):tend])
+  klds=c()
+  for(i in 1:nrow(oriTS)){
+    kld = get.kld(oriTS[i,],predTS[i,],probab=TRUE)
+    klds=c(klds,kld)
+  }
+  return(mean(klds))
+}
+
+##############################################################################
+# Compute Kullback Leibler dissimilarity (symmetrized divergence) between two vectors.
+#
+# Argument:
+# x = vector with non-negative numbers
+# y = vector with non-negative numbers
+# pseudocount = this value is added to each zero
+# probab = if false, x and y are divided by their sum so that they sum to one
+#
+# Value:
+# Kullbakc Leibler dissimilarity
+#
+# Note:
+# Equation: D(x,y) = SUM(x_i*log(x_i/y_i) + y_i*log(y_i/x_i))
+# taken from "Caution! Compositions! Can constraints on omics data lead analyses astray?"
+# David Lovell et al., Report Number EP10994
+#
+##############################################################################
+get.kld=function(x,y, pseudocount=0.00000001, probab=FALSE){
+  if(length(x) != length(y)){
+    stop("The two vectors should have the same length!")
+  }
+  x[x==0]=pseudocount
+  y[y==0]=pseudocount
+  dis = 0
+  if(probab==FALSE){
+    x = x/sum(x)
+    y = y/sum(y)
+  }
+  for(i in 1:length(x)){
+    if(!is.nan(x[i]) && !is.nan(y[i])){
+      ratioxy = log(x[i]/y[i])
+      ratioyx = log(y[i]/x[i])
+      dis = x[i]*ratioxy+y[i]*ratioyx + dis
+    }
+  }
+  dis
+}
+
+# TS is a matrix with taxa as rows and time points as columns
+# Each row is divided by its sum.
+getProbab<-function(TS){
+  rowSums=apply(TS,1,sum)
+  return(TS/rowSums)
+}
+
+# Compute mean Cameron & Windmeijer R2 across all time series.
+# Cameron & Windmeijer (1997) An R-squared measure of goodness of fit for some common nonlinear regression models.
+# Journal of Econometrics 77, pp. 329-342.
+#
+# oriTS, predTS: observed and predicted community time series with taxa as rows and time points as columns
+# lag: lag between observed and predicted
+getMeanCWR2<-function(oriTS, predTS, lag=0){
+  tend=ncol(oriTS)
+  # compute probabilities
+  probabOri=getProbab(oriTS[,1:(tend-lag)])
+  probabPred=getProbab(predTS[,(1+lag):tend])
+  cwr2s=c()
+  mean=mean(apply(probabOri,1,mean))
+  meanVec=rep(mean,ncol(oriTS))
+  for(i in 1:nrow(oriTS)){
+    cwr2= 1 - (gKL(probabOri[i,], probabPred[i,])/gKL(probabOri[i,], meanVec))
+    cwr2s=c(cwr2s,cwr2)
+  }
+  return(mean(cwr2s))
+}
+
+# Compute generalized Kullback-Leibler divergence for two vectors representing probability distributions.
+# Cameron & Windmeijer (1997) An R-squared measure of goodness of fit for some common nonlinear regression models.
+# Journal of Econometrics 77, pp. 329-342.
+gKL<-function(vec1,vec2){
+  ratios=vec1/vec2
+  # log: by default natural
+  return(2*sum(log(ratios)))
 }
 
 # Get the mean auto-correlation between the
@@ -297,6 +421,15 @@ getMeanCrosscor<-function(oriTS,predTS,lag=1){
   # correlation between matrices is computed column-wise by default, so transpose
   Rcross=cor(t(oriTS[,1:(tend-lag)]),t(predTS[,(1+lag):tend]))
   return(mean(diag(Rcross), na.rm=TRUE))
+}
+
+# Get the mean KL divergence between the
+# time series, with a shift given by lag.
+# Taxa are rows and time points columns.
+getMeanAutoCWR2<-function(ts, lag=1){
+  tend=ncol(ts)
+  # correlation between matrices is computed column-wise by default, so transpose
+  return(getMeanCWR2(ts[,1:(tend-lag)],ts[,(1+lag):tend]))
 }
 
 # Get the mean auto-correlation between the
