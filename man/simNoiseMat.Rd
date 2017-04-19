@@ -46,4 +46,3 @@ taylor(simNoiseMat(samples=300,noisetypes=list(white=0,brown=50,pink=0)),type="t
 # Check generation of pink noise
 identifyNoisetypes(simNoiseMat(samples=500,noisetypes=list(white=0,brown=0,pink=10)))
 }
-

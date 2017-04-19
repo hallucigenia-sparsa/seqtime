@@ -5,7 +5,7 @@
 \title{Identify noise types in a matrix row-wise}
 \usage{
 identifyNoisetypes(x, epsilon = 0.2, pval.threshold = 0.05,
-  abund.threshold = 10)
+  permut = FALSE, abund.threshold = 10)
 }
 \arguments{
 \item{x}{a matrix with objects as rows and time points as columns}
@@ -13,6 +13,8 @@ identifyNoisetypes(x, epsilon = 0.2, pval.threshold = 0.05,
 \item{epsilon}{allowed deviation from the expected slope of 0 for white noise, -1 for pink noise and -2 for brown noise (all rows with a slope below -3 are classified as having black noise)}
 
 \item{pval.threshold}{significance threshold for periodogram powerlaw goodness of fit}
+
+\item{permut}{permute time points before computing noise types}
 
 \item{abund.threshold}{minimum sum per row}
 }
@@ -32,4 +34,3 @@ ricker.out=ricker(N,generateA(N),K=rep(0.01,N))
 noisetypes=identifyNoisetypes(ricker.out)
 plot(ricker.out[noisetypes$brown[1],], main=paste("Simulated OTU",noisetypes$brown[1]),ylab="Abundance")
 }
-

@@ -22,4 +22,3 @@ N=20
 ts=glv(N=N,generateA(N))
 out=varEvol(ts)
 }
-

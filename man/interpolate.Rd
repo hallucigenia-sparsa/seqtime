@@ -35,4 +35,3 @@ sorted=sort(apply(david_stoolA_otus,1,sum),decreasing=TRUE,index.return=TRUE)
 davida.top=david_stoolA_otus[sorted$ix[1:100],]
 tsplot(interpolate(davida.top,time.vector=days))
 }
-

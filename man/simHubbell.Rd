@@ -44,4 +44,3 @@ Rosindell, Hubbell and Etienne (2011). The Unified Neutral Theory of Biodiversit
 \seealso{
 \code{\link{simUntb}} for the neutral model with the untb package
 }
-

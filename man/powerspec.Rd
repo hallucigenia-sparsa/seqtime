@@ -4,19 +4,21 @@
 \alias{powerspec}
 \title{Report slope of periodogram in log-log scale}
 \usage{
-powerspec(v, plot.log = FALSE, header = "", col = "blue")
+powerspec(v, plot = FALSE, header = "", col = "blue")
 }
 \arguments{
 \item{v}{time series vector}
 
-\item{plot.log}{plot the periodogram with the power law in log-scale}
+\item{plot}{plot the periodogram with the power law in log-scale}
 
 \item{header}{header string}
 
-\item{col}{color used in periodogram if plot.log is true}
+\item{col}{color used in periodogram if plot is true}
+}
+\value{
+return the slope, p-value, adjusted R2, log frequencies and log spectra
 }
 \description{
 The function uses stats::spectrum to compute the periodogram. It also reports the significance
 and goodness of fit of the power law.
 }
-

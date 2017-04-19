@@ -12,4 +12,3 @@
 \description{
 Do a barplot of the noise type counts
 }
-

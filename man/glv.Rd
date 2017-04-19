@@ -34,4 +34,3 @@ tsplot(glv(N=4,generateA(4)),header="gLV",type="l")
 \seealso{
 \code{\link{ricker}} for the Ricker model
 }
-

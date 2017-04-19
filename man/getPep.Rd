@@ -19,4 +19,3 @@ Values on the diagonal are ignored.
 A=cbind(c(-1,0,1),c(0,-1,0),c(-1,0,-1))
 getPep(A)
 }
-

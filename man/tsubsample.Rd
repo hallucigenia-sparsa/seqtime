@@ -16,4 +16,3 @@ Subsample the given time series down to a target time point number using equal i
 or select the time points with the given interval.
 Assumes that time points are columns and time points are equidistant.
 }
-

@@ -35,4 +35,3 @@ round(generateAbundances(10,mode=6))
 \seealso{
 \code{\link{simCountMat}}
 }
-

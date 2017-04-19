@@ -4,8 +4,8 @@
 \alias{tsplot}
 \title{Plot the time series row-wise}
 \usage{
-tsplot(x, time.given = FALSE, num = nrow(x), legend = FALSE, pch = "+",
-  type = "l", header = "")
+tsplot(x, time.given = FALSE, num = nrow(x), sample.points = c(),
+  legend = FALSE, pch = "+", lty = 1, type = "l", header = "")
 }
 \arguments{
 \item{x}{the matrix of time series}
@@ -25,4 +25,3 @@ tsplot(x, time.given = FALSE, num = nrow(x), legend = FALSE, pch = "+",
 \description{
 Plot the time series row-wise
 }
-

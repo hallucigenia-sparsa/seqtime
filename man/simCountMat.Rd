@@ -43,4 +43,3 @@ tsplot(simCountMat(N=10,samples=50,mode=6,k=0.5),type="l", header="Dirichlet-Mul
 \seealso{
 \code{\link{generateAbundances}}
 }
-

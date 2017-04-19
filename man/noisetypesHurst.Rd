@@ -25,4 +25,3 @@ Hurst exponent of each matrix row and draw a box plot that plots for each
 noise type the range of Hurst exponents. Hurst exponents are computed with
 function HurstK in package FGN.
 }
-

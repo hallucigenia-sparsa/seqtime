@@ -34,4 +34,3 @@ to competition), else only one triangle will be set to a negative value (corresp
 to parasitism, predation or amensalism). If symmetric is true, the number of interactions
 is counted only in one triangle of the interaction matrix.
 }
-

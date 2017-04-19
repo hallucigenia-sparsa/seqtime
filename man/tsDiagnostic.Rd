@@ -26,4 +26,3 @@ tsDiagnostic(outH,type="distrib",spec.index = 4,spec.meta = m.vector[4])
 tsDiagnostic(outH,type="spec")
 tsDiagnostic(outH,type="ind")
 }
-

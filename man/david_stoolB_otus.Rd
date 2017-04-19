@@ -22,4 +22,3 @@ David et al. (2014) Host lifestyle affects human microbiota on daily timescales 
 \href{http://www.genomebiology.com/2014/15/7/R89}{Genome Biology}
 }
 \keyword{datasets}
-

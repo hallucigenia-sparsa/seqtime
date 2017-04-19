@@ -5,8 +5,8 @@
 \title{Generate an interaction matrix}
 \usage{
 generateA(N = 100, type = "random", pep = 50, d = -0.5,
-  max.strength = 0.5, c = 0.02, ignore.c = FALSE, negedge.symm = FALSE,
-  clique.size = 5)
+  min.strength = -0.5, max.strength = 0.5, c = 0.02, ignore.c = FALSE,
+  negedge.symm = FALSE, clique.size = 5)
 }
 \arguments{
 \item{N}{number of species}
@@ -17,7 +17,9 @@ generateA(N = 100, type = "random", pep = 50, d = -0.5,
 
 \item{d}{diagonal values (should be negative)}
 
-\item{max.strength}{maximal absolute off-diagonal interaction strength}
+\item{min.strength}{random: minimal off-diagonal interaction strength}
+
+\item{max.strength}{random: maximal off-diagonal interaction strength, klemm: maximal absolute off-diagonal interaction strength}
 
 \item{c}{desired connectance (interaction probability)}
 
@@ -40,4 +42,3 @@ klemm=generateA(N=10,type="klemm",c=0.5)
 \references{
 Klemm & Eguiluz, Growing Scale-Free Networks with Small World Behavior \url{http://arxiv.org/pdf/cond-mat/0107607v1.pdf}
 }
-

@@ -18,4 +18,3 @@ a list with the rarefied vector or matrix (rar) and the indices of the columns t
 Rarefy a given count vector or matrix column-wise using vegan's rrarefy function.
 If columns have less than the minimum count number, they are discarded.
 }
-
