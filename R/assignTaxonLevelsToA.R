@@ -1,15 +1,15 @@
-# Assign OTU identifiers or higher-level taxon names to an interaction matrix inferred from the David data processed with method generateTS.
-#
-# A: an interaction matrix inferred from the David data processed with method generateTS
-# type: the data set, supported: stoola and stoolb
-# taxon.level: the taxon level to be assigned as row and column names, supported: otu, species, genus, family, order, class, phylum
-# uniqueNames: make names unique by appending a counter if needed
-# higherLevelNames: if given level is not known, assign the highest level that is known
-#
-# Example:
-# stoolA=assignTaxonLevelsToA(stoolA,type="stoola")
-
-assignTaxonLevelsToA<-function(A, type="stoola", taxon.level="genus", uniqueNames=FALSE, higherLevelNames=TRUE){
+#' @title Assign Taxon Levels 
+#' @description Assign OTU identifiers or higher-level taxon names to an interaction matrix inferred from the David data processed with method generateTS.
+#'
+#' @param A an interaction matrix inferred from the David data processed with method generateTS
+#' @param type the data set, supported: stoola and stoolb
+#' @param taxon.level the taxon level to be assigned as row and column names, supported: otu, species, genus, family, order, class, phylum
+#' @param uniqueNames make names unique by appending a counter if needed
+#' @param higherLevelNames if given level is not known, assign the highest level that is known
+#'
+#' @examples
+#' stoolA <- assignTaxonLevelsToA(stoolA,type="stoola")
+assignTaxonLevelsToA <- function(A, type="stoola", taxon.level="genus", uniqueNames=FALSE, higherLevelNames=TRUE){
   david.minsamplesum=10000
   interpolation.method="stineman"
   N=nrow(A)
