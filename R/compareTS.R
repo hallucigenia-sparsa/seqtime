@@ -1,6 +1,7 @@
-#' Compare community time series generated with generateTS
+#' @title Community Time Series Comparison with generateTS
+#' @description Compare community time series generated with generateTS.
 #'
-#' If R package infotheo is installed, the entropy of time series
+#' @details If R package infotheo is installed, the entropy of time series
 #' is computed.
 #'
 #' @param input.folder the folder where results (settings and time series) of function generateTS are stored.
@@ -19,7 +20,7 @@
 #' @return a table with experiment parameters (algorithm, connectance, sigma, theta and so on) and time series properties (noise types, slope of Taylor's law etc.); if returnDistrib is true, a list with the abundances at the last time point, if returnTS is true, a list with the time series
 #' @export
 
-compareTS<-function(input.folder="",expIds=c(), modif.folder="", modif="", sliceDef=c(1,NA), epsilon=0.2, norm=FALSE, hurstBins=c(0.5,0.7,0.9), maxautocorBins=c(0.3,0.5,0.8), timeDecaySliceDef=c(1,50), varEvolSliceDef=c(), returnDistribs=FALSE, returnTS=FALSE){
+compareTS <- function(input.folder="",expIds=c(), modif.folder="", modif="", sliceDef=c(1,NA), epsilon=0.2, norm=FALSE, hurstBins=c(0.5,0.7,0.9), maxautocorBins=c(0.3,0.5,0.8), timeDecaySliceDef=c(1,50), varEvolSliceDef=c(), returnDistribs=FALSE, returnTS=FALSE){
 
   # infotheo needed for entropy computation
   infotheoThere=TRUE

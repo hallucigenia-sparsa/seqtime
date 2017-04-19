@@ -51,7 +51,7 @@ simNoiseMat<-function(samples=100, noisetypes=list(white=2,brown=3,pink=5), brow
         # brown noise:  slope in log-log spectral plot around -2
         noiseMat[counter,]=cumsum(rnorm(samples,mean=mean,sd=sd));
       }else if(brown.type == "gbm"){
-        noiseMat[counter,]=sde::GBM(N=(samples-1),r=r)
+        noiseMat[counter,]=GBM(N=(samples-1),r=r)
       }else{
         stop("Please specify the algorithm for brown noise, either bm or gbm")
       }
