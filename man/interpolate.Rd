@@ -2,7 +2,7 @@
 % Please edit documentation in R/interpolate.R
 \name{interpolate}
 \alias{interpolate}
-\title{Wrapper function to interpolate a time series using different R functions}
+\title{Time Series Interpolation}
 \usage{
 interpolate(x, interval = NA, time.index = NA, time.vector = c(),
   method = "stineman")
@@ -16,22 +16,23 @@ interpolate(x, interval = NA, time.index = NA, time.vector = c(),
 
 \item{time.vector}{the vector holding time points}
 
-\item{interpolation}{method fmm, periodic, natural, hyman or monoH.FC (spline), scaledstineman, stineman or parabola (stinterp)}
+\item{method}{fmm, periodic, natural, hyman or monoH.FC (spline), scaledstineman, stineman or parabola (stinterp)}
 }
 \value{
 interpolated time series
 }
 \description{
-If no interval is provided, the intervals in the time vector are computed
-and the most frequent one is taken as the interval.
-Note that natural, fmm, parabola and periodic can introduce negative values and are
-therefore not recommended for taxon abundance data. The default is stineman.
+Wrapper function to interpolate a time series.
+}
+\details{
+If no interval is provided, the intervals in the time vector are computed and the most frequent one is taken as the interval.
+Note that natural, fmm, parabola and periodic can introduce negative values and are therefore not recommended for taxon abundance data. The default is stineman.
 }
 \examples{
-data("david_stoolA_otus")
-data("david_stoolA_metadata")
-days=david_stoolA_metadata[1,]
-sorted=sort(apply(david_stoolA_otus,1,sum),decreasing=TRUE,index.return=TRUE)
-davida.top=david_stoolA_otus[sorted$ix[1:100],]
-tsplot(interpolate(davida.top,time.vector=days))
+  data("david_stoolA_otus")
+  data("david_stoolA_metadata")
+  days=david_stoolA_metadata[1,]
+  sorted=sort(apply(david_stoolA_otus,1,sum),decreasing=TRUE,index.return=TRUE)
+  davida.top=david_stoolA_otus[sorted$ix[1:100],]
+  tsplot(interpolate(davida.top,time.vector=days))
 }

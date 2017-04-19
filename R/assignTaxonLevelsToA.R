@@ -8,8 +8,11 @@
 #' @param higherLevelNames if given level is not known, assign the highest level that is known
 #'
 #' @examples
-#' stoolA <- assignTaxonLevelsToA(stoolA,type="stoola")
+#'   # TODO: define stoolA in this example
+#'   \dontrun{stoolA <- assignTaxonLevelsToA(stoolA, type = "stoola")}
+#' @export
 assignTaxonLevelsToA <- function(A, type="stoola", taxon.level="genus", uniqueNames=FALSE, higherLevelNames=TRUE){
+
   david.minsamplesum=10000
   interpolation.method="stineman"
   N=nrow(A)

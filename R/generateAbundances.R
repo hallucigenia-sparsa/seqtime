@@ -1,11 +1,7 @@
-#' Generate abundance vector
+#' @title Generate Abundance Vector
+#' @description Generate abundance vector.
 #'
-#' Generate a vector of species abundances that can be used
-#' as initial species abundance vector in models.
-#'
-#' Note: The geometric series (a niche apportionment model) is for instance described in
-#' "Comments about some species abundance patterns: classic, neutral, and niche partitioning models"
-#' by Ferreira and Petrere-Jr., Braz. J. Biol. 2008
+#' @details Generate a vector of species abundances that can be used as initial species abundance vector in models. Note: The geometric series (a niche apportionment model) is for instance described in "Comments about some species abundance patterns: classic, neutral, and niche partitioning models" by Ferreira and Petrere-Jr., Braz. J. Biol. 2008
 #'
 #' @param N number of species
 #' @param count total number of individuals (ignored in mode 2, 4 and 7)
@@ -14,11 +10,10 @@
 #' @param probabs if true, return probabilities instead of abundances
 #' @return species abundances
 #' @examples
-#' round(generateAbundances(10,mode=6))
+#'   x <- round(generateAbundances(10, mode=6))
 #' @seealso \code{\link{simCountMat}}
 #' @export
-
-generateAbundances<-function(N, count=1000, mode=1, k=0.5, probabs=FALSE){
+generateAbundances <- function(N, count=1000, mode=1, k=0.5, probabs=FALSE){
   if(N < 1){
     stop("N should be at least 1.")
   }

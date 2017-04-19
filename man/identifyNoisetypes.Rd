@@ -2,7 +2,7 @@
 % Please edit documentation in R/identifyNoisetypes.R
 \name{identifyNoisetypes}
 \alias{identifyNoisetypes}
-\title{Identify noise types in a matrix row-wise}
+\title{Identify Noise Types}
 \usage{
 identifyNoisetypes(x, epsilon = 0.2, pval.threshold = 0.05,
   permut = FALSE, abund.threshold = 10)
@@ -22,15 +22,18 @@ identifyNoisetypes(x, epsilon = 0.2, pval.threshold = 0.05,
 S3 noisetypes object
 }
 \description{
-Row sums need to be above the given abundance threshold and the spectral density
-needs to scale significantly with the frequency (p-value below 0.05) in log-log scale.
-The periodogram is computed with stats::spectrum.
-The function returns a noisetypes object, which groups matrix row indices
-by noise type.
+Identify noise types in a matrix row-wise.
+}
+\details{
+Row sums need to be above the given abundance threshold and the spectral density needs to scale significantly with the frequency (p-value below 0.05) in log-log scale. The periodogram is computed with \code{\link{spectrum}} from the \pkg{stats} package. The function returns a noisetypes object, which groups matrix row indices by noise type.
 }
 \examples{
-N=10
-ricker.out=ricker(N,generateA(N),K=rep(0.01,N))
-noisetypes=identifyNoisetypes(ricker.out)
-plot(ricker.out[noisetypes$brown[1],], main=paste("Simulated OTU",noisetypes$brown[1]),ylab="Abundance")
+N <- 10
+ricker.out <- ricker(N,generateA(N),K=rep(0.01,N))
+noisetypes <- identifyNoisetypes(ricker.out)
+# Plot the results (FIXME) 
+#plot(ricker.out[noisetypes$brown[1],],
+#       main = paste("Simulated OTU",noisetypes$brown[1]),
+#	ylab = "Abundance")
+
 }

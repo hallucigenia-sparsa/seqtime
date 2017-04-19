@@ -1,7 +1,6 @@
-rep#' Simulate species abundances with the basic Hubbell model.
-#'
-#' For a recent review on the Hubbell model, see Rosindell, Hubbell and Etienne, 2011.
-#'
+#' @title Hubbell Simulation
+#' @description Simulate species abundances with the basic Hubbell model.
+#' @details For a recent review on the Hubbell model, see Rosindell, Hubbell and Etienne, 2011.
 #' @param N species number in the local community
 #' @param M species number in the metacommunity
 #' @param I number of individuals
@@ -13,14 +12,13 @@ rep#' Simulate species abundances with the basic Hubbell model.
 #' @param tend number of time points (i.e. the number of generations)
 #' @return a matrix with species abundances as rows and time points as columns
 #' @references Rosindell, Hubbell and Etienne (2011). The Unified Neutral Theory of Biodiversity and Biogeography at Age Ten. Trends in Ecology and Evolution, vol. 26 (7), 340-348.
-#' @seealso \code{\link{simUntb}} for the neutral model with the untb package
+#' @seealso \code{\link{simUntb}} for the neutral model with the \pkg{untb} package
 #' @examples
-#' N=50
-#' M=500
-#' metapop=generateAbundances(N=M, mode=5, probabs=TRUE)
-#' tsplot(simHubbell(N=N, M=M,I=3000,d=N, m.vector=metapop, tskip=500, tend=1000))
+#'   N <- 50
+#'   M <- 500
+#'   metapop <- generateAbundances(N = M, mode = 5, probabs = TRUE)
+#'   x <- tsplot(simHubbell(N = N, M = M, I = 3000, d = N, m.vector = metapop, tskip=500, tend=1000))
 #' @export
-
 simHubbell<-function(N=50, M=500, I=500, y=rep(1/N,N), m.vector=rep(1/M,M), m=0.02, d=10, tskip=0, tend=100){
   if(sum(m.vector) != 1){
     stop("Species proportions in the metacommunity need to sum to one.")

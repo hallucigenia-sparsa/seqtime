@@ -1,15 +1,13 @@
-#' Compute the positive edge percentage of the interaction matrix
-#'
-#' Values on the diagonal are ignored.
-#'
-#' @param the interaction matrix
+#' @title Positive Edge Percentage
+#' @description Compute the positive edge percentage of an interaction matrix.
+#' @details Values on the diagonal are ignored.
+#' @param A the interaction matrix
 #' @return the positive edge percentage
 #' @examples
-#' A=cbind(c(-1,0,1),c(0,-1,0),c(-1,0,-1))
-#' getPep(A)
+#'   A <- cbind(c(-1,0,1),c(0,-1,0),c(-1,0,-1))
+#'   x <- getPep(A)
 #' @export
-
-getPep<-function(A){
+getPep <- function(A){
   # excluding edges on the diagonal
   diag(A)=0
   num.pos=length(A[A>0])

@@ -1,23 +1,21 @@
-#' Wrapper function to interpolate a time series using different R functions
+#' @title Time Series Interpolation
+#' @description Wrapper function to interpolate a time series.
 #'
-#' If no interval is provided, the intervals in the time vector are computed
-#' and the most frequent one is taken as the interval.
-#' Note that natural, fmm, parabola and periodic can introduce negative values and are
-#' therefore not recommended for taxon abundance data. The default is stineman.
-#'
+#' @details If no interval is provided, the intervals in the time vector are computed and the most frequent one is taken as the interval.
+#' Note that natural, fmm, parabola and periodic can introduce negative values and are therefore not recommended for taxon abundance data. The default is stineman.
 #' @param x the time series matrix, rows are objects and columns are time points
 #' @param interval the target intervals to be present after interpolation
 #' @param time.index the row index holding time points
 #' @param time.vector the vector holding time points
-#' @param interpolation method fmm, periodic, natural, hyman or monoH.FC (spline), scaledstineman, stineman or parabola (stinterp)
+#' @param method fmm, periodic, natural, hyman or monoH.FC (spline), scaledstineman, stineman or parabola (stinterp)
 #' @return interpolated time series
 #' @examples
-#' data("david_stoolA_otus")
-#' data("david_stoolA_metadata")
-#' days=david_stoolA_metadata[1,]
-#' sorted=sort(apply(david_stoolA_otus,1,sum),decreasing=TRUE,index.return=TRUE)
-#' davida.top=david_stoolA_otus[sorted$ix[1:100],]
-#' tsplot(interpolate(davida.top,time.vector=days))
+#'   data("david_stoolA_otus")
+#'   data("david_stoolA_metadata")
+#'   days=david_stoolA_metadata[1,]
+#'   sorted=sort(apply(david_stoolA_otus,1,sum),decreasing=TRUE,index.return=TRUE)
+#'   davida.top=david_stoolA_otus[sorted$ix[1:100],]
+#'   tsplot(interpolate(davida.top,time.vector=days))
 #' @export
 
 interpolate<-function(x, interval=NA, time.index=NA, time.vector=c(), method="stineman"){
