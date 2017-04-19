@@ -14,6 +14,12 @@ vignette: >
 ---
 
 
+```{r setup, include=FALSE}
+# Global options
+library(knitr)
+opts_chunk$set(fig.path="figure_seqtime_tour/")
+```
+
 We start by loading the seqtime library.
 
 ```{r, message=FALSE, warning=FALSE}

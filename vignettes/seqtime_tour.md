@@ -14,6 +14,8 @@ vignette: >
 ---
 
 
+
+
 We start by loading the seqtime library.
 
 
@@ -64,7 +66,7 @@ A.graph=graph.adjacency(A,mode="directed",weighted=TRUE)
 plot(A.graph,layout=layout.grid(A.graph))
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
+![plot of chunk unnamed-chunk-3](figure_seqtime_tour/unnamed-chunk-3-1.png)
 
 Now we generate uneven initial species abundances, summing to a total count of 1000.
 
@@ -75,7 +77,7 @@ names(y)=c(1:length(y))
 barplot(y,main="Initial species abundances",xlab="Species",ylab="Abundance")
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
+![plot of chunk unnamed-chunk-4](figure_seqtime_tour/unnamed-chunk-4-1.png)
 
 With the initial abundances and the interaction matrix, we can run the simulation with Ricker and plot the resulting time series. We convert the initial abundances in proportions and remove the noise term by assigning a negative value to sigma.
 
@@ -85,7 +87,7 @@ out.ricker=ricker(N,A=A,y=(y/sum(y)),K=rep(0.1,N), sigma=-1,tend=500)
 tsplot(out.ricker,type="l",header="Ricker")
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
+![plot of chunk unnamed-chunk-5](figure_seqtime_tour/unnamed-chunk-5-1.png)
 
 We can then analyse the community time series. First, we plot for each species
 the mean against the variance. If a straight line fits well in log scale,
@@ -98,10 +100,10 @@ ricker.taylor=taylor(out.ricker, pseudo=0.0001, col="green", type="taylor")
 ```
 
 ```
-## [1] "Adjusted R2: 0.177624436938737"
+## [1] "Adjusted R2: 0.0894328821042024"
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
+![plot of chunk unnamed-chunk-6](figure_seqtime_tour/unnamed-chunk-6-1.png)
 
 Now we look at the noise types of the species simulated with the Ricker model. In this case, the only noise type that is clearly identified is black noise.
 
@@ -124,7 +126,7 @@ ricker.noise=identifyNoisetypes(out.ricker, abund.threshold = 0)
 plot(ricker.noise)
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png)
+![plot of chunk unnamed-chunk-7](figure_seqtime_tour/unnamed-chunk-7-1.png)
 
 Next, we run the SOI model on the same interaction matrix and initial abundances. For the example, we run it with only 500 individuals and 100 generations.
 
@@ -134,7 +136,7 @@ out.soi=soi(N, I=500, A=A, m.vector=y, tend=100)
 tsplot(out.soi,type="l",header="SOI")
 ```
 
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png)
+![plot of chunk unnamed-chunk-8](figure_seqtime_tour/unnamed-chunk-8-1.png)
 
 The Taylor law fits far better to species generated with SOI than with Ricker according to the adjusted R2.
 
@@ -144,10 +146,10 @@ soi.taylor=taylor(out.soi, pseudo=0.0001, col="blue", type="taylor")
 ```
 
 ```
-## [1] "Adjusted R2: 0.925542746968987"
+## [1] "Adjusted R2: 0.944993569638869"
 ```
 
-![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png)
+![plot of chunk unnamed-chunk-9](figure_seqtime_tour/unnamed-chunk-9-1.png)
 
 When we compute noise types in the community time series generated with SOI, we find that pink noise dominates.
 
@@ -158,11 +160,11 @@ soi.noise=identifyNoisetypes(out.soi,abund.threshold=0)
 
 ```
 ## [1] "Number of taxa below the abundance threshold:  1"
-## [1] "Number of taxa with non-significant power spectrum laws:  10"
-## [1] "Number of taxa with non-classified power spectrum:  24"
+## [1] "Number of taxa with non-significant power spectrum laws:  12"
+## [1] "Number of taxa with non-classified power spectrum:  25"
 ## [1] "Number of taxa with white noise:  0"
-## [1] "Number of taxa with pink noise:  10"
-## [1] "Number of taxa with brown noise:  5"
+## [1] "Number of taxa with pink noise:  12"
+## [1] "Number of taxa with brown noise:  0"
 ## [1] "Number of taxa with black noise:  0"
 ```
 
@@ -170,7 +172,7 @@ soi.noise=identifyNoisetypes(out.soi,abund.threshold=0)
 plot(soi.noise)
 ```
 
-![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-1.png)
+![plot of chunk unnamed-chunk-10](figure_seqtime_tour/unnamed-chunk-10-1.png)
 
 Next, we generate a community time series with the Hubbell model, which describes neutral community dynamics. We set the number of species in the local and in the meta-community as well as the number of deaths to N and assign 1500 individuals. The immigration rate m is set to 0.1. We skip the first 500 steps of transient dynamics. 
 
@@ -180,7 +182,7 @@ out.hubbell=simHubbell(N=N, M=N,I=1500,d=N, m.vector=(y/sum(y)), m=0.1, tskip=50
 tsplot(out.hubbell,type="l",header="Hubbell")
 ```
 
-![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png)
+![plot of chunk unnamed-chunk-11](figure_seqtime_tour/unnamed-chunk-11-1.png)
 
 The neutral dynamics fits the Taylor law well:
 
@@ -190,10 +192,10 @@ hubbell.taylor=taylor(out.hubbell, pseudo=0.0001, col="blue", type="taylor")
 ```
 
 ```
-## [1] "Adjusted R2: 0.79449751017622"
+## [1] "Adjusted R2: 0.801515418306707"
 ```
 
-![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png)
+![plot of chunk unnamed-chunk-12](figure_seqtime_tour/unnamed-chunk-12-1.png)
 
 The Hubbell time series is dominated by brown noise:
 
@@ -205,10 +207,10 @@ hubbell.noise=identifyNoisetypes(out.hubbell,abund.threshold=0)
 ```
 ## [1] "Number of taxa below the abundance threshold:  0"
 ## [1] "Number of taxa with non-significant power spectrum laws:  0"
-## [1] "Number of taxa with non-classified power spectrum:  28"
+## [1] "Number of taxa with non-classified power spectrum:  31"
 ## [1] "Number of taxa with white noise:  0"
 ## [1] "Number of taxa with pink noise:  0"
-## [1] "Number of taxa with brown noise:  22"
+## [1] "Number of taxa with brown noise:  19"
 ## [1] "Number of taxa with black noise:  0"
 ```
 
@@ -216,7 +218,7 @@ hubbell.noise=identifyNoisetypes(out.hubbell,abund.threshold=0)
 plot(hubbell.noise)
 ```
 
-![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13-1.png)
+![plot of chunk unnamed-chunk-13](figure_seqtime_tour/unnamed-chunk-13-1.png)
 
 
 Finally, we generate a community with the Dirichlet Multinomial distribution, which in contrast to the three previous models does not introduce a dependency between time points.
@@ -227,7 +229,7 @@ dm.uneven=simCountMat(N,samples=100,mode=5,k=0.05)
 tsplot(dm.uneven,type="l",header="Dirichlet-Multinomial")
 ```
 
-![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14-1.png)
+![plot of chunk unnamed-chunk-14](figure_seqtime_tour/unnamed-chunk-14-1.png)
 
 
 We plot its Taylor law.
@@ -238,10 +240,10 @@ dm.uneven.taylor=taylor(dm.uneven, pseudo=0.0001, col="orange", type="taylor", h
 ```
 
 ```
-## [1] "Adjusted R2: 0.980814388720289"
+## [1] "Adjusted R2: 0.973665097700279"
 ```
 
-![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png)
+![plot of chunk unnamed-chunk-15](figure_seqtime_tour/unnamed-chunk-15-1.png)
 
 As expected, samples generated with the Dirichlet-Multinomial distribution do not display pink, brown or black noise. 
 
@@ -252,8 +254,8 @@ dm.uneven.noise=identifyNoisetypes(dm.uneven,abund.threshold=0)
 
 ```
 ## [1] "Number of taxa below the abundance threshold:  0"
-## [1] "Number of taxa with non-significant power spectrum laws:  47"
-## [1] "Number of taxa with non-classified power spectrum:  3"
+## [1] "Number of taxa with non-significant power spectrum laws:  44"
+## [1] "Number of taxa with non-classified power spectrum:  6"
 ## [1] "Number of taxa with white noise:  0"
 ## [1] "Number of taxa with pink noise:  0"
 ## [1] "Number of taxa with brown noise:  0"
@@ -264,7 +266,7 @@ dm.uneven.noise=identifyNoisetypes(dm.uneven,abund.threshold=0)
 plot(dm.uneven.noise)
 ```
 
-![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png)
+![plot of chunk unnamed-chunk-16](figure_seqtime_tour/unnamed-chunk-16-1.png)
 
 The evenness of the species proportion vector given to the Dirichlet-Multinomial distribution influences the slope of the Taylor law:
 
@@ -275,8 +277,8 @@ dm.even.taylor=taylor(dm.even, pseudo=0.0001, col="orange", type="taylor", heade
 ```
 
 ```
-## [1] "Adjusted R2: 0.0817491675304537"
+## [1] "Adjusted R2: 0.28006338913238"
 ```
 
-![plot of chunk unnamed-chunk-17](figure/unnamed-chunk-17-1.png)
+![plot of chunk unnamed-chunk-17](figure_seqtime_tour/unnamed-chunk-17-1.png)
 

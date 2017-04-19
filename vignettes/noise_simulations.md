@@ -15,6 +15,9 @@ vignette: >
 Simulating noise types (following [this](http://stackoverflow.com/questions/8697567/how-to-simulate-pink-noise-in-r))
 
 
+
+
+
 ```r
 require(tuneR)
 
@@ -36,7 +39,7 @@ plot(b,main="brown noise")
 plot(p,main="pink noise")
 ```
 
-![plot of chunk noise_simu](figure/noise_simu-1.png)
+![plot of chunk noise_simu](figure_noise_simulations/noise_simu-1.png)
 
 Estimating Hurst exponent for the noises
 
@@ -47,10 +50,10 @@ Hwhite <- hurstexp(w@left, d = 128)
 ```
 
 ```
-## Simple R/S Hurst estimation:         0.5172526 
-## Corrected R over S Hurst exponent:   0.5258927 
-## Empirical Hurst exponent:            0.4964159 
-## Corrected empirical Hurst exponent:  0.4814666 
+## Simple R/S Hurst estimation:         0.494849 
+## Corrected R over S Hurst exponent:   0.5215483 
+## Empirical Hurst exponent:            0.5319811 
+## Corrected empirical Hurst exponent:  0.5168634 
 ## Theoretical Hurst exponent:          0.5151584
 ```
 
@@ -59,10 +62,10 @@ Hbrown <- hurstexp(b, d = 128)
 ```
 
 ```
-## Simple R/S Hurst estimation:         0.9226267 
-## Corrected R over S Hurst exponent:   1.015321 
-## Empirical Hurst exponent:            1.006903 
-## Corrected empirical Hurst exponent:  1.002952 
+## Simple R/S Hurst estimation:         0.8877176 
+## Corrected R over S Hurst exponent:   0.9905181 
+## Empirical Hurst exponent:            1.002012 
+## Corrected empirical Hurst exponent:  0.9980991 
 ## Theoretical Hurst exponent:          0.5151584
 ```
 
@@ -71,10 +74,10 @@ Hpink <- hurstexp(p@left, d = 128)
 ```
 
 ```
-## Simple R/S Hurst estimation:         0.857657 
-## Corrected R over S Hurst exponent:   0.9528515 
-## Empirical Hurst exponent:            0.9745749 
-## Corrected empirical Hurst exponent:  0.9685578 
+## Simple R/S Hurst estimation:         0.7891961 
+## Corrected R over S Hurst exponent:   0.8887708 
+## Empirical Hurst exponent:            0.9097109 
+## Corrected empirical Hurst exponent:  0.903714 
 ## Theoretical Hurst exponent:          0.5151584
 ```
 

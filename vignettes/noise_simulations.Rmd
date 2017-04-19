@@ -14,6 +14,13 @@ vignette: >
 
 Simulating noise types (following [this](http://stackoverflow.com/questions/8697567/how-to-simulate-pink-noise-in-r))
 
+```{r setup, include=FALSE}
+# Global options
+library(knitr)
+opts_chunk$set(fig.path="figure_noise_simulations/")
+```
+
+
 ```{r noise_simu, echo=TRUE, message=FALSE, warning=FALSE, fig.height = 10, fig.width = 6}
 require(tuneR)
 
