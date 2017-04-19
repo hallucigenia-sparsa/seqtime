@@ -5,9 +5,10 @@ Authors@R: c(person("Karoline", "Faust", email = "karoline.faust@vib-kuleuven.be
              person("Franziska", "Bauchinger", role = "aut"),
              person("Didier", "Gonze", role = "aut"),
              person("Sophie", "De Buyl", role = "aut"),
-             person("Leo", "Lahti", role = "aut"),
-             person("Stefanie", "Widder", role = "aut"))
-Description: Provides functions to analyse sequencing data time series and to simulate community dynamics.
+             person("Leo", "Lahti", role = "aut"),	     
+             person("Stefanie", "Widder", role = "aut")
+	     )
+Description: Functions to analyse sequencing data time series and to simulate community dynamics.
 Depends:
     R (>= 3.2.1),
     deSolve,    
