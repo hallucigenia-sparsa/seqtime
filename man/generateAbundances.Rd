@@ -2,7 +2,7 @@
 % Please edit documentation in R/generateAbundances.R
 \name{generateAbundances}
 \alias{generateAbundances}
-\title{Generate abundance vector}
+\title{Generate Abundance Vector}
 \usage{
 generateAbundances(N, count = 1000, mode = 1, k = 0.5, probabs = FALSE)
 }
@@ -21,18 +21,14 @@ generateAbundances(N, count = 1000, mode = 1, k = 0.5, probabs = FALSE)
 species abundances
 }
 \description{
-Generate a vector of species abundances that can be used
-as initial species abundance vector in models.
+Generate abundance vector.
 }
 \details{
-Note: The geometric series (a niche apportionment model) is for instance described in
-"Comments about some species abundance patterns: classic, neutral, and niche partitioning models"
-by Ferreira and Petrere-Jr., Braz. J. Biol. 2008
+Generate a vector of species abundances that can be used as initial species abundance vector in models. Note: The geometric series (a niche apportionment model) is for instance described in "Comments about some species abundance patterns: classic, neutral, and niche partitioning models" by Ferreira and Petrere-Jr., Braz. J. Biol. 2008
 }
 \examples{
-round(generateAbundances(10,mode=6))
+  x <- round(generateAbundances(10, mode=6))
 }
 \seealso{
 \code{\link{simCountMat}}
 }
-

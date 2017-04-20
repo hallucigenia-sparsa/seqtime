@@ -47,4 +47,3 @@ testStability(A)
 \references{
 Coyte et al. (2015). The ecology of the microbiome: Networks, competition, and stability. Science 350:663-666.
 }
-

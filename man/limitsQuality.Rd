@@ -7,7 +7,7 @@
 limitsQuality(oriTS, A, A.ori = matrix(), type = "ricker",
   autocorOnly = FALSE, all = FALSE, m.vector = c(), e.vector = c(),
   spec.subset = NA, norm = FALSE, plot = FALSE, predict.stepwise = TRUE,
-  noSchur = FALSE, ignoreExplosion = FALSE, sigma = -1,
+  sim = "r", noSchur = FALSE, ignoreExplosion = FALSE, sigma = -1,
   explosion.bound = 10^8)
 }
 \arguments{
@@ -34,6 +34,8 @@ limitsQuality(oriTS, A, A.ori = matrix(), type = "ricker",
 \item{plot}{plot the number of species versus the mean correlation of predicted and observed time series and the mean auto-correlation}
 
 \item{predict.stepwise}{if TRUE, the predicted time series is computed step by step, else computed with a call to Ricker}
+
+\item{sim}{similarity measure to compare predicted and observed time series, either Pearson (r, default) or Kullback-Leibler dissimilarity (kld)}
 
 \item{noSchur}{do not remove positive eigenvalues}
 
@@ -66,4 +68,3 @@ ts=normalize(ts)
 Aest=limits(ts,verbose=TRUE)
 out=limitsQuality(ts,A=Aest,A.ori=A, plot=TRUE)
 }
-

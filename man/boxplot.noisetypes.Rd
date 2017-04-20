@@ -14,4 +14,3 @@
 \description{
 Do a boxplot of matrix rows classified by noise type
 }
-

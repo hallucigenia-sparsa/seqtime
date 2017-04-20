@@ -2,6 +2,8 @@
 
 S3method(boxplot,noisetypes)
 S3method(plot,noisetypes)
+export(addNoise)
+export(assignTaxonLevelsToA)
 export(binByMemory)
 export(compareTS)
 export(doc)

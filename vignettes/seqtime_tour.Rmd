@@ -1,9 +1,24 @@
 ---
 title: "Tour through seqtime - Properties of time series generated with different ecological models"
 author: "Karoline Faust"
-date: "19 April 2017"
-output: html_document
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{seqtime examples: Properties of time series from different models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{Cairo}
+  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
 ---
+
+
+```{r setup, include=FALSE}
+# Global options
+library(knitr)
+opts_chunk$set(fig.path="figure_seqtime_tour/")
+```
 
 We start by loading the seqtime library.
 
@@ -25,14 +40,14 @@ A=modifyA(A,perc=70,strength="uniform",mode="negpercent")
 The code below visualizes the species network encoded in A. Each node
 has a self-arc, which represents intra-species competition.
 
-```{r}
+```{r, fig.height = 6, fig.width = 6}
 A.graph=graph.adjacency(A,mode="directed",weighted=TRUE)
 plot(A.graph,layout=layout.grid(A.graph))
 ```
 
 Now we generate uneven initial species abundances, summing to a total count of 1000.
 
-```{r}
+```{r, fig.height = 6, fig.width = 6}
 y=round(generateAbundances(N,mode=5))
 names(y)=c(1:length(y))
 barplot(y,main="Initial species abundances",xlab="Species",ylab="Abundance")
@@ -40,7 +55,7 @@ barplot(y,main="Initial species abundances",xlab="Species",ylab="Abundance")
 
 With the initial abundances and the interaction matrix, we can run the simulation with Ricker and plot the resulting time series. We convert the initial abundances in proportions and remove the noise term by assigning a negative value to sigma.
 
-```{r}
+```{r, fig.height = 6, fig.width = 6}
 out.ricker=ricker(N,A=A,y=(y/sum(y)),K=rep(0.1,N), sigma=-1,tend=500)
 tsplot(out.ricker,type="l",header="Ricker")
 ```
@@ -49,54 +64,54 @@ We can then analyse the community time series. First, we plot for each species
 the mean against the variance. If a straight line fits well in log scale,
 the Taylor law applies.
 
-```{r}
+```{r, fig.height = 6, fig.width = 6}
 # the pseudo-count allows to take the logarithm of species hat went extinct
-ricker.taylor=taylor(out.ricker, pseudo=0.0001, col="green", type="taylor")
+ricker.taylor=seqtime::taylor(out.ricker, pseudo=0.0001, col="green", type="taylor")
 ```
 
 Now we look at the noise types of the species simulated with the Ricker model. In this case, the only noise type that is clearly identified is black noise.
 
-```{r}
+```{r, fig.height = 6, fig.width = 6}
 ricker.noise=identifyNoisetypes(out.ricker, abund.threshold = 0)
 plot(ricker.noise)
 ```
 
 Next, we run the SOI model on the same interaction matrix and initial abundances. For the example, we run it with only 500 individuals and 100 generations.
 
-```{r}
+```{r, fig.height = 6, fig.width = 6}
 out.soi=soi(N, I=500, A=A, m.vector=y, tend=100)
 tsplot(out.soi,type="l",header="SOI")
 ```
 
 The Taylor law fits far better to species generated with SOI than with Ricker according to the adjusted R2.
 
-```{r}
-soi.taylor=taylor(out.soi, pseudo=0.0001, col="blue", type="taylor")
+```{r, fig.height = 6, fig.width = 6}
+soi.taylor=seqtime::taylor(out.soi, pseudo=0.0001, col="blue", type="taylor")
 ```
 
 When we compute noise types in the community time series generated with SOI, we find that pink noise dominates.
 
-```{r}
+```{r, fig.height = 6, fig.width = 6}
 soi.noise=identifyNoisetypes(out.soi,abund.threshold=0)
 plot(soi.noise)
 ```
 
 Next, we generate a community time series with the Hubbell model, which describes neutral community dynamics. We set the number of species in the local and in the meta-community as well as the number of deaths to N and assign 1500 individuals. The immigration rate m is set to 0.1. We skip the first 500 steps of transient dynamics. 
 
-```{r}
+```{r, fig.height = 6, fig.width = 6}
 out.hubbell=simHubbell(N=N, M=N,I=1500,d=N, m.vector=(y/sum(y)), m=0.1, tskip=500, tend=1000)
 tsplot(out.hubbell,type="l",header="Hubbell")
 ```
 
 The neutral dynamics fits the Taylor law well:
 
-```{r}
-hubbell.taylor=taylor(out.hubbell, pseudo=0.0001, col="blue", type="taylor")
+```{r, fig.height = 6, fig.width = 6}
+hubbell.taylor=seqtime::taylor(out.hubbell, pseudo=0.0001, col="blue", type="taylor")
 ```
 
 The Hubbell time series is dominated by brown noise:
 
-```{r}
+```{r, fig.height = 6, fig.width = 6}
 hubbell.noise=identifyNoisetypes(out.hubbell,abund.threshold=0)
 plot(hubbell.noise)
 ```
@@ -104,7 +119,7 @@ plot(hubbell.noise)
 
 Finally, we generate a community with the Dirichlet Multinomial distribution, which in contrast to the three previous models does not introduce a dependency between time points.
 
-```{r}
+```{r, fig.height = 6, fig.width = 6}
 dm.uneven=simCountMat(N,samples=100,mode=5,k=0.05)
 tsplot(dm.uneven,type="l",header="Dirichlet-Multinomial")
 ```
@@ -112,21 +127,25 @@ tsplot(dm.uneven,type="l",header="Dirichlet-Multinomial")
 
 We plot its Taylor law.
 
-```{r}
-dm.uneven.taylor=taylor(dm.uneven, pseudo=0.0001, col="orange", type="taylor", header="Dirichlet-Multinomial")
+```{r, fig.height = 6, fig.width = 6}
+dm.uneven.taylor=seqtime::taylor(dm.uneven, pseudo=0.0001, col="orange", type="taylor", header="Dirichlet-Multinomial")
 ```
 
 As expected, samples generated with the Dirichlet-Multinomial distribution do not display pink, brown or black noise. 
 
-```{r}
+```{r, fig.height = 6, fig.width = 6}
 dm.uneven.noise=identifyNoisetypes(dm.uneven,abund.threshold=0)
 plot(dm.uneven.noise)
 ```
 
 The evenness of the species proportion vector given to the Dirichlet-Multinomial distribution influences the slope of the Taylor law:
 
-```{r}
+```{r, fig.height = 6, fig.width = 6}
 dm.even=simCountMat(N,samples=100,mode=1)
-dm.even.taylor=taylor(dm.even, pseudo=0.0001, col="orange", type="taylor", header="Even Dirichlet-Multinomial")
+dm.even.taylor=seqtime::taylor(dm.even, pseudo=0.0001, col="orange", type="taylor", header="Even Dirichlet-Multinomial")
 ```
 
+
+## Noise simulation
+
+For further examples on simulating noise, see [noise_simulations.md](noise_simulations.md).

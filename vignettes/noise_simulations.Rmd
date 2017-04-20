@@ -1,17 +1,31 @@
 ---
-title: "Digital History in Finland, 1488-1828"
-author: "Leo Lahti"
-date: "December 9, 2015"
-output: html_document
+title: "Noise simulation examples"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{seqtime examples: noise simulation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{Cairo}
+  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
 ---
 
 Simulating noise types (following [this](http://stackoverflow.com/questions/8697567/how-to-simulate-pink-noise-in-r))
 
+```{r setup, include=FALSE}
+# Global options
+library(knitr)
+opts_chunk$set(fig.path="figure_noise_simulations/")
+```
+
+
 ```{r noise_simu, echo=TRUE, message=FALSE, warning=FALSE, fig.height = 10, fig.width = 6}
-require(tuneR)
+library(tuneR)
 
 # White noise
-w <- noise(kind = c("white"))
+w <- tuneR::noise(kind = c("white"))
 
 # Brown noise is integrated white noise
 # (ie. random walk)
@@ -19,7 +33,7 @@ w <- noise(kind = c("white"))
 b <- cumsum(rnorm(length(w@left)))
 
 # Pink noise
-p <- noise(kind = c("pink"))
+p <- tuneR::noise(kind = c("pink"))
 
 # Visualize
 par(mfrow=c(3,1))

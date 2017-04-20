@@ -2,21 +2,23 @@
 % Please edit documentation in R/getPep.R
 \name{getPep}
 \alias{getPep}
-\title{Compute the positive edge percentage of the interaction matrix}
+\title{Positive Edge Percentage}
 \usage{
 getPep(A)
 }
 \arguments{
-\item{the}{interaction matrix}
+\item{A}{the interaction matrix}
 }
 \value{
 the positive edge percentage
 }
 \description{
+Compute the positive edge percentage of an interaction matrix.
+}
+\details{
 Values on the diagonal are ignored.
 }
 \examples{
-A=cbind(c(-1,0,1),c(0,-1,0),c(-1,0,-1))
-getPep(A)
+  A <- cbind(c(-1,0,1),c(0,-1,0),c(-1,0,-1))
+  x <- getPep(A)
 }
-

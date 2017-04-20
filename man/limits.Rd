@@ -32,4 +32,3 @@ par(mfrow=c(1,1))
 \references{
 Fisher & Mehta (2014). Identifying Keystone Species in the Human Gut Microbiome from Metagenomic Timeseries using Sparse Linear Regression. PLoS One 9:e102451
 }
-

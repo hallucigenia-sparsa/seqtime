@@ -14,15 +14,15 @@ generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.05,
 \arguments{
 \item{N}{species number (for hubbell, refers to the species number in the metacommunity)}
 
-\item{I}{individual number (only for SOC and hubbell)}
+\item{I}{individual number (only for SOI and hubbell)}
 
 \item{tend}{the number of time points to generate}
 
 \item{initAbundMode}{the mode in which initial abundances are generated (described in function generateAbundances)}
 
-\item{c}{connectivity of interaction matrix (only for SOC, ricker and gLV)}
+\item{c}{connectivity of interaction matrix (only for SOI, ricker and gLV)}
 
-\item{clique.size}{parameter for interaction matrix generation (only for SOC, ricker and glv and Atype mode klemm)}
+\item{clique.size}{parameter for interaction matrix generation (only for SOI, ricker and glv and Atype mode klemm)}
 
 \item{sigma}{noise term (only for ricker)}
 
@@ -34,13 +34,13 @@ generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.05,
 
 \item{d}{diagonal value of the interaction matrix}
 
-\item{PEP}{positive edge percentage of interaction matrix (only for SOC, ricker and gLV)}
+\item{PEP}{positive edge percentage of interaction matrix (only for SOI, ricker and gLV)}
 
 \item{m}{immigration rate (only for hubbell)}
 
 \item{deathrate}{number of individuals that are replaced at each time step (only for hubbell)}
 
-\item{algorithm}{how time series should be generated (can be hubbell, soc, ricker, glv, dm, davida or davidb)}
+\item{algorithm}{how time series should be generated (can be hubbell, soi, ricker, glv, dm, davida or davidb)}
 
 \item{interval}{sampling frequency (if 1, each sample is taken, if 2, every second sample is taken etc.)}
 
@@ -54,18 +54,18 @@ generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.05,
 
 \item{read.A}{read the interaction matrix from the given previous experiment}
 
-\item{read.y}{read the initial abundances/SOC immigration rates from the given previous experiment (for hubbell, initial abundances refer to the metacommunity)}
+\item{read.y}{read the initial abundances/SOI immigration rates from the given previous experiment (for hubbell, initial abundances refer to the metacommunity)}
 
 \item{read.K}{read the carrying capacities/growth rates from the given previous experiment}
 
-\item{read.extinct}{read the SOC extinction rates from the given previous experiment}
+\item{read.extinct}{read the SOI extinction rates from the given previous experiment}
 
 \item{read.ts}{read the previously generated time series from the given previous experiment}
 
 \item{maxIter}{maximal iteration number for finding a stable interaction matrix}
 }
 \value{
-list containing the generated interaction matrix, initial abundances (they double as immigration probabilities for soc and metapopulation proportions for hubbell), carrying capacities (they double as growth rates for glv), extinction probabilities, time series and settings
+list containing the generated interaction matrix, initial abundances (they double as immigration probabilities for soi and metapopulation proportions for hubbell), carrying capacities (they double as growth rates for glv), extinction probabilities, time series and settings
 }
 \description{
 Wrapper function for time series generation.
@@ -80,7 +80,7 @@ and other randomly generated input are also
 stored in settings. The idea is that the time
 series can be re-created from the information
 stored in the settings folder (though not
-exactly, since the SOC, Ricker and neutral models have random components).
+exactly, since the SOI, Ricker and neutral models have random components).
 Furthermore, a plot of the time series and (if required by the model) the interaction
 matrix is stored in settings, for control. Properties of the interaction matrix
 are also stored there.
@@ -95,4 +95,3 @@ neutral model time series. The species number of the local community is
 set to 1/10th of the species number in the metacommunity.
 The local community is initialized with even abundances.
 }
-

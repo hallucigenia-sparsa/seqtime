@@ -6,10 +6,12 @@
 \usage{
 simDecay(x, taxa = c(), metadata = c(), metadataName = "",
   samplegroups = rep(1, ncol(x)), dissim = "bray", normtaxa = FALSE,
-  logdissim = FALSE, header = "")
+  logdissim = FALSE, intragroupsOnly = FALSE, header = "")
 }
 \arguments{
 \item{x}{taxon-sample matrix with taxa as rows and samples as columns}
+
+\item{taxa}{vector of taxon row indices or row names present in x}
 
 \item{metadata}{vector with values in the same order as samples in the taxon matrix}
 
@@ -23,9 +25,9 @@ simDecay(x, taxa = c(), metadata = c(), metadataName = "",
 
 \item{logdissim}{take the logarithm of the dissimilarity before fitting a line}
 
-\item{header}{a string to be appended to the plot title (Dissimilarity change)}
+\item{intragroupsOnly}{only take sample pairs within the same group into account for dissimilarity computation}
 
-\item{taxon}{vector of taxon row indices or row names present in x}
+\item{header}{a string to be appended to the plot title (Dissimilarity change)}
 }
 \description{
 Taxon dissimilarities are plotted sample-wise against the abundance difference of selected taxa or metadata.
@@ -43,4 +45,3 @@ days=david_stoolA_metadata[1,rar[[2]]] # only keep samples that made it through 
 out2=simDecay(data[,1:N],metadata=days[1:N],metadataName=rownames(david_stoolA_metadata)[1])
 
 }
-

@@ -1,46 +1,52 @@
-#' Assign OTU identifiers or higher-level taxon names to an interaction matrix inferred from the David data processed with method generateTS.
+#' @title Assign Taxon Levels
+#' @description Assign OTU identifiers or higher-level taxon names to an interaction matrix
 #'
-#' @param A an interaction matrix inferred from the David data processed with method generateTS
-#' @param type the data set, supported: stoola and stoolb
-#' @param taxon.level the taxonomic level to be assigned as row and column names, supported: otu, species, genus, family, order, class, phylum
+#' @param A an interaction matrix
+#' @param data (optional) a matrix with taxon abundances, rows are taxa and columns are samples (only needed if type is non-empty)
+#' @param metadata (optional) a matrix with metadata, samples match samples in OTU table (only needed if type is non-empty)
+#' @param lineages a matrix with lineages, for the format please see data david_stool_lineages
+#' @param type if non-empty, process data exactly as in method generateTS, supported: stoola and stoolb
+#' @param taxon.level the taxon level to be assigned as row and column names, supported: otu, species, genus, family, order, class, phylum
 #' @param uniqueNames make names unique by appending a counter if needed
 #' @param higherLevelNames if given level is not known, assign the highest level that is known
-#' @return interaction matrix A with row and column names corresponding to selected taxonomic level (for higher-level taxa, abundances of members are summed)
+#'
 #' @examples
-#' \dontrun{
-#' stoolA=assignTaxonLevelsToA(stoolA,type="stoola")
-#'}
+#' data("david_stool_lineages")
+#' # make a random OTU interaction matrix as an example
+#' N=30
+#' A=generateA(N=N,c=0.1)
+#' randomOTUIndices=sample(1:nrow(david_stool_lineages))[1:N]
+#' rownames(A)=david_stool_lineages[randomOTUIndices,1]
+#' colnames(A)=rownames(A)
+#' Aclass=assignTaxonLevelsToA(A,lineages=david_stool_lineages, taxon.level="class")
+#' classnetwork=plotA(Aclass,method="network")
+#' @export
 
-assignTaxonLevelsToA<-function(A, type="stoola", taxon.level="genus", uniqueNames=FALSE, higherLevelNames=TRUE){
+assignTaxonLevelsToA <- function(A, data=NULL, metadata=NULL, lineages, type="", taxon.level="genus", uniqueNames=FALSE, higherLevelNames=TRUE){
+
+  # constants, only needed if type is non-empty
   david.minsamplesum=10000
   interpolation.method="stineman"
   N=nrow(A)
-  # TOFIX: method-internal loading of data is problematic - provide as an argument
-  data("david_stool_lineages")
-  if(type=="stoola"){
-    data("david_stoolA_otus")
-    data("david_stoolA_metadata")
-    stool=david_stoolA_otus
-    metadata=david_stoolA_metadata
-  }else if(type=="stoolb"){
-    data("david_stoolB_otus")
-    data("david_stoolB_metadata")
-    stool=david_stoolB_otus
-    metadata=david_stoolB_metadata
-  }
+
   if(type=="stoolb"){
     # omit the last sample in David data stool B, because there is a huge sampling gap of 66 days
-    stool=stool[,1:(ncol(stool)-1)]
+    data=data[,1:(ncol(data)-1)]
     metadata=metadata[,1:(ncol(metadata)-1)]
   }
-  rarefyRes=rarefyFilter(stool,min=david.minsamplesum)
-  stool=rarefyRes$rar
-  # discard days with read count below minsamplesum
-  days=metadata[1,rarefyRes$colindices]
-  # make data equidistant
-  stool.interp=interpolate(stool,time.vector=days,interval=1,method=interpolation.method)
-  sorted=sort(apply(stool.interp,1,sum),decreasing=TRUE,index.return=TRUE)
-  otus=rownames(stool)[sorted$ix[1:N]]
+  if(type=="stoola" || type=="stoolb"){
+    rarefyRes=rarefyFilter(data,min=david.minsamplesum)
+    data=rarefyRes$rar
+
+    # discard days with read count below minsamplesum
+    days=metadata[1,rarefyRes$colindices]
+    # make data equidistant
+    stool.interp=interpolate(data,time.vector=days,interval=1,method=interpolation.method)
+    sorted=sort(apply(stool.interp,1,sum),decreasing=TRUE,index.return=TRUE)
+    otus=rownames(data)[sorted$ix[1:N]]
+  }else{
+    otus=rownames(A)
+  }
   # match OTUs to entries in lineage table
   taxa=c()
   counter=1
@@ -49,7 +55,7 @@ assignTaxonLevelsToA<-function(A, type="stoola", taxon.level="genus", uniqueName
     if(taxon.level=="otu"){
       taxon=otu
     }else{
-      index=which(david_stool_lineages[,1]==otu)
+      index=which(lineages[,1]==otu)
       if(length(index)>0){
         if(taxon.level=="species"){
           levelIndex=8
@@ -66,7 +72,7 @@ assignTaxonLevelsToA<-function(A, type="stoola", taxon.level="genus", uniqueName
         }else{
           stop("Requested taxon level not supported")
         }
-        taxon=as.character(david_stool_lineages[index,levelIndex])
+        taxon=as.character(lineages[index,levelIndex])
       }else{
         warning("Did not find lineage of taxon",otu)
         taxon="unknown"
@@ -76,8 +82,8 @@ assignTaxonLevelsToA<-function(A, type="stoola", taxon.level="genus", uniqueName
     if(higherLevelNames==TRUE && taxon=="none"){
       levelIndex=levelIndex+1
       for(higherLevelIndex in levelIndex:2){
-        if(as.character(david_stool_lineages[index,higherLevelIndex])!="none"){
-            taxon=as.character(david_stool_lineages[index,higherLevelIndex])
+        if(as.character(lineages[index,higherLevelIndex])!="none"){
+            taxon=as.character(lineages[index,higherLevelIndex])
             break
         }
       }

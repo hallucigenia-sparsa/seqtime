@@ -1,5 +1,5 @@
-#' Diagnostic plots for the outcome of a community simulation.
-#'
+#' @title Diagnostic Plot for Community Simulation
+#' @description Diagnostic plots for the outcome of a community simulation.
 #' @param x community time series, rows are species and columns are time points
 #' @param type plot time vs number of species (spec), number of individuals (ind) or the distribution of the species with given index together with its proportion in the metacommunity, if provided
 #' @param spec.index row index of selected species (required for type distrib)

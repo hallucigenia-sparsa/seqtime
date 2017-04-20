@@ -31,4 +31,3 @@ tsplot(simUntb(N,y=y,tend=1000))
 \seealso{
 \code{\link{ricker}} for the Ricker model and \code{\link{glv}} for the generalized Lotka Volterra model
 }
-

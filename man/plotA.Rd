@@ -38,4 +38,3 @@ Method ggplot requires ggplot2 and reshape2.
 \examples{
 plotA(generateA(20,c=0.1))
 }
-

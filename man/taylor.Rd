@@ -4,7 +4,7 @@
 \alias{taylor}
 \title{Plot relationship between row mean and row variance}
 \usage{
-taylor(x, type = "boxplot", pseudo = 0, col = "black", header = "",
+taylor(x, type = "taylor", pseudo = 0, col = "black", header = "",
   plot = TRUE)
 }
 \arguments{
@@ -30,4 +30,3 @@ Taylor's law: var(Y) = a*mean(Y)^b, in log-scale: log(var(Y)) = log(a)+b*log(mea
 \references{
 L.R. Taylor (1961). Aggregation, variance and the mean. Nature 189, 732-735.
 }
-

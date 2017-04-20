@@ -60,6 +60,15 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
   if(method == "image"){
     palette <- colorRampPalette(c("red","white","green"))
     colorNumber=3
+    # adjust palette, else in the absence of positive edges, interactions will appear red on a green bg
+    if(length(A[A>0])==0){
+      palette <- colorRampPalette(c("red","white"))
+      colorNumber=2
+    }
+    if(length(A[A<0])==0){
+      palette <- colorRampPalette(c("white","green"))
+      colorNumber=2
+    }
     if(scale.weight == TRUE){
       colorNumber=40
     }

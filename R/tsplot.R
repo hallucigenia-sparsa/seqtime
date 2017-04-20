@@ -1,15 +1,16 @@
-#' Plot the time series row-wise
-#'
+#' @title Time Series Plot
+#' @description Plot the time series row-wise.
 #' @param x the matrix of time series
 #' @param time.given if true, then the column names are supposed to hold the time units
 #' @param num the number of rows to plot (starting from the first row)
+#' @param sample.points sample.points
 #' @param legend add a legend
 #' @param pch plot parameter
+#' @param lty line type
 #' @param type pot parameter
 #' @param header header string
 #' @export
-
-tsplot<-function(x, time.given=FALSE, num=nrow(x), sample.points=c(), legend=FALSE, pch="+", lty=1, type="l", header=""){
+tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), legend=FALSE, pch="+", lty=1, type="l", header=""){
   col.vec = seq(0,1,1/nrow(x))
   my.colors = hsv(col.vec)
   main=paste("Community time series",header)

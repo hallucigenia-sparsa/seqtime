@@ -31,4 +31,3 @@ Sole et al. 2002 "Self-organized instability in complex ecosystems"
 \seealso{
 \code{\link{ricker}} for the Ricker model
 }
-

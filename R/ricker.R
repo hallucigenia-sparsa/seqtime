@@ -1,6 +1,6 @@
-#' Generate time series from Ricker model
+#' @title Generate time series from Ricker model
 #'
-#' If an explosion occurs, -1 is returned. An explosion
+#' @description If an explosion occurs, -1 is returned. An explosion
 #' is reported if any species crosses the explosion bound.
 #'
 #' @param N number of species
