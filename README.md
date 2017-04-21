@@ -14,6 +14,7 @@ library(seqtime)
 ```
 
 For usage examples, see the package [vignette](vignettes/seqtime_tour.md).
+For examples on network inference with LIMITS and visualization, see the [network inference vignette](vignettes/network_inference.md).
 
 ### Contribute
 
