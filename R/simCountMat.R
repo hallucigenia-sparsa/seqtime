@@ -1,6 +1,6 @@
-#' Simulate a count matrix
+#' @title Simulate a count matrix
 #'
-#' Simulate the output of a sequencing experiment, with taxa as rows and samples as columns.
+#' @description Simulate the output of a sequencing experiment, with taxa as rows and samples as columns.
 #'
 #' @param N the number of taxa
 #' @param samples the number of columns in the matrix

@@ -1,6 +1,6 @@
-#' Normalize a matrix
+#' @title Normalize a matrix
 #'
-#' Normalize a matrix column-wise by dividing each entry by its corresponding column sum
+#' @description Normalize a matrix column-wise by dividing each entry by its corresponding column sum
 #'
 #' @param x a matrix
 #' @return a normalized matrix

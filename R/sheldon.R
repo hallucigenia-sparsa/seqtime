@@ -1,15 +1,26 @@
-#' Compute evenness using Sheldon's index
+#' @title Compute evenness using Sheldon's index
+#'
+#' @description Sheldon's index is defined as \eqn{S=\frac{e^H}{N}}, where H is the Shannon diversity and N the species number.
+#' It ranges from 0 to 1, where 1 signifies a perfectly even abundance distribution.
 #'
 #' @references A.L. Sheldon 1969. Equitability indices: dependence on the species count. Ecology, 50, 466-467.
 #' @references C Heip 1974. A new index measuring evenness. J. mar. biol. Ass. UK 54, 555-557.
 #'
-#' Note that the N2N1 mode results in evenness smaller than 1 for equal taxon
-#' probabilities.
+#' @details Note that the N2N1 mode results in evenness smaller than 1 for equal taxon probabilities.
 #'
-#' @param x a vector
+#' @param x a vector of species abundances
 #' @param correction whether or not to apply the correction described in Alatalo, Oikos 37, 199-204, 1981
 #' @param N2N1 whether to compute Sheldon's evenness as the ratio of e raised to the power of H (H = Shannon diversity) and Simpson's diversity
 #' @return Sheldon's evenness
+#' @examples
+#' N=50
+#' # uneven species abundance distribution
+#' v = round(generateAbundances(N, mode=5))
+#' sheldon(v)
+#' # perfectly even species abundance distribution
+#' sheldon(rep(N,N))
+#' # very uneven species abundance distribution
+#' sheldon(c(rep(1,N),1000))
 #' @export
 ##############################################################################
 sheldon<-function(x, correction = TRUE, N2N1 = FALSE){

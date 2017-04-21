@@ -1,11 +1,12 @@
-#' Bin rows in a matrix by amount of memory.
+#' @title Bin rows in a matrix by amount of memory.
 #'
-#' Memory is assessed either with the Hurst exponent or with the maximum auto-
+#' @description Memory is assessed either with the Hurst exponent or with the maximum auto-
 #' correlation (omitting lag zero). Hurst exponents are computed with
 #' function HurstK in package FGN.
 #'
-#' The function returns an object that groups matrix row indices in different levels.
+#' @details The function returns an object that groups matrix row indices in different levels.
 #' Rows that could not be binned are classified in bin na.
+#'
 #' @param x a matrix with objects as rows and time points as columns
 #' @param thresholds the thresholds by which to bin
 #' @param method autocor or hurst, computing the maximum auto-correlation (omitting lag=0) and the Hurst exponent, respectively

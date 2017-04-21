@@ -1,6 +1,6 @@
-#' Plot noise types versus their range of Hurst exponents
+#' @title Plot noise types versus their range of Hurst exponents
 #'
-#' Given a matrix and the output of noise type classification, compute the
+#' @description Given a matrix and the output of noise type classification, compute the
 #' Hurst exponent of each matrix row and draw a box plot that plots for each
 #' noise type the range of Hurst exponents. Hurst exponents are computed with
 #' function HurstK in package FGN.

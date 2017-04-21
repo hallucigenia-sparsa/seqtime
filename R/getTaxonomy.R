@@ -1,4 +1,4 @@
-#' Get the taxonomy given OTU names and lineage information
+#' @title Get the taxonomy given OTU names and lineage information
 #'
 #' @param selected a character vector of selected OTU identifiers
 #' @param lineages a lineage table

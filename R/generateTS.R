@@ -1,6 +1,6 @@
-#' Generate community time series
+#' @title Generate community time series
 #'
-#' Wrapper function for time series generation.
+#' @description Wrapper function for time series generation.
 #' The result folder has a specific structure that is
 #' created if it does not yet exist. It has two
 #' sub-folders, one named timeseries and the other
@@ -17,7 +17,7 @@
 #' matrix is stored in settings, for control. Properties of the interaction matrix
 #' are also stored there.
 #'
-#' On the random generation of parameter values:
+#' @details On the random generation of parameter values:
 #' Extinction rates are sampled from the uniform distribution
 #' with values between 0 and 1. Carrying capacities/growth rates are sampled
 #' from the uniform distribution with values between 0 and 0.5.

@@ -1,6 +1,7 @@
 #' @title Positive Edge Percentage
 #' @description Compute the positive edge percentage of an interaction matrix.
-#' @details Values on the diagonal are ignored.
+#' @details Values on the diagonal are ignored. More precisely, the positive arc percentage is computed, e.g.
+#' the percentage of positive entries in the interaction matrix.
 #' @param A the interaction matrix
 #' @return the positive edge percentage
 #' @examples

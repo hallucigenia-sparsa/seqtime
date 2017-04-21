@@ -1,7 +1,7 @@
 #' @title Plot relationship between row mean and row variance
 #'
-#' @description The power law of mean and variance is also known as Taylor's law.
-#' Taylor's law: var(Y) = a*mean(Y)^b, in log-scale: log(var(Y)) = log(a)+b*log(mean(Y))
+#' @description The power law relationship between variance and mean is known as Taylor's law, which is
+#' defined as: \eqn{var(Y) = a*mean(Y)^b}. We can obtain the power as the slope in log-scale: \eqn{log(var(Y)) = log(a)+b*log(mean(Y))}
 #'
 #' @param x a matrix
 #' @param type the type of plot to do: mean.var (mean vs variance), boxplot (row-wise), taylor (powerlaw fitted to mean vs variance)

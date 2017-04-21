@@ -24,7 +24,8 @@ Depends:
 Suggests:
     ggplot2,
     knitr,    
-    reshape2
+    reshape2,
+    testthat
 License: BSD_2_clause + file LICENSE
 LazyData: true
 URL: https://github.com/hallucigenia-sparsa/seqtime

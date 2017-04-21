@@ -208,7 +208,7 @@ compareTS <- function(input.folder="",expIds=c(), modif.folder="", modif="", sli
     ts=read.table(file=input.path.ts,sep="\t",header=FALSE)
     ts=as.matrix(ts)
     if(norm==TRUE){
-      ts=normalize(ts)
+      ts=seqtime::normalize(ts)
     }
     if(sliceDef[1]>1 || !is.na(sliceDef[2])){
       subsetStart=sliceDef[1]
@@ -244,8 +244,8 @@ compareTS <- function(input.folder="",expIds=c(), modif.folder="", modif="", sli
       }
 
       # auto-correlation vs species number slope
-      qualOut=limitsQuality(ts,autocorOnly=TRUE, all=TRUE)
-      autoslopes=c(autoslopes,qualOut$autoslope)
+      autocorOut=autocorVsTaxonNum(ts,lag=1,plot=FALSE)
+      autoslopes=c(autoslopes,autocorOut$slope)
 
       # bin Hurst exponent
       hursts=binByMemory(ts,thresholds=hurstBins,method="hurst")

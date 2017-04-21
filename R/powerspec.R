@@ -1,7 +1,8 @@
-#' Report slope of periodogram in log-log scale
+#' @title Report slope of periodogram in log-log scale
 #'
-#' The function uses stats::spectrum to compute the periodogram. It also reports the significance
+#' @description The function uses stats::spectrum to compute the periodogram. It also reports the significance
 #' and goodness of fit of the power law.
+#'
 #' @param v time series vector
 #' @param plot plot the periodogram with the power law in log-scale
 #' @param header header string

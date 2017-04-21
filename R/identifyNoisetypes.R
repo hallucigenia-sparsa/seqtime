@@ -10,14 +10,11 @@
 #' @examples
 #' N <- 10
 #' ricker.out <- ricker(N,generateA(N),K=rep(0.01,N))
-#' noisetypes <- identifyNoisetypes(ricker.out)
-#' # Plot the results (FIXME) 
-#' #plot(ricker.out[noisetypes$brown[1],],
-#' #       main = paste("Simulated OTU",noisetypes$brown[1]),
-#' #	ylab = "Abundance")
+#' noise <- identifyNoisetypes(ricker.out, abund.threshold=0)
+#' plot(noisetypes)
 #'
 #' @export
-identifyNoisetypes <- function(x, epsilon = 0.2, pval.threshold = 0.05, permut=FALSE, abund.threshold=10){
+identifyNoisetypes <- function(x, epsilon = 0.2, pval.threshold = 0.05, permut=FALSE, abund.threshold=0){
   if(epsilon < 0 || epsilon > 0.5){
     stop("Please select a value between 0 and 0.5 for epsilon.")
   }
@@ -84,8 +81,6 @@ identifyNoisetypes <- function(x, epsilon = 0.2, pval.threshold = 0.05, permut=F
   print(paste("Number of taxa with pink noise: ",length(pink)))
   print(paste("Number of taxa with brown noise: ",length(brown)))
   print(paste("Number of taxa with black noise: ",length(black)))
-  noisetypes=list(white,pink,brown,black,nonclass,nonsig, slopes.nonclass,belowThreshold)
-  names(noisetypes)=c("white","pink","brown","black","nonclass","nonsig","slopes.nonclass","belowT")
-  class(noisetypes) <- "noisetypes"
-  return(noisetypes)
+  res=noisetypes(white,pink,brown,black)
+  return(res)
 }

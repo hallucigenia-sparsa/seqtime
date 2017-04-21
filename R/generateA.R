@@ -1,7 +1,8 @@
-#' Generate an interaction matrix
+#' @title Generate an interaction matrix
 #'
-#' Generate an interaction matrix, either randomly from a uniform distribution or
+#' @description Generate an interaction matrix, either randomly from a uniform distribution or
 #' using Klemm-Eguiluz algorithm to generate a modular and scale-free interaction matrix.
+#'
 #' @param N number of species
 #' @param type random (sample a uniform distribution), klemm (generate a Klemm-Eguiluz matrix) or empty (zero everywhere, except for diagonal which is set to d)
 #' @param pep desired positive edge percentage (only for klemm)

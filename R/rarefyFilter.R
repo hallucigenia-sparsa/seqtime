@@ -1,10 +1,18 @@
-#' Rarefaction combined with sample filtering
+#' @title Rarefaction combined with sample filtering
 #'
-#' Rarefy a given count vector or matrix column-wise using vegan's rrarefy function.
+#' @description Rarefy a given count vector or matrix column-wise using vegan's rrarefy function.
 #' If columns have less than the minimum count number, they are discarded.
 #' @param x a matrix or vector
 #' @param min minimum count to which x is to be rarefied (if equal to zero, minimum column sum is taken as min)
 #' @return a list with the rarefied vector or matrix (rar) and the indices of the columns that were kept (colindices)
+#' @examples
+#' data(david_stoolA_otus)
+#' filtered=rarefyFilter(david_stoolA_otus,min=1000)
+#' # the rarefied OTU table is stored in rar
+#' stoolARar=filtered$rar
+#' # print names of samples that were discarded because they had less than min reads
+#' discarded=setdiff(1:ncol(david_stoolA_otus),filtered$colindices)
+#' print(colnames(david_stoolA_otus)[discarded])
 #' @export
 
 rarefyFilter<-function(x,min = 0){

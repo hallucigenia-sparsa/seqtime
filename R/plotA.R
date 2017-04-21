@@ -1,10 +1,12 @@
-#' Plot an interaction matrix.
+#' @title Plot an interaction matrix.
 #'
-#' By default, the interaction strengths are set to -1 or 1. Negative values
+#' @description By default, the interaction strengths are set to -1 or 1. Negative values
 #' are plotted in red, positive in green. If scale.weight is true, the interaction
 #' strengths are scaled to lie in the range of [-1,1]. The option original suppresses
 #' any modification of the interaction strengths. If interaction strengths are scaled or the original
 #' ones are used, the method ggplot is recommended, since it adds a color legend.
+#' Alternatively, the interaction matrix can also be visualized as a directed network with method network.
+#' In this case, the igraph network object is returned, to allow for manual adjustment of the layout with igraph's tkplot function.
 #' Method ggplot requires ggplot2 and reshape2.
 #'
 #' @param A interaction matrix

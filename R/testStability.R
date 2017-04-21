@@ -1,8 +1,9 @@
-#' Stability test for interaction matrix
+#' @title Stability test for interaction matrix
 #'
-#' Test the stability of an interaction matrix using Coyte's criterium
-#' or the eigenvalue criterium.
-#' Coyte's criterium is: max(r_e,r_s) - s < 0,
+#' @description Test the stability of an interaction matrix using Coyte's criterium,
+#' the eigenvalue criterium or a simulation with Ricker.
+#'
+#' @details Coyte's criterium is: max(r_e,r_s) - s < 0,
 #' where s is the average of the diagonal values (the intra-species competition),
 #' r_e is the half-horizontal radius of the eigenvalue ellipse of A and
 #' r_s is the eigenvalue corresponding to the average row sum.

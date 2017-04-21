@@ -1,24 +1,22 @@
-#' Quality scores and plot for estimated interaction matrices
+#' @title Quality scores and plot for estimated interaction matrices
 #'
-#' To avoid explosions, the estimated interaction matrix is modified such
-#' that all its eigen values are negative using the Schur decomposition. The predicted time series is
-#' obtained step-wise, by computing the current abundances from the
-#' original abundances of the preceding time point and the given
-#' estimated interaction matrix with (by default noise-free) Ricker. Carrying capacities are
-#' estimated as mean abundances. If the original interaction matrix is provided,
+#' @description The predicted time series can be obtained by simulating the time series
+#' with Ricker or SOI at once or step-wise by computing the current abundances from the
+#' original abundances of the preceding time point. The model parameters are supposed to have
+#' been estimated from the time series previously. In case of Ricker, the function estimates carrying capacities
+#' as mean abundances. If the original interaction matrix is provided,
 #' the mean correlation between estimated and original interaction matrix is computed.
 #' Thus, two main quality scores are considered: the mean correlation between predicted and
 #' observed time series and, if provided, the mean correlation between the original and the
-#' estimated interaction matrix.
+#' estimated interaction matrix. To avoid explosions in case of Ricker, the estimated interaction matrix can be modified
+#' such that all its eigen values are negative using the Schur decomposition.
 #'
 #' @param oriTS the original time series, with taxa as rows and time points as columns
 #' @param A the estimated interaction matrix
 #' @param A.ori the original interaction matrix (optional)
-#' @param type the model used to predict time series from the interaction matrix, ricker or soc (for soc, predict.stepwise is set to FALSE and noSchur to TRUE)
-#' @param autocorOnly only compute step-wise autocorrelations (in this case, A is optional)
-#' @param all compute auto- and cross-correlations for all species, adding one at each step, in the order of their mean abundance
-#' @param m.vector the immigration rates for soc (optional, if not provided set to the proportions in the first sample)
-#' @param e.vector the extinction rates for soc (optional, if not provided sampled from the uniform distribution)
+#' @param type the model used to predict time series from the interaction matrix, ricker or soi (for soi, predict.stepwise is set to FALSE and noSchur to TRUE)
+#' @param m.vector the immigration rates for soi (optional, if not provided set to the proportions in the first sample)
+#' @param e.vector the extinction rates for soi (optional, if not provided sampled from the uniform distribution)
 #' @param spec.subset either a vector of species indices to keep or a number to indicate how many top-abundant (sum across samples) species should be kept, applied to the matrices and time series
 #' @param norm normalize the original time series by dividing each sample by its sum (carried out before filtering species)
 #' @param plot plot the number of species versus the mean correlation of predicted and observed time series and the mean auto-correlation
@@ -33,31 +31,27 @@
 #' N=20
 #' A=generateA(N,c=0.1)
 #' ts=ricker(N=N,A=A)
-#' ts=normalize(ts)
+#' ts=seqtime::normalize(ts)
 #' Aest=limits(ts,verbose=TRUE)
 #' out=limitsQuality(ts,A=Aest,A.ori=A, plot=TRUE)
 #' @export
 
-limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FALSE, all=FALSE, m.vector=c(), e.vector=c(), spec.subset=NA, norm=FALSE, plot=FALSE, predict.stepwise=TRUE, sim="r", noSchur=FALSE, ignoreExplosion=FALSE, sigma=-1, explosion.bound=10^8){
+limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", m.vector=c(), e.vector=c(), spec.subset=NA, norm=FALSE, plot=FALSE, predict.stepwise=TRUE, sim="r", noSchur=FALSE, ignoreExplosion=FALSE, sigma=-1, explosion.bound=10^8){
   if(ncol(oriTS) < 2){
     stop("Please provide the original time series.")
   }
-  if(autocorOnly==FALSE){
-    if(is.null(A) || ncol(A) < 2){
-      stop("Please provide the estimated interaction matrix.")
-    }
+
+  if(is.null(A) || ncol(A) < 2){
+    stop("Please provide the estimated interaction matrix.")
   }
+
   if(sim!="kld" && sim!="r"){
     stop("sim should be either r (Pearson) or kld (Kullback-Leibler dissimilarity).")
-  }
-  if(autocorOnly==TRUE){
-    # create a dummy matrix
-    A=matrix(0, ncol=nrow(oriTS), nrow=nrow(oriTS))
   }
 
   # normalize the time series
   if(norm == TRUE){
-    oriTS=normalize(oriTS)
+    oriTS=seqtime::normalize(oriTS)
   }
 
   # filter out species if requested
@@ -99,7 +93,7 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FAL
   autocorrStep4Vec=c()
   autocorrStep5Vec=c()
   # make interaction matrix more robust to explosions (not needed for soc)
-  if(noSchur == FALSE && type=="ricker" && autocorOnly==FALSE){
+  if(noSchur == FALSE && type=="ricker"){
     print("Applying Schur decomposition")
     Amodif=modifyA(A,mode="schur")
   }else{
@@ -107,33 +101,21 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FAL
   }
   # loop over the number of species to include (removing the least abundant)
   indicesOK=c()
-  if(all==TRUE){
-    percOKlist=sort(rowMeans,decreasing=TRUE,index.return=TRUE)$ix
-  }else{
-    percOKlist<-c(.9,.8,.7,.6,.5,.4,.3,.2,.1,0)
-  }
+  percOKlist<-c(.9,.8,.7,.6,.5,.4,.3,.2,.1,0)
   for(percOK in percOKlist){
-    if(all==TRUE){
-      indicesOK=c(indicesOK, percOK)
-    }else{
-      indicesOK<-which(rowMeans>percOK*maxAbundance)
-    }
+    indicesOK<-which(rowMeans>percOK*maxAbundance)
     #print(indicesOK)
     if(length(indicesOK)>1){
       specNumberVec<-cbind(specNumberVec,length(indicesOK))
       subTS=oriTS[indicesOK,]
       Amodifsub=Amodif[indicesOK,indicesOK]
       # compute cross-correlation of original and step-wise predicted time series
-      if(autocorOnly==FALSE){
-        if(predict.stepwise == TRUE && type=="ricker"){
-          crossres=getCrossCorOriPredStepwise(subTS,A=Amodifsub,sim=sim,sigma=sigma,explosion.bound = explosion.bound, ignoreExplosion=ignoreExplosion)
-        }else{
-          crossres=getCrossOriPredFull(subTS,A=Amodifsub,sim=sim,sigma=sigma,explosion.bound = explosion.bound, type=type, m.vector=m.vector, e.vector=e.vector)
-        }
-        crosscorVec=c(crosscorVec,crossres)
+      if(predict.stepwise == TRUE && type=="ricker"){
+        crossres=getCrossCorOriPredStepwise(subTS,A=Amodifsub,sim=sim,sigma=sigma,explosion.bound = explosion.bound, ignoreExplosion=ignoreExplosion)
       }else{
-        crosscorVec=c(crosscorVec,NA)
+        crossres=getCrossOriPredFull(subTS,A=Amodifsub,sim=sim,sigma=sigma,explosion.bound = explosion.bound, type=type, m.vector=m.vector, e.vector=e.vector)
       }
+      crosscorVec=c(crosscorVec,crossres)
       # compute auto-correlations for lag 1 to 5
       if(sim=="kld"){
         autocorrStep1Vec=c(autocorrStep1Vec, getMeanAutoKLD(subTS,lag=1))
@@ -161,13 +143,10 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FAL
   autocorrStep5Vec=autocorrStep5Vec[-1]
 
   # compute slope between species number and mean cross-correlation
-  if(autocorOnly==FALSE){
-    reg.data=data.frame(specNumberVec,crosscorVec)
-    linreg = lm(formula = crosscorVec~specNumberVec)
-    slope=linreg$coefficients[2]
-  }else{
-    slope=NA
-  }
+  reg.data=data.frame(specNumberVec,crosscorVec)
+  linreg = lm(formula = crosscorVec~specNumberVec)
+  slope=linreg$coefficients[2]
+
   # compute slope between species number and mean auto-correlation of lag 1
   if(length(which(is.na(autocorrStep1Vec)))<length(autocorrStep1Vec)){
     auto.reg.data=data.frame(specNumberVec,autocorrStep1Vec)
@@ -178,28 +157,19 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FAL
   }
 
   # prepare result object
-  if(autocorOnly==TRUE){
-    res=list(specNumberVec,autocorrStep1Vec,autocorrStep2Vec,autocorrStep3Vec,autocorrStep4Vec,autocorrStep5Vec)
-    names(res)=c("taxonnum","meanautocor1","meanautocor2","meanautocor3","meanautocor4","meanautocor5")
-  }else{
-    res=list(specNumberVec,crosscorVec,autocorrStep1Vec,autocorrStep2Vec,autocorrStep3Vec,autocorrStep4Vec,autocorrStep5Vec)
-    names(res)=c("taxonnum","meancrosscor","meanautocor1","meanautocor2","meanautocor3","meanautocor4","meanautocor5")
-  }
+  res=list(specNumberVec,crosscorVec,autocorrStep1Vec,autocorrStep2Vec,autocorrStep3Vec,autocorrStep4Vec,autocorrStep5Vec)
+  names(res)=c("taxonnum","meancrosscor","meanautocor1","meanautocor2","meanautocor3","meanautocor4","meanautocor5")
 
   if(plot == TRUE){
     # do the quality plot
     mat=matrix(unlist(res),nrow=length(specNumberVec),ncol=length(res))
     # exclude taxon number column
     mat=mat[,2:ncol(mat)]
-    if(autocorOnly==FALSE){
-      main="Quality of estimated interaction matrix"
-      colnames(mat)=c("cor(ori.ts,pred.ts)","autocor(ori.ts) lag 1","autocor(ori.ts) lag 2","autocor(ori.ts) lag 3","autocor(ori.ts) lag 4","autocor(ori.ts) lag 5")
-      my.colors = c("red","blue","blue4","violet","cyan","cadetblue")
-    }else{
-      main="Auto-correlation versus species number"
-      colnames(mat)=c("autocor(ori.ts) lag 1","autocor(ori.ts) lag 2","autocor(ori.ts) lag 3","autocor(ori.ts) lag 4","autocor(ori.ts) lag 5")
-      my.colors = c("blue","blue4","violet","cyan","cadetblue")
-    }
+
+    main="Quality of estimated interaction matrix"
+    colnames(mat)=c("cor(ori.ts,pred.ts)","autocor(ori.ts) lag 1","autocor(ori.ts) lag 2","autocor(ori.ts) lag 3","autocor(ori.ts) lag 4","autocor(ori.ts) lag 5")
+    my.colors = c("red","blue","blue4","violet","cyan","cadetblue")
+
     # the extra 50 is place for the legend
     plot(specNumberVec,mat[,ncol(mat)],xlim=c(0,N+100),ylim = c(-1,1), xlab = "Number of taxa (in decreasing abundance)", ylab = "Mean correlation", main = main, type = "o", col = my.colors[ncol(mat)])
     # plot the cross-correlation prediction last
@@ -208,11 +178,9 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", autocorOnly=FAL
     }
     legend(x="right",colnames(mat), lty = rep(1,ncol(mat)), col = my.colors, merge = TRUE, bg = "white", text.col="black")
   }
-  if(autocorOnly==FALSE){
-    res["corAAest"]=corAwithAest
-    res["AestR"]=rangeAest
-    res["slope"]=slope
-  }
+  res["corAAest"]=corAwithAest
+  res["AestR"]=rangeAest
+  res["slope"]=slope
   res["autoslope"]=autoslope
   return(res)
 }

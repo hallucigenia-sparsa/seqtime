@@ -1,6 +1,6 @@
-#' Do a time-decay plot of a taxon matrix
+#' @title Do a time-decay plot of a taxon matrix
 #'
-#' Plot the time against the sample distance.
+#' @description Plot the time against the sample distance.
 #'
 #' @param x a taxon matrix with rows representing taxa and columns samples
 #' @param time vector with time steps

@@ -1,6 +1,7 @@
-#' LIMITS implementation
+#' @title LIMITS
 #'
-#' LIMITS is an algorithm developed by Fisher & Mehta to estimate the interaction matrix assuming a Ricker model.
+#' @description LIMITS is an algorithm developed by Fisher & Mehta to estimate the interaction matrix from time series data
+#' assuming a Ricker model.
 #'
 #' @param x time series with taxa as rows and time points as columns
 #' @param bagging.iter the number of iterations used for bagging

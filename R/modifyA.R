@@ -1,13 +1,25 @@
-#' Modify the interaction matrix
+#' @title Modify the interaction matrix
 #'
-#' Mode negpercent: The number of interactions equals the number of non-zero entries in the interaction matrix.
-#' If symmetric is true, both matrix triangles will be set to a negative value (corresponding
-#' to competition), else only one triangle will be set to a negative value (corresponding
-#' to parasitism, predation or amensalism). If symmetric is true, the number of interactions
-#' is counted only in one triangle of the interaction matrix.
+#' @description The interaction matrix can be manipulated in the following ways:
+#' adjustc: Adjust the connectance to the given value
+#' schur: apply a Schur decomposition to remove positive eigenvalues that lead to explosions in simulations with Ricker or gLV
+#' negpercent: convert positive into negative interactions, such that the interaction matrix reaches the specified percentage of negative edges/arcs
+#' tweak: multiply a randomly chosen positive entry in the interaction matrix with -1. This is useful when searching for an interaction matrix that does not lead to explosions in Ricker and gLV simulations.
+#' enforceneg: multiply off-diagonal negative entries in interaction matrix with the given factor
+#' removeorphans: remove all taxa that do not interact with other taxa and thus represent orphan nodes in the network representation of the interaction matrix
+#' mergeposlinks: remove redundant taxon names by summing replicate positive arcs and keeping the sum as entries in the matrix (negative arcs are ignored)
+#' mergeneglinks: same as mergeposlinks, but only negative entries are kept
+#' mergelinks: same as mergeposlinks, but all entries are kept
+#'
+#' @details An entry in the interaction matrix represents an arc in a directed network. An interaction involves two
+#' entries in the interaction matrix, which represent the influence of species A on species B and vice versa.
+#' Mode negpercent: By default, the negative arc percentage is adjusted, i.e. the percentage of
+#' negative entries in the interaction matrix. If symmetric is true, both the forward and the reverse arc of an interaction
+#' will be set to a negative value (corresponding to a competition edge), else only one arc will be set to a negative value
+#' (corresponding to an edge representing parasitism, predation or amensalism).
 #'
 #' @param A the interaction matrix
-#' @param mode modification mode, values: adjustc (adjust connectance to reach target connectance), schur (remove positive eigenvalues using the Schur decomposition), negpercent (set the specified percentage of negative edges), tweak (multiply a randomly chosen positive interaction strength with -1), enforceneg (multiply negative interaction strengths with given factor, but keep diagonal as is), removeorphans (remove all species that do not interact with other species), mergeposlinks, mergeneglinks, mergelinks (merge positive/negative/all links of all taxa with the same name)
+#' @param mode modification mode, values: adjustc, schur, negpercent, tweak, enforceneg, removeorphans, mergeposlinks, mergeneglinks, mergelinks
 #' @param strength interaction strength, binary (0/1) or uniform (sampled from uniform distribution from minstrength to 1)
 #' @param factor multiplication factor for enforceneg mode
 #' @param minstrength minimum interaction strength for uniform mode (maximum is 1)
@@ -105,44 +117,55 @@ modifyA<-function(A, mode="adjustc", strength="binary", factor=2, minstrength=0.
     # arc number: number of non-zero entries in the interaction matrix
     num.edge=length(A[A!=0])
     num.perc=(num.edge/100)*perc
-    # symmetric interactions: we will count negative edges, not arcs
-    if(symmetric == TRUE){
-      num.perc=round(num.perc/2)
+    # subtract the negative edges that are already there
+    num.neg.edge=length(A[A<0])
+    print(paste("Number of negative edges already present:",num.neg.edge))
+    if(num.neg.edge>num.perc){
+      warning("The matrix has more negative edges than are required to reach the desired negative edge percentage!")
+    }else if(num.neg.edge==num.perc){
+      print("The matrix has already the desired negative edge percentage.")
     }else{
-      num.perc=round(num.perc)
-    }
-    print(paste("Converting",num.perc,"edges into negative edges",sep=" "))
-    indices=which(A>0,arr.ind=T)
-    # randomly select indices
-    rand=sample(c(1:nrow(indices)))
-    xyposAlreadySeen = c()
-    counter = 0
-    # loop over number of negative edges to introduce
-    for(i in 1:num.perc){
-      xpos=indices[rand[i],1]
-      ypos=indices[rand[i],2]
-      xypos=paste(xpos,"_",ypos, sep="")
-      yxpos=paste(ypos,"_",xpos,sep="")
-      # if we find an index pair that was already used, we have to look for another index pair,
-      # since using the same index pair means to use the same arc or the same arc in reverse direction
-      if(symmetric == TRUE && is.element(xypos,xyposAlreadySeen) == TRUE){
-        xpos = indices[rand[nrow(indices)-counter],1]
-        ypos = indices[rand[nrow(indices)-counter],2]
-        counter = counter + 1
-        if((num.perc + counter) > nrow(indices)){
-          stop("More negative edges requested than can be set!")
-        }
-      }
-      xyposAlreadySeen = c(xypos, yxpos, xyposAlreadySeen)
-      # print for tests
-      # print(paste("xpos",xpos,"ypos",ypos,"value:",A[xpos,ypos],sep=" "))
-      negval=getStrength(strength=strength,pos=FALSE,minstrength=minstrength)
-      A[xpos,ypos]=negval
+      # those negative edges already present do not need to be added
+      num.perc=num.perc-num.neg.edge
+      # symmetric interactions: we will count negative edges, not arcs
       if(symmetric == TRUE){
-        A[ypos,xpos]=negval
+        num.perc=round(num.perc/2)
+      }else{
+        num.perc=round(num.perc)
       }
-      #print(paste("xpos",xpos,"ypos",ypos,"value:",A[xpos,ypos],sep=" "))
-      #print(paste("reverse value:",A[ypos,xpos],sep=" "))
+      print(paste("Converting",num.perc,"edges into negative edges",sep=" "))
+      indices=which(A>0,arr.ind=T)
+      # randomly select indices
+      rand=sample(c(1:nrow(indices)))
+      xyposAlreadySeen = c()
+      counter = 0
+      # loop over number of negative edges to introduce
+      for(i in 1:num.perc){
+        xpos=indices[rand[i],1]
+        ypos=indices[rand[i],2]
+        xypos=paste(xpos,"_",ypos, sep="")
+        yxpos=paste(ypos,"_",xpos,sep="")
+        # if we find an index pair that was already used, we have to look for another index pair,
+        # since using the same index pair means to use the same arc or the same arc in reverse direction
+        if(symmetric == TRUE && is.element(xypos,xyposAlreadySeen) == TRUE){
+          xpos = indices[rand[nrow(indices)-counter],1]
+          ypos = indices[rand[nrow(indices)-counter],2]
+          counter = counter + 1
+          if((num.perc + counter) > nrow(indices)){
+            stop("More negative edges requested than can be set!")
+          }
+        }
+        xyposAlreadySeen = c(xypos, yxpos, xyposAlreadySeen)
+        # print for tests
+        # print(paste("xpos",xpos,"ypos",ypos,"value:",A[xpos,ypos],sep=" "))
+        negval=getStrength(strength=strength,pos=FALSE,minstrength=minstrength)
+        A[xpos,ypos]=negval
+        if(symmetric == TRUE){
+          A[ypos,xpos]=negval
+        }
+        #print(paste("xpos",xpos,"ypos",ypos,"value:",A[xpos,ypos],sep=" "))
+        #print(paste("reverse value:",A[ypos,xpos],sep=" "))
+      }
     }
   }else if(mode == "tweak"){
     # check that positive arcs are present

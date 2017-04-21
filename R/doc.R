@@ -1,6 +1,6 @@
-#' The DOC method by Bashan et al.
+#' @title The DOC method by Bashan et al.
 #'
-#' Given  matrix of relative taxon abundances, plot the dissimilarity-overlap curve (DOC) sample-wise.
+#' @description Given  matrix of relative taxon abundances, plot the dissimilarity-overlap curve (DOC) sample-wise.
 #' The DOC method was developed by Bashan and colleagues.
 #'
 #' @param x rows are taxa, columns are samples

@@ -1,6 +1,6 @@
-#' Self-organized instable model
+#' @title Self-organized instable model
 #'
-#' Generate time series with the self-organized instable (SOI) model based on Sole et al. (model B).
+#' @description Generate time series with the self-organized instable (SOI) model based on Sole et al. (model B).
 #'
 #' @param N number of species
 #' @param I number of individuals
@@ -11,6 +11,10 @@
 #' @return a matrix with species abundances as rows and time points as columns
 #' @seealso \code{\link{ricker}} for the Ricker model
 #' @references Sole et al. 2002 "Self-organized instability in complex ecosystems"
+#' @examples
+#' N=10
+#' A=generateA(N,c=0.1)
+#' tsplot(soi(N=N,I=1000,A=A,tend=100), header="SOI")
 #' @export
 
 soi<-function(N, I, A, m.vector=runif(N), e.vector=runif(N), tend){

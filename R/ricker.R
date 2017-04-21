@@ -1,17 +1,21 @@
-#' @title Generate time series from Ricker model
+#' @title Generate time series with the Ricker model
 #'
-#' @description If an explosion occurs, -1 is returned. An explosion
+#' @description The Ricker model is a discrete version of the generalized Lotka-Volterra model and
+#' is implemented here as proposed by Fisher and Mehta in PLoS ONE 2014.
+#'
+#' @details If an explosion occurs, -1 is returned. An explosion
 #' is reported if any species crosses the explosion bound.
 #'
 #' @param N number of species
 #' @param A interaction matrix
 #' @param K carrying capacity
 #' @param y initial abundances
-#' @param sigma noise level if set to a non-positive value, no noise is added
+#' @param sigma noise level, if set to a non-positive value, no noise is added
 #' @param tend number of time points
 #' @param tskip number of initial time points to skip (to skip the transient)
 #' @param explosion.bound boundary for explosion
 #' @return a matrix with species abundances as rows and time points as columns
+#' @references Fisher & Mehta (2014). Identifying Keystone Species in the Human Gut Microbiome from Metagenomic Timeseries using Sparse Linear Regression. PLoS One 9:e102451
 #' @examples
 #' tsplot(ricker(10,generateA(10),K=rep(0.01,10)),type="l", header="ricker")
 #' @seealso \code{\link{glv}} for the generalized Lotka Volterra model

@@ -1,6 +1,6 @@
-#' Run the Unified Neutral Theory of Biodiversity (UNTB) model
+#' @title Run the Unified Neutral Theory of Biodiversity (UNTB) model
 #'
-#' This function just provides a wrapper around the untb function in the untb package.
+#' @description This function just provides a wrapper around the untb function in the untb package.
 #'
 #' @param N number of species
 #' @param y initial abundances

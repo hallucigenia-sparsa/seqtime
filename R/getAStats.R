@@ -1,6 +1,6 @@
-#' Analyse an interaction matrix
+#' @title Analyse an interaction matrix
 #'
-#' Count interaction types or compute network properties of interaction matrix.
+#' @description Count interaction types or compute network properties of interaction matrix.
 #' The mean interaction strength is computed according to Coyte et al.
 #' by fitting a half-normal distribution to the realized interaction strengths.
 #' Graph properties (modularity, average clustering coefficient, average path length)
