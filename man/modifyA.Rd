@@ -10,7 +10,7 @@ modifyA(A, mode = "adjustc", strength = "binary", factor = 2,
 \arguments{
 \item{A}{the interaction matrix}
 
-\item{mode}{modification mode, values: adjustc (adjust connectance to reach target connectance), schur (remove positive eigenvalues using the Schur decomposition), negpercent (set the specified percentage of negative edges), tweak (multiply a randomly chosen positive interaction strength with -1), enforceneg (multiply negative interaction strengths with given factor, but keep diagonal as is), removeorphans (remove all species that do not interact with other species), mergeposlinks, mergeneglinks, mergelinks (merge positive/negative/all links of all taxa with the same name)}
+\item{mode}{modification mode, values: adjustc, schur, negpercent, tweak, enforceneg, removeorphans, mergeposlinks, mergeneglinks, mergelinks}
 
 \item{strength}{interaction strength, binary (0/1) or uniform (sampled from uniform distribution from minstrength to 1)}
 
@@ -28,9 +28,22 @@ modifyA(A, mode = "adjustc", strength = "binary", factor = 2,
 the modified interaction matrix
 }
 \description{
-Mode negpercent: The number of interactions equals the number of non-zero entries in the interaction matrix.
-If symmetric is true, both matrix triangles will be set to a negative value (corresponding
-to competition), else only one triangle will be set to a negative value (corresponding
-to parasitism, predation or amensalism). If symmetric is true, the number of interactions
-is counted only in one triangle of the interaction matrix.
+The interaction matrix can be manipulated in the following ways:
+adjustc: Adjust the connectance to the given value
+schur: apply a Schur decomposition to remove positive eigenvalues that lead to explosions in simulations with Ricker or gLV
+negpercent: convert positive into negative interactions, such that the interaction matrix reaches the specified percentage of negative edges/arcs
+tweak: multiply a randomly chosen positive entry in the interaction matrix with -1. This is useful when searching for an interaction matrix that does not lead to explosions in Ricker and gLV simulations.
+enforceneg: multiply off-diagonal negative entries in interaction matrix with the given factor
+removeorphans: remove all taxa that do not interact with other taxa and thus represent orphan nodes in the network representation of the interaction matrix
+mergeposlinks: remove redundant taxon names by summing replicate positive arcs and keeping the sum as entries in the matrix (negative arcs are ignored)
+mergeneglinks: same as mergeposlinks, but only negative entries are kept
+mergelinks: same as mergeposlinks, but all entries are kept
+}
+\details{
+An entry in the interaction matrix represents an arc in a directed network. An interaction involves two
+entries in the interaction matrix, which represent the influence of species A on species B and vice versa.
+Mode negpercent: By default, the negative arc percentage is adjusted, i.e. the percentage of
+negative entries in the interaction matrix. If symmetric is true, both the forward and the reverse arc of an interaction
+will be set to a negative value (corresponding to a competition edge), else only one arc will be set to a negative value
+(corresponding to an edge representing parasitism, predation or amensalism).
 }

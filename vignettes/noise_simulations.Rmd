@@ -7,7 +7,6 @@ output:
 vignette: >
   %\VignetteIndexEntry{seqtime examples: noise simulation}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{Cairo}
   %\VignetteEncoding{UTF-8}
   \usepackage[utf8]{inputenc}
 ---

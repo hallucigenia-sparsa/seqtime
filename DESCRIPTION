@@ -23,7 +23,9 @@ Depends:
     tuneR
 Suggests:
     ggplot2,
-    knitr,    
+    knitr,
+    infotheo,
+    sde,
     reshape2,
     testthat
 License: BSD_2_clause + file LICENSE

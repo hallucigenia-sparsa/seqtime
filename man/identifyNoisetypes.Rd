@@ -5,7 +5,7 @@
 \title{Identify Noise Types}
 \usage{
 identifyNoisetypes(x, epsilon = 0.2, pval.threshold = 0.05,
-  permut = FALSE, abund.threshold = 10)
+  permut = FALSE, abund.threshold = 0)
 }
 \arguments{
 \item{x}{a matrix with objects as rows and time points as columns}
@@ -30,10 +30,7 @@ Row sums need to be above the given abundance threshold and the spectral density
 \examples{
 N <- 10
 ricker.out <- ricker(N,generateA(N),K=rep(0.01,N))
-noisetypes <- identifyNoisetypes(ricker.out)
-# Plot the results (FIXME) 
-#plot(ricker.out[noisetypes$brown[1],],
-#       main = paste("Simulated OTU",noisetypes$brown[1]),
-#	ylab = "Abundance")
+noise <- identifyNoisetypes(ricker.out, abund.threshold=0)
+plot(noisetypes)
 
 }

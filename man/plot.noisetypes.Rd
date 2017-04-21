@@ -4,11 +4,8 @@
 \alias{plot.noisetypes}
 \title{Do a barplot of the noise type counts}
 \usage{
-\method{plot}{noisetypes}(noisetypes)
+plot.noisetypes(noisetypes)
 }
 \arguments{
 \item{noisetypes}{the noisetypes object}
-}
-\description{
-Do a barplot of the noise type counts
 }

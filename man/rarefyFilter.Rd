@@ -18,3 +18,12 @@ a list with the rarefied vector or matrix (rar) and the indices of the columns t
 Rarefy a given count vector or matrix column-wise using vegan's rrarefy function.
 If columns have less than the minimum count number, they are discarded.
 }
+\examples{
+data(david_stoolA_otus)
+filtered=rarefyFilter(david_stoolA_otus,min=1000)
+# the rarefied OTU table is stored in rar
+stoolARar=filtered$rar
+# print names of samples that were discarded because they had less than min reads
+discarded=setdiff(1:ncol(david_stoolA_otus),filtered$colindices)
+print(colnames(david_stoolA_otus)[discarded])
+}

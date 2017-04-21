@@ -7,7 +7,7 @@
 sheldon(x, correction = TRUE, N2N1 = FALSE)
 }
 \arguments{
-\item{x}{a vector}
+\item{x}{a vector of species abundances}
 
 \item{correction}{whether or not to apply the correction described in Alatalo, Oikos 37, 199-204, 1981}
 
@@ -17,13 +17,24 @@ sheldon(x, correction = TRUE, N2N1 = FALSE)
 Sheldon's evenness
 }
 \description{
-Compute evenness using Sheldon's index
+Sheldon's index is defined as \eqn{S=\frac{e^H}{N}}, where H is the Shannon diversity and N the species number.
+It ranges from 0 to 1, where 1 signifies a perfectly even abundance distribution.
+}
+\details{
+Note that the N2N1 mode results in evenness smaller than 1 for equal taxon probabilities.
+}
+\examples{
+N=50
+# uneven species abundance distribution
+v = round(generateAbundances(N, mode=5))
+sheldon(v)
+# perfectly even species abundance distribution
+sheldon(rep(N,N))
+# very uneven species abundance distribution
+sheldon(c(rep(1,N),1000))
 }
 \references{
 A.L. Sheldon 1969. Equitability indices: dependence on the species count. Ecology, 50, 466-467.
 
 C Heip 1974. A new index measuring evenness. J. mar. biol. Ass. UK 54, 555-557.
-
-Note that the N2N1 mode results in evenness smaller than 1 for equal taxon
-probabilities.
 }

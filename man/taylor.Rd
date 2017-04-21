@@ -24,8 +24,8 @@ taylor(x, type = "taylor", pseudo = 0, col = "black", header = "",
 for type taylor, the slope, p-value and adjusted R2 of the Taylor law are returned (slope, pval, adjR2)
 }
 \description{
-The power law of mean and variance is also known as Taylor's law.
-Taylor's law: var(Y) = a*mean(Y)^b, in log-scale: log(var(Y)) = log(a)+b*log(mean(Y))
+The power law relationship between variance and mean is known as Taylor's law, which is
+defined as: \eqn{var(Y) = a*mean(Y)^b}. We can obtain the power as the slope in log-scale: \eqn{log(var(Y)) = log(a)+b*log(mean(Y))}
 }
 \references{
 L.R. Taylor (1961). Aggregation, variance and the mean. Nature 189, 732-735.

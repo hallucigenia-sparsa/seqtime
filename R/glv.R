@@ -1,6 +1,6 @@
 #' @title Simulate time series with the generalized Lotka-Volterra model
 #'
-#' Simulate a community time series using the generalized Lotka-Volterra model, defined as
+#' @description Simulate a community time series using the generalized Lotka-Volterra model, defined as
 #' \deqn{\frac{dx}{dt}=x(b+Ax)}
 #' where x is the vector of species abundances, A is the interaction matrix and b the vector of growth rates.
 #'

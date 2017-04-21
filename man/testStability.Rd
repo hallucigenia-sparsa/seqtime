@@ -24,8 +24,10 @@ testStability(A, method = "eigen", K = rep(0.1, N), y = runif(N),
 boolean false if unstable and true if stable
 }
 \description{
-Test the stability of an interaction matrix using Coyte's criterium
-or the eigenvalue criterium.
+Test the stability of an interaction matrix using Coyte's criterium,
+the eigenvalue criterium or a simulation with Ricker.
+}
+\details{
 Coyte's criterium is: max(r_e,r_s) - s < 0,
 where s is the average of the diagonal values (the intra-species competition),
 r_e is the half-horizontal radius of the eigenvalue ellipse of A and

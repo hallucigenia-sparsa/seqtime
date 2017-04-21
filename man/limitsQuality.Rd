@@ -4,11 +4,10 @@
 \alias{limitsQuality}
 \title{Quality scores and plot for estimated interaction matrices}
 \usage{
-limitsQuality(oriTS, A, A.ori = matrix(), type = "ricker",
-  autocorOnly = FALSE, all = FALSE, m.vector = c(), e.vector = c(),
-  spec.subset = NA, norm = FALSE, plot = FALSE, predict.stepwise = TRUE,
-  sim = "r", noSchur = FALSE, ignoreExplosion = FALSE, sigma = -1,
-  explosion.bound = 10^8)
+limitsQuality(oriTS, A, A.ori = matrix(), type = "ricker", m.vector = c(),
+  e.vector = c(), spec.subset = NA, norm = FALSE, plot = FALSE,
+  predict.stepwise = TRUE, sim = "r", noSchur = FALSE,
+  ignoreExplosion = FALSE, sigma = -1, explosion.bound = 10^8)
 }
 \arguments{
 \item{oriTS}{the original time series, with taxa as rows and time points as columns}
@@ -17,15 +16,11 @@ limitsQuality(oriTS, A, A.ori = matrix(), type = "ricker",
 
 \item{A.ori}{the original interaction matrix (optional)}
 
-\item{type}{the model used to predict time series from the interaction matrix, ricker or soc (for soc, predict.stepwise is set to FALSE and noSchur to TRUE)}
+\item{type}{the model used to predict time series from the interaction matrix, ricker or soi (for soi, predict.stepwise is set to FALSE and noSchur to TRUE)}
 
-\item{autocorOnly}{only compute step-wise autocorrelations (in this case, A is optional)}
+\item{m.vector}{the immigration rates for soi (optional, if not provided set to the proportions in the first sample)}
 
-\item{all}{compute auto- and cross-correlations for all species, adding one at each step, in the order of their mean abundance}
-
-\item{m.vector}{the immigration rates for soc (optional, if not provided set to the proportions in the first sample)}
-
-\item{e.vector}{the extinction rates for soc (optional, if not provided sampled from the uniform distribution)}
+\item{e.vector}{the extinction rates for soi (optional, if not provided sampled from the uniform distribution)}
 
 \item{spec.subset}{either a vector of species indices to keep or a number to indicate how many top-abundant (sum across samples) species should be kept, applied to the matrices and time series}
 
@@ -49,22 +44,22 @@ limitsQuality(oriTS, A, A.ori = matrix(), type = "ricker",
 a list with the taxon numbers considered (taxonnum), the mean correlation of observed and predicted time series (meancrosscor), the slope of the former (slope), the value range in the estimated matrix (AestR), the mean correlation between predicted and original matrix (corAAest) and the mean autocorrelations up to lag 5 (meanautocor1 to meanautocor5)
 }
 \description{
-To avoid explosions, the estimated interaction matrix is modified such
-that all its eigen values are negative using the Schur decomposition. The predicted time series is
-obtained step-wise, by computing the current abundances from the
-original abundances of the preceding time point and the given
-estimated interaction matrix with (by default noise-free) Ricker. Carrying capacities are
-estimated as mean abundances. If the original interaction matrix is provided,
+The predicted time series can be obtained by simulating the time series
+with Ricker or SOI at once or step-wise by computing the current abundances from the
+original abundances of the preceding time point. The model parameters are supposed to have
+been estimated from the time series previously. In case of Ricker, the function estimates carrying capacities
+as mean abundances. If the original interaction matrix is provided,
 the mean correlation between estimated and original interaction matrix is computed.
 Thus, two main quality scores are considered: the mean correlation between predicted and
 observed time series and, if provided, the mean correlation between the original and the
-estimated interaction matrix.
+estimated interaction matrix. To avoid explosions in case of Ricker, the estimated interaction matrix can be modified
+such that all its eigen values are negative using the Schur decomposition.
 }
 \examples{
 N=20
 A=generateA(N,c=0.1)
 ts=ricker(N=N,A=A)
-ts=normalize(ts)
+ts=seqtime::normalize(ts)
 Aest=limits(ts,verbose=TRUE)
 out=limitsQuality(ts,A=Aest,A.ori=A, plot=TRUE)
 }

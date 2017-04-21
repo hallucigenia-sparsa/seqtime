@@ -2,7 +2,7 @@
 % Please edit documentation in R/glv.R
 \name{glv}
 \alias{glv}
-\title{Generalized Lotka-Volterra model}
+\title{Simulate time series with the generalized Lotka-Volterra model}
 \usage{
 glv(N = 4, A, b = runif(N), y = runif(N), tstart = 0, tend = 100,
   tstep = 0.1)
@@ -26,7 +26,9 @@ glv(N = 4, A, b = runif(N), y = runif(N), tstart = 0, tend = 100,
 a matrix with species abundances as rows and time points as columns, column names give time points
 }
 \description{
-Generalized Lotka-Volterra model
+Simulate a community time series using the generalized Lotka-Volterra model, defined as
+\deqn{\frac{dx}{dt}=x(b+Ax)}
+where x is the vector of species abundances, A is the interaction matrix and b the vector of growth rates.
 }
 \examples{
 tsplot(glv(N=4,generateA(4)),header="gLV",type="l")

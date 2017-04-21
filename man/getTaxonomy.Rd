@@ -16,9 +16,6 @@ getTaxonomy(selected = c(), lineages, level = "class")
 \value{
 the taxonomy of the OTUs
 }
-\description{
-Get the taxonomy given OTU names and lineage information
-}
 \examples{
 data(david_stoolA_otus)
 data(david_stool_lineages)
