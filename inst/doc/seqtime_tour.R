@@ -10,12 +10,8 @@ library(seqtime)
 N=50
 A=generateA(N, c=0.1, d=-1)
 A=modifyA(A,perc=70,strength="uniform",mode="negpercent")
-# Generate a matrix using the algorithm by Klemm and Eguiluz to simulate a species network with a realistic structure. This takes a couple of minutes to complete.
+# Generate a matrix using the algorithm by Klemm and Eguiluz to simulate a species network with a more realistic modular and scale-free structure. This takes a couple of minutes to complete.
 #A=generateA(N, type="klemm", c=0.1)
-
-## ---- fig.height = 6, fig.width = 6--------------------------------------
-A.graph=graph.adjacency(A,mode="directed",weighted=TRUE)
-plot(A.graph,layout=layout.grid(A.graph))
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
 y=round(generateAbundances(N,mode=5))
@@ -23,6 +19,7 @@ names(y)=c(1:length(y))
 barplot(y,main="Initial species abundances",xlab="Species",ylab="Abundance")
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
+# convert initial abundances in proportions (y/sum(y)) and run without a noise term (sigma=-1)
 out.ricker=ricker(N,A=A,y=(y/sum(y)),K=rep(0.1,N), sigma=-1,tend=500)
 tsplot(out.ricker,type="l",header="Ricker")
 

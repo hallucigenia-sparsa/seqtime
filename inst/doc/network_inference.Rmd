@@ -8,7 +8,6 @@ output:
 vignette: >
   %\VignetteIndexEntry{seqtime examples: network inference with LIMITS}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{Cairo}
   %\VignetteEncoding{UTF-8}
   \usepackage[utf8]{inputenc}
 ---
@@ -25,7 +24,7 @@ We start by loading the seqtime library.
 library(seqtime)
 ```
 
-Next, we generate a "known" interaction matrix.
+Next, we generate a "known" interaction matrix randomly.
 
 ```{r}
 N=20
@@ -40,25 +39,26 @@ Below, we plot our known interaction matrix. Green entries stand for a positive 
 plotA(A, header="Known interaction matrix")
 ```
 
-We can also visualize the interaction matrix as a network:
+We can also visualize the interaction matrix as a network. In contrast to correlation networks, the network is directed. 
+Thus, it can represent asymmetric ecological relationships. For example, consider a parasitic relationship, where species i benefits at the cost of species j. It would be represented in the matrix by a positive entry in row i and column j and a negative entry in row j and column i. In the directed network, this parasitic relationship would correspond to two arcs, one from species i to species j and a reverse one from species j to species i. The negative diagonal entries are represented as self-loops.
 
 ```{r, fig.height = 6, fig.width = 6}
 network=plotA(A,method="network")
 # use igraph's function tkplot for manual layout of the network
 ```
 
-Given our interaction matrix, we simulate a test time series with Ricker:
+Given our interaction matrix, we can now simulate a test time series with the Ricker community model.
 
 ```{r, fig.height = 6, fig.width = 6}
 out.ricker=ricker(N,A=A)
 tsplot(out.ricker,type="l",header="Ricker")
 ```
 
-Now, we run LIMITS to test how well it can infer the known interaction matrix from the first hundred time points of the time series. LIMITS was developed by Fisher and Mehta (PLoS ONE 2014).
+Now, we run LIMITS to test how well it can infer the known interaction matrix from the time series. LIMITS was developed by Fisher and Mehta [PLoS ONE 2014](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0102451).
 LIMITS needs a minute to run and then returns the estimated interaction matrix.
 
 ```{r}
-Aest=limits(out.ricker,verbose=TRUE)
+Aest=limits(out.ricker)
 ```
 
 To compare the known and inferred interaction matrix, we can plot them next to each other:
@@ -83,19 +83,20 @@ Finally, we can plot a few quality estimators for the interaction matrix inferen
 limitsqual=limitsQuality(out.ricker,A=Aest,plot=TRUE)
 ```
 
-For comparison, we can also launch LIMITS on a neutral time series, which is generated without an interaction matrix:
+For comparison, we now generate a neutral time series with the Hubbell model. This model does not take species interactions into account and hence does not take the interaction matrix A as an input.
 
 ```{r, fig.height = 6, fig.width = 6}
 out.hubbell=simHubbell(N=N, M=N,I=1500,d=N, m=0.1, tskip=500, tend=1000)
 tsplot(out.hubbell,type="l",header="Hubbell")
 ```
 
+We infer an interaction matrix from the neutral time series:
 
 ```{r}
-Aesth=limits(out.hubbell,verbose=TRUE)
+Aesth=limits(out.hubbell)
 ```
 
-The quality plot shows that the inferred interaction matrix leads to a high cross-correlation between predicted and original time series, even though the model underlying the original time series does not feature an interaction matrix. Thus, a higher correlation between predicted and original time series can be misleading as an indicator for the quality of the inferred interaction matrix.
+The quality plot shows that the inferred interaction matrix leads to a high cross-correlation between predicted and original time series, even though the model underlying the original time series does not feature an interaction matrix. Thus, a high correlation between predicted and original time series can be misleading as an indicator for the quality of the inferred interaction matrix.
 
 ```{r, fig.height = 6, fig.width = 6}
 limitsqualh=limitsQuality(out.hubbell,A=Aesth, plot=TRUE)
