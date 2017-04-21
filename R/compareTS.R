@@ -1,8 +1,8 @@
-#' @title Community Time Series Comparison with generateTS
-#' @description Compare community time series generated with generateTS.
+#' @title Community Time Series Comparison
 #'
-#' @details If R package infotheo is installed, the entropy of time series
-#' is computed.
+#' @description Compute properties of community time series generated with generateTS.
+#'
+#' @details If infotheo is installed, the entropy will be also computed.
 #'
 #' @param input.folder the folder where results (settings and time series) of function generateTS are stored.
 #' @param expIds the experiment identifiers of time series to be considered
@@ -23,10 +23,11 @@
 compareTS <- function(input.folder="",expIds=c(), modif.folder="", modif="", sliceDef=c(1,NA), epsilon=0.2, norm=FALSE, hurstBins=c(0.5,0.7,0.9), maxautocorBins=c(0.3,0.5,0.8), timeDecaySliceDef=c(1,50), varEvolSliceDef=c(), returnDistribs=FALSE, returnTS=FALSE){
 
   # infotheo needed for entropy computation
-  infotheoThere=TRUE
-  if (!require("infotheo")) {
-    infotheoThere=FALSE
-  }
+  # import
+  #infotheoThere=TRUE
+  #if (!require("infotheo")) {
+  #  infotheoThere=FALSE
+  #}
 
   if(length(hurstBins) != 3){
     stop("Three Hurst bin thresholds required!")
@@ -230,7 +231,7 @@ compareTS <- function(input.folder="",expIds=c(), modif.folder="", modif="", sli
 
     if(returnDistribs == FALSE && returnTS==FALSE){
       # entropy
-      if(infotheoThere == TRUE && norm==FALSE){
+      if(norm==FALSE){
         # discretization needed (also for David data, because of interpolation)
         if(Algorithm=="glv" || Algorithm == "ricker" || Algorithm == "davida" || Algorithm == "davidb"){
           disc=discretize(t(ts),disc="equalwidth")

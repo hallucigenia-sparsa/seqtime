@@ -2,7 +2,7 @@
 % Please edit documentation in R/compareTS.R
 \name{compareTS}
 \alias{compareTS}
-\title{Community Time Series Comparison with generateTS}
+\title{Community Time Series Comparison}
 \usage{
 compareTS(input.folder = "", expIds = c(), modif.folder = "",
   modif = "", sliceDef = c(1, NA), epsilon = 0.2, norm = FALSE,
@@ -41,9 +41,8 @@ compareTS(input.folder = "", expIds = c(), modif.folder = "",
 a table with experiment parameters (algorithm, connectance, sigma, theta and so on) and time series properties (noise types, slope of Taylor's law etc.); if returnDistrib is true, a list with the abundances at the last time point, if returnTS is true, a list with the time series
 }
 \description{
-Compare community time series generated with generateTS.
+Compute properties of community time series generated with generateTS.
 }
 \details{
-If R package infotheo is installed, the entropy of time series
-is computed.
+If infotheo is installed, the entropy will be also computed.
 }

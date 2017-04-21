@@ -11,6 +11,8 @@
 # If y is provided, instead of the AIC or R2, the increase in prediction error is plotted for each taxon. The larger
 # the increase (upon taxon permutation), the more important the taxon for correct prediction of y.
 #
+# This function needs the randomForest package.
+#
 # param x a taxon matrix with rows representing taxa and columns samples
 # param y optionally, a time series of values measured for the samples in x
 # param time vector (needed for plotting, ignored when y is provided)

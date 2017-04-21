@@ -41,11 +41,11 @@ simNoiseMat<-function(samples=100, noisetypes=list(white=2,brown=3,pink=5), brow
   # generate requested number of instances of brown noise
   if(noisetypes$brown > 0){
     # check whether sde is there
-    if(brown.type == "gbm"){
-      if (!require("sde")) {
-        stop("sde is not installed. Please install it.")
-      }
-    }
+    #if(brown.type == "gbm"){
+    #  if (!require("sde")) {
+    #    stop("sde is not installed. Please install it.")
+    #  }
+    #}
     for(i in 1:noisetypes$brown){
       if(brown.type == "bm"){
         # brown noise:  slope in log-log spectral plot around -2
