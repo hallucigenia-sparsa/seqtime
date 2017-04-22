@@ -16,6 +16,11 @@ getTaxonomy(selected = c(), lineages, level = "class")
 \value{
 the taxonomy of the OTUs
 }
+\description{
+The lineage information is provided in form of a matrix,
+which contains for each OTU identifier the taxonomic levels. OTUS in
+the lineage matrix are rows, taxonomic levels columns.
+}
 \examples{
 data(david_stoolA_otus)
 data(david_stool_lineages)

@@ -1,7 +1,7 @@
 #' @title Compute slope for increasing number of taxa versus their autocorrelation
 #' @description The taxa are added in decreasing order of abundance.
 #'
-#' @param x a matrix with objects as rows and time points as columns
+#' @param ts a matrix with objects as rows and time points as columns
 #' @param lag the lag for which autocorrelation is computed
 #' @param plot plot the increasing number of taxa versus their autocorrelation
 #' @return a list with the taxon number, autocorrelations, slope and p-value

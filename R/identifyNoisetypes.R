@@ -11,7 +11,7 @@
 #' N <- 10
 #' ricker.out <- ricker(N,generateA(N),K=rep(0.01,N))
 #' noise <- identifyNoisetypes(ricker.out, abund.threshold=0)
-#' plot(noisetypes)
+#' plot(noise)
 #'
 #' @export
 identifyNoisetypes <- function(x, epsilon = 0.2, pval.threshold = 0.05, permut=FALSE, abund.threshold=0){

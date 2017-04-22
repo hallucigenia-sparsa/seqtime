@@ -7,11 +7,11 @@
 autocorVsTaxonNum(ts, lag = 1, plot = FALSE)
 }
 \arguments{
+\item{ts}{a matrix with objects as rows and time points as columns}
+
 \item{lag}{the lag for which autocorrelation is computed}
 
 \item{plot}{plot the increasing number of taxa versus their autocorrelation}
-
-\item{x}{a matrix with objects as rows and time points as columns}
 }
 \value{
 a list with the taxon number, autocorrelations, slope and p-value

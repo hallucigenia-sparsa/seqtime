@@ -1,5 +1,9 @@
 #' @title Get the taxonomy given OTU names and lineage information
 #'
+#' @description The lineage information is provided in form of a matrix,
+#' which contains for each OTU identifier the taxonomic levels. OTUS in
+#' the lineage matrix are rows, taxonomic levels columns.
+#'
 #' @param selected a character vector of selected OTU identifiers
 #' @param lineages a lineage table
 #' @param level the taxonomic level (domain, phylum, class, order, family, genus or species)

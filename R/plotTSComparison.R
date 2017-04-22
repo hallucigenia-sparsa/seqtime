@@ -114,9 +114,9 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
   # check whether ggplot2 is there
   if(type=="boxplot" || (type=="summary") && useGgplot==TRUE){
     # check whether ggplot2 is there
-    if (!require("ggplot2")) {
-      stop("ggplot2 is not installed. Please install it.")
-    }
+    #if (!require("ggplot2")) {
+    #  stop("ggplot2 is not installed. Please install it.")
+    #}
   }
 
   if(type=="boxplot"){
@@ -202,9 +202,9 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
     }
     if(useGgplot==TRUE){
       # check whether reshape2 is there
-      if (!require("reshape2")) {
-        stop("reshape2 is not installed. Please install it.")
-      }
+      #if (!require("reshape2")) {
+      #  stop("reshape2 is not installed. Please install it.")
+      #}
       mat=rbind(c(1:length(names)),composition)
       rownames(mat)=c("id",rownames(composition))
       df=as.data.frame(t(mat))

@@ -27,6 +27,7 @@ Suggests:
     infotheo,
     sde,
     reshape2,
+    pracma,
     testthat
 License: BSD_2_clause + file LICENSE
 LazyData: true

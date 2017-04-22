@@ -1,4 +1,6 @@
-#' @title Plot change of mean variance versus the number of time points.
+#' @title Plot mean variance versus the number of time points.
+#'
+#' @description Plot the mean variance for an increasing number of time points.
 #'
 #' @param x a community matrix with rows representing taxa and columns time points
 #' @param plot do the plot

@@ -2,7 +2,7 @@
 % Please edit documentation in R/varEvol.R
 \name{varEvol}
 \alias{varEvol}
-\title{Plot change of mean variance versus the number of time points.}
+\title{Plot mean variance versus the number of time points.}
 \usage{
 varEvol(x, plot = TRUE)
 }
@@ -13,6 +13,9 @@ varEvol(x, plot = TRUE)
 }
 \value{
 a list with variances and the intersection, slope, pval and adjR2 of the linear regression of variances against time
+}
+\description{
+Plot the mean variance for an increasing number of time points.
 }
 \examples{
 N=20

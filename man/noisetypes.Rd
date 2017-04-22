@@ -16,5 +16,8 @@ noisetypes(white = 0, pink = 0, brown = 0, black = 0)
 \item{black}{percentage of black noise rows in matrix}
 }
 \value{
-noistypes class
+noisetypes class
+}
+\description{
+Construct a noisetypes object.
 }

@@ -1,14 +1,13 @@
 ---
 title: "Network inference with LIMITS"
 author: "Karoline Faust"
-date: "2017-04-20"
+date: "2017-04-22"
 output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
   %\VignetteIndexEntry{seqtime examples: network inference with LIMITS}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{Cairo}
   %\VignetteEncoding{UTF-8}
   \usepackage[utf8]{inputenc}
 ---
@@ -22,7 +21,7 @@ We start by loading the seqtime library.
 library(seqtime)
 ```
 
-Next, we generate a "known" interaction matrix.
+Next, we generate a "known" interaction matrix randomly.
 
 
 ```r
@@ -52,13 +51,14 @@ plotA(A, header="Known interaction matrix")
 ```
 
 ```
-## [1] "Largest value: 0.471338545903563"
+## [1] "Largest value: 0.454274096526206"
 ## [1] "Smallest value: -0.5"
 ```
 
 ![plot of chunk unnamed-chunk-3](figure_network_inference/unnamed-chunk-3-1.png)
 
-We can also visualize the interaction matrix as a network:
+We can also visualize the interaction matrix as a network. In contrast to correlation networks, the network is directed. 
+Thus, it can represent asymmetric ecological relationships. For example, consider a parasitic relationship, where species i benefits at the cost of species j. It would be represented in the matrix by a positive entry in row i and column j and a negative entry in row j and column i. In the directed network, this parasitic relationship would correspond to two arcs, one from species i to species j and a reverse one from species j to species i. The negative diagonal entries are represented as self-loops.
 
 
 ```r
@@ -66,7 +66,7 @@ network=plotA(A,method="network")
 ```
 
 ```
-## [1] "Largest value: 0.471338545903563"
+## [1] "Largest value: 0.454274096526206"
 ## [1] "Smallest value: -0.5"
 ## [1] "Initial edge number 58"
 ## [1] "Initial connectance 0.1"
@@ -79,7 +79,7 @@ network=plotA(A,method="network")
 # use igraph's function tkplot for manual layout of the network
 ```
 
-Given our interaction matrix, we simulate a test time series with Ricker:
+Given our interaction matrix, we can now simulate a test time series with the Ricker community model.
 
 
 ```r
@@ -89,36 +89,16 @@ tsplot(out.ricker,type="l",header="Ricker")
 
 ![plot of chunk unnamed-chunk-5](figure_network_inference/unnamed-chunk-5-1.png)
 
-Now, we run LIMITS to test how well it can infer the known interaction matrix from the first hundred time points of the time series. LIMITS was developed by Fisher and Mehta (PLoS ONE 2014).
+Now, we run LIMITS to test how well it can infer the known interaction matrix from the time series. LIMITS was developed by Fisher and Mehta [PLoS ONE 2014](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0102451).
 LIMITS needs a minute to run and then returns the estimated interaction matrix.
 
 
 ```r
-Aest=limits(out.ricker,verbose=TRUE)
+Aest=limits(out.ricker)
 ```
 
 ```
 ## [1] "Time series has 20 taxa"
-## [1] "Processing first taxon."
-## [1] "Processing taxon 2"
-## [1] "Processing taxon 3"
-## [1] "Processing taxon 4"
-## [1] "Processing taxon 5"
-## [1] "Processing taxon 6"
-## [1] "Processing taxon 7"
-## [1] "Processing taxon 8"
-## [1] "Processing taxon 9"
-## [1] "Processing taxon 10"
-## [1] "Processing taxon 11"
-## [1] "Processing taxon 12"
-## [1] "Processing taxon 13"
-## [1] "Processing taxon 14"
-## [1] "Processing taxon 15"
-## [1] "Processing taxon 16"
-## [1] "Processing taxon 17"
-## [1] "Processing taxon 18"
-## [1] "Processing taxon 19"
-## [1] "Processing taxon 20"
 ```
 
 To compare the known and inferred interaction matrix, we can plot them next to each other:
@@ -130,7 +110,7 @@ plotA(A,header="known")
 ```
 
 ```
-## [1] "Largest value: 0.471338545903563"
+## [1] "Largest value: 0.454274096526206"
 ## [1] "Smallest value: -0.5"
 ```
 
@@ -139,8 +119,8 @@ plotA(Aest,header="inferred")
 ```
 
 ```
-## [1] "Largest value: 1.21643673257802"
-## [1] "Smallest value: -1.8311140379513"
+## [1] "Largest value: 1.34587069651326"
+## [1] "Smallest value: -2.4610818629251"
 ```
 
 ![plot of chunk unnamed-chunk-7](figure_network_inference/unnamed-chunk-7-1.png)
@@ -158,7 +138,7 @@ mean(diag(crossCor), na.rm=TRUE)
 ```
 
 ```
-## [1] 0.7515217
+## [1] 0.7476177
 ```
 
 Finally, we can plot a few quality estimators for the interaction matrix inference. The quality plot displays the correlation between current and future time points one to five steps ahead (autocor) and the correlation between the original time series and a time series generated from the inferred interaction matrix step by step (cor). We can see that the predicted time series barely outperforms lag-one auto-correlation.
@@ -170,14 +150,14 @@ limitsqual=limitsQuality(out.ricker,A=Aest,plot=TRUE)
 
 ```
 ## [1] "Applying Schur decomposition"
-## [1] "Initial edge number 43"
-## [1] "Initial connectance 0.0605263157894737"
-## [1] "Final connectance: 0.621052631578947"
+## [1] "Initial edge number 46"
+## [1] "Initial connectance 0.068421052631579"
+## [1] "Final connectance: 0.128947368421053"
 ```
 
 ![plot of chunk unnamed-chunk-9](figure_network_inference/unnamed-chunk-9-1.png)
 
-For comparison, we can also launch LIMITS on a neutral time series, which is generated without an interaction matrix:
+For comparison, we now generate a neutral time series with the Hubbell model. This model does not take species interactions into account and hence does not take the interaction matrix A as an input.
 
 
 ```r
@@ -187,37 +167,18 @@ tsplot(out.hubbell,type="l",header="Hubbell")
 
 ![plot of chunk unnamed-chunk-10](figure_network_inference/unnamed-chunk-10-1.png)
 
+We infer an interaction matrix from the neutral time series:
 
 
 ```r
-Aesth=limits(out.hubbell,verbose=TRUE)
+Aesth=limits(out.hubbell)
 ```
 
 ```
 ## [1] "Time series has 20 taxa"
-## [1] "Processing first taxon."
-## [1] "Processing taxon 2"
-## [1] "Processing taxon 3"
-## [1] "Processing taxon 4"
-## [1] "Processing taxon 5"
-## [1] "Processing taxon 6"
-## [1] "Processing taxon 7"
-## [1] "Processing taxon 8"
-## [1] "Processing taxon 9"
-## [1] "Processing taxon 10"
-## [1] "Processing taxon 11"
-## [1] "Processing taxon 12"
-## [1] "Processing taxon 13"
-## [1] "Processing taxon 14"
-## [1] "Processing taxon 15"
-## [1] "Processing taxon 16"
-## [1] "Processing taxon 17"
-## [1] "Processing taxon 18"
-## [1] "Processing taxon 19"
-## [1] "Processing taxon 20"
 ```
 
-The quality plot shows that the inferred interaction matrix leads to a high cross-correlation between predicted and original time series, even though the model underlying the original time series does not feature an interaction matrix. Thus, a higher correlation between predicted and original time series can be misleading as an indicator for the quality of the inferred interaction matrix.
+The quality plot shows that the inferred interaction matrix leads to a high cross-correlation between predicted and original time series, even though the model underlying the original time series does not feature an interaction matrix. Thus, a high correlation between predicted and original time series can be misleading as an indicator for the quality of the inferred interaction matrix.
 
 
 ```r
@@ -226,9 +187,9 @@ limitsqualh=limitsQuality(out.hubbell,A=Aesth, plot=TRUE)
 
 ```
 ## [1] "Applying Schur decomposition"
-## [1] "Initial edge number 50"
-## [1] "Initial connectance 0.0789473684210526"
-## [1] "Final connectance: 0.115789473684211"
+## [1] "Initial edge number 49"
+## [1] "Initial connectance 0.0763157894736842"
+## [1] "Final connectance: 0.85"
 ```
 
 ![plot of chunk unnamed-chunk-12](figure_network_inference/unnamed-chunk-12-1.png)
