@@ -51,7 +51,7 @@ plotA(A, header="Known interaction matrix")
 ```
 
 ```
-## [1] "Largest value: 0.454274096526206"
+## [1] "Largest value: 0.484457682352513"
 ## [1] "Smallest value: -0.5"
 ```
 
@@ -66,7 +66,7 @@ network=plotA(A,method="network")
 ```
 
 ```
-## [1] "Largest value: 0.454274096526206"
+## [1] "Largest value: 0.484457682352513"
 ## [1] "Smallest value: -0.5"
 ## [1] "Initial edge number 58"
 ## [1] "Initial connectance 0.1"
@@ -110,7 +110,7 @@ plotA(A,header="known")
 ```
 
 ```
-## [1] "Largest value: 0.454274096526206"
+## [1] "Largest value: 0.484457682352513"
 ## [1] "Smallest value: -0.5"
 ```
 
@@ -119,8 +119,8 @@ plotA(Aest,header="inferred")
 ```
 
 ```
-## [1] "Largest value: 1.34587069651326"
-## [1] "Smallest value: -2.4610818629251"
+## [1] "Largest value: 1.60394573617015"
+## [1] "Smallest value: -3.08883746532602"
 ```
 
 ![plot of chunk unnamed-chunk-7](figure_network_inference/unnamed-chunk-7-1.png)
@@ -138,7 +138,7 @@ mean(diag(crossCor), na.rm=TRUE)
 ```
 
 ```
-## [1] 0.7476177
+## [1] 0.7666941
 ```
 
 Finally, we can plot a few quality estimators for the interaction matrix inference. The quality plot displays the correlation between current and future time points one to five steps ahead (autocor) and the correlation between the original time series and a time series generated from the inferred interaction matrix step by step (cor). We can see that the predicted time series barely outperforms lag-one auto-correlation.
@@ -150,9 +150,9 @@ limitsqual=limitsQuality(out.ricker,A=Aest,plot=TRUE)
 
 ```
 ## [1] "Applying Schur decomposition"
-## [1] "Initial edge number 46"
-## [1] "Initial connectance 0.068421052631579"
-## [1] "Final connectance: 0.128947368421053"
+## [1] "Initial edge number 61"
+## [1] "Initial connectance 0.107894736842105"
+## [1] "Final connectance: 0.705263157894737"
 ```
 
 ![plot of chunk unnamed-chunk-9](figure_network_inference/unnamed-chunk-9-1.png)
@@ -187,8 +187,8 @@ limitsqualh=limitsQuality(out.hubbell,A=Aesth, plot=TRUE)
 
 ```
 ## [1] "Applying Schur decomposition"
-## [1] "Initial edge number 49"
-## [1] "Initial connectance 0.0763157894736842"
+## [1] "Initial edge number 51"
+## [1] "Initial connectance 0.0815789473684211"
 ## [1] "Final connectance: 0.85"
 ```
 

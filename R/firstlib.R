@@ -1,25 +1,51 @@
 #' @importFrom FGN HurstK
 #' @importFrom gtools rdirichlet
-#' @importFrom randomForest randomForest
 #' @importFrom tuneR noise
-#' @importFrom sde GBM
 #' @importFrom vegan rrarefy
 #' @importFrom vegan bstick
+#' @importFrom vegan vegdist
 #' @importFrom deSolve lsoda
 #' @importFrom geigen gqz
 #' @importFrom MASS ginv
-#' @importFrom ggplot2 ggplot
-#' @importFrom reshape2 melt
 #' @importFrom stinepack stinterp
 #' @importFrom untb untb
-#' @importFrom infotheo discretize
-#' @importFrom infotheo entropy
-#' @importFrom("grDevices", "colorRampPalette", "dev.off", "hsv", "pdf","rgb")
-#' @importFrom("stats", "cor", "cor.test", "cov", "lm", "lowess", "median","pf", "quantile", "rbinom", "rexp", "rgamma", "rlnorm","rmultinom", "rnbinom", "rnorm", "rpois", "runif", "sigma","spline", "var", "wilcox.test")
-#' @importFrom("utils", "data", "read.table")
+#' @importFrom untb as.count
+#' @importFrom untb species.table
+#' @importFrom grDevices colorRampPalette
+#' @importFrom grDevices dev.off
+#' @importFrom grDevices hsv
+#' @importFrom grDevices pdf
+#' @importFrom grDevices rgb
+#' @importFrom stats cor
+#' @importFrom stats cor.test
+#' @importFrom stats cov
+#' @importFrom stats lm
+#' @importFrom stats lowess
+#' @importFrom stats median
+#' @importFrom stats pf
+#' @importFrom stats quantile
+#' @importFrom stats rbinom
+#' @importFrom stats rexp
+#' @importFrom stats rgamma
+#' @importFrom stats rlnorm
+#' @importFrom stats rmultinom
+#' @importFrom stats rnbinom
+#' @importFrom stats rnorm
+#' @importFrom stats rpois
+#' @importFrom stats runif
+#' @importFrom stats sigma
+#' @importFrom stats spline
+#' @importFrom stats var
+#' @importFrom stats wilcox.test
+#' @importFrom utils data
+#' @importFrom utils read.table
 #' @import igraph
 #' @import graphics
-#' @export
+
+.onAttach <- function(lib, pkg)
+{
+  packageStartupMessage('\nseqtime: Time Series Analysis of Sequencing Data')
+}
 
 
 

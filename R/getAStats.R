@@ -141,7 +141,7 @@ getAStats<-function(A, statsType = "interactions", plot.degree=FALSE, collapse.d
     maxFc=max(fc$modularity)
     print(paste("Fastgreedy modularity of final network:",maxFc))
     if(plot.degree==TRUE){
-      plot(degree.distribution(g,cum=T),log="xy")
+      plot(degree.distribution(g,cumulative=T),log="xy")
     }
     cc=transitivity(g, type="average")
     avglength=average.path.length(g)

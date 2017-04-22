@@ -49,10 +49,10 @@ Hwhite <- hurstexp(w@left, d = 128)
 ```
 
 ```
-## Simple R/S Hurst estimation:         0.5072065 
-## Corrected R over S Hurst exponent:   0.5215416 
-## Empirical Hurst exponent:            0.5248998 
-## Corrected empirical Hurst exponent:  0.5091865 
+## Simple R/S Hurst estimation:         0.5339983 
+## Corrected R over S Hurst exponent:   0.5552242 
+## Empirical Hurst exponent:            0.5440915 
+## Corrected empirical Hurst exponent:  0.528688 
 ## Theoretical Hurst exponent:          0.5155387
 ```
 
@@ -61,10 +61,10 @@ Hbrown <- hurstexp(b, d = 128)
 ```
 
 ```
-## Simple R/S Hurst estimation:         0.9160485 
-## Corrected R over S Hurst exponent:   1.00235 
-## Empirical Hurst exponent:            0.9948149 
-## Corrected empirical Hurst exponent:  0.9907323 
+## Simple R/S Hurst estimation:         0.9200454 
+## Corrected R over S Hurst exponent:   1.008285 
+## Empirical Hurst exponent:            1.010854 
+## Corrected empirical Hurst exponent:  1.00679 
 ## Theoretical Hurst exponent:          0.5155387
 ```
 
@@ -73,10 +73,10 @@ Hpink <- hurstexp(p@left, d = 128)
 ```
 
 ```
-## Simple R/S Hurst estimation:         0.8221138 
-## Corrected R over S Hurst exponent:   0.9161644 
-## Empirical Hurst exponent:            0.9403144 
-## Corrected empirical Hurst exponent:  0.9340492 
+## Simple R/S Hurst estimation:         0.8222468 
+## Corrected R over S Hurst exponent:   0.9071658 
+## Empirical Hurst exponent:            0.9215461 
+## Corrected empirical Hurst exponent:  0.9152268 
 ## Theoretical Hurst exponent:          0.5155387
 ```
 

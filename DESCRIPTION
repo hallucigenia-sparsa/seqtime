@@ -11,15 +11,16 @@ Authors@R: c(person("Karoline", "Faust", email = "karoline.faust@kuleuven.be", r
 Description: Functions to analyse sequencing data time series and to simulate community dynamics.
 Depends:
     R (>= 3.2.1),
+    igraph,
+    vegan
+Imports:
     deSolve,    
     FGN,
     geigen,
     gtools,    
-    igraph,
     MASS,    
     stinepack,    
     untb,
-    vegan,    
     tuneR
 Suggests:
     ggplot2,

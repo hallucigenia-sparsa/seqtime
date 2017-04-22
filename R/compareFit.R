@@ -95,6 +95,15 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
   ExtinctionName=""
   ImmigrationName=""
 
+  Algorithm=""
+  Input_experiment_identifier=NA
+  Sampling_frequency=NA
+  init_abundance_mode=NA
+  theta=NA
+  immigration_rate_Hubbell=NA
+  deathrate_Hubbell=NA
+
+
   # identify gaps
   if(setMissingIdsToNA==TRUE){
     if(is.na(maxId)){

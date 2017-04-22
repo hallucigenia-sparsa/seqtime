@@ -40,7 +40,7 @@ sliceTS<-function(slices=NULL, slice.def.path="", input.folder="", output.folder
   }
 
   if(!is.null(slices) && slice.def.path!=""){
-    warn("Both the matrix with slice definitions and the path to the slice definition file is provided. The latter is ignored.")
+    warning("Both the matrix with slice definitions and the path to the slice definition file is provided. The latter is ignored.")
     slice.def.path=""
   }
 

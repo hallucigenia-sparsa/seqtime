@@ -24,7 +24,7 @@ simUntb<-function(N, y=rep(1,N), m=0.02, tskip=0, tend=5000){
   # gens: generations
   # keep: keep the whole time series
   # outcome: timepoints x species
-  ts <- untb(start = y, prob = m, gens = tend, keep = TRUE, meta = as.count(1:N))
+  ts <- untb(start = y, prob = m, gens = tend, keep = TRUE, meta = untb::as.count(1:N))
 
   # skip the transient
   if(tskip > 0){

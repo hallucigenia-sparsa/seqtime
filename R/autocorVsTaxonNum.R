@@ -7,10 +7,12 @@
 #' @return a list with the taxon number, autocorrelations, slope and p-value
 #'
 #' @examples
+#' \dontrun{
 #' N=10
 #' A=generateA(N,c=0.1)
 #' soi.ts=soi(N=N,I=1000,A=A,tend=100)
 #' res=autocorVsTaxonNum(soi.ts, plot=TRUE)
+#' }
 #' @export
 
 autocorVsTaxonNum<-function(ts, lag=1, plot=FALSE){

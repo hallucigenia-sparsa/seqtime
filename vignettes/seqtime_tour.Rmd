@@ -66,7 +66,7 @@ Now we look at the noise types of the species simulated with the noise-free Rick
 
 ```{r, fig.height = 6, fig.width = 6}
 ricker.noise=identifyNoisetypes(out.ricker, abund.threshold = 0)
-plot(ricker.noise)
+plotNoisetypes(ricker.noise)
 ```
 
 Next, we run the SOI model on the same interaction matrix and initial abundances. For the example, we run it with only 500 individuals and 100 generations.
@@ -86,7 +86,7 @@ When we compute noise types in the community time series generated with SOI, we 
 
 ```{r, fig.height = 6, fig.width = 6}
 soi.noise=identifyNoisetypes(out.soi,abund.threshold=0)
-plot(soi.noise)
+plotNoisetypes(soi.noise)
 ```
 
 Next, we generate a community time series with the Hubbell model, which describes neutral community dynamics. We set the number of species in the local and in the meta-community as well as the number of deaths to N and assign 1500 individuals. The immigration rate m is set to 0.1. We skip the first 500 steps of transient dynamics. 
@@ -106,7 +106,7 @@ The Hubbell time series is dominated by brown noise:
 
 ```{r, fig.height = 6, fig.width = 6}
 hubbell.noise=identifyNoisetypes(out.hubbell,abund.threshold=0)
-plot(hubbell.noise)
+plotNoisetypes(hubbell.noise)
 ```
 
 Finally, we generate a community with the Dirichlet Multinomial distribution, which in contrast to the three previous models does not introduce a dependency between time points.
@@ -126,7 +126,7 @@ As expected, samples generated with the Dirichlet-Multinomial distribution do no
 
 ```{r, fig.height = 6, fig.width = 6}
 dm.uneven.noise=identifyNoisetypes(dm.uneven,abund.threshold=0)
-plot(dm.uneven.noise)
+plotNoisetypes(dm.uneven.noise)
 ```
 
 The evenness of the species proportion vector given to the Dirichlet-Multinomial distribution influences the slope of the Taylor law:

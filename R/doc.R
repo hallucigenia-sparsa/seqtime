@@ -13,6 +13,7 @@
 #' @return a list with the overlaps, dissimilarities, lowess smoothed overlaps and dissimilarites and lower and upper confidence intervals
 #' @references A. Bashan et al. (2016). Universality of human microbial dynamics, Nature 534, 259-262.
 #' @examples
+#' \dontrun{
 #' data("david_stoolA_otus")
 #' data=rarefyFilter(david_stoolA_otus,min=10000)[[1]]
 #' out=doc(data[,1:100],B=10) # apply the DOC method on the first 100 time points
@@ -21,6 +22,7 @@
 #' metapop=generateAbundances(N=M, mode=5, probabs=TRUE)
 #' ts=simHubbell(N=N, M=M,I=1500,d=N, m.vector=metapop, tskip=500, tend=600)
 #' out2=doc(ts,B=10) # apply the DOC method to the Hubbell time series
+#' }
 #' @export
 
 doc<-function(x, B=100, polygons=FALSE, rand=FALSE, lower.conf=0.03, upper.conf=0.97, null.model="assembly"){

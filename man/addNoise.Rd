@@ -43,8 +43,10 @@ When generating modified values with the negative binomial and add set to false,
 It is not recommended to enable add when using the Poisson or negative binomial distribution.
 }
 \examples{
+\dontrun{
   N <- 50
   metapop <- generateAbundances(N=500, mode=5, probabs=TRUE)
   ts <- simHubbell(N=N, M=500,I=1500,d=N, m.vector=metapop, tskip=500, tend=1000)
   ts.noisy <- addNoise(ts)
+ }
 }

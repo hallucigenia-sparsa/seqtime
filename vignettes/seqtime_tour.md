@@ -48,8 +48,8 @@ A=modifyA(A,perc=70,strength="uniform",mode="negpercent")
 ```
 ## [1] "Initial edge number 295"
 ## [1] "Initial connectance 0.1"
-## [1] "Number of negative edges already present: 174"
-## [1] "Converting 32 edges into negative edges"
+## [1] "Number of negative edges already present: 168"
+## [1] "Converting 38 edges into negative edges"
 ## [1] "Final connectance: 0.1"
 ```
 
@@ -91,7 +91,7 @@ ricker.taylor=seqtime::taylor(out.ricker, pseudo=0.0001, col="green", type="tayl
 ```
 
 ```
-## [1] "Adjusted R2: 0.124594671060487"
+## [1] "Adjusted R2: 0.056685808324661"
 ```
 
 ![plot of chunk unnamed-chunk-5](figure_seqtime_tour/unnamed-chunk-5-1.png)
@@ -114,7 +114,7 @@ ricker.noise=identifyNoisetypes(out.ricker, abund.threshold = 0)
 ```
 
 ```r
-plot(ricker.noise)
+plotNoisetypes(ricker.noise)
 ```
 
 ![plot of chunk unnamed-chunk-6](figure_seqtime_tour/unnamed-chunk-6-1.png)
@@ -137,7 +137,7 @@ soi.taylor=seqtime::taylor(out.soi, pseudo=0.0001, col="blue", type="taylor")
 ```
 
 ```
-## [1] "Adjusted R2: 0.954097475475445"
+## [1] "Adjusted R2: 0.979020201012835"
 ```
 
 ![plot of chunk unnamed-chunk-8](figure_seqtime_tour/unnamed-chunk-8-1.png)
@@ -151,16 +151,16 @@ soi.noise=identifyNoisetypes(out.soi,abund.threshold=0)
 
 ```
 ## [1] "Number of taxa below the abundance threshold:  1"
-## [1] "Number of taxa with non-significant power spectrum laws:  15"
+## [1] "Number of taxa with non-significant power spectrum laws:  11"
 ## [1] "Number of taxa with non-classified power spectrum:  24"
 ## [1] "Number of taxa with white noise:  0"
-## [1] "Number of taxa with pink noise:  9"
-## [1] "Number of taxa with brown noise:  1"
+## [1] "Number of taxa with pink noise:  11"
+## [1] "Number of taxa with brown noise:  3"
 ## [1] "Number of taxa with black noise:  0"
 ```
 
 ```r
-plot(soi.noise)
+plotNoisetypes(soi.noise)
 ```
 
 ![plot of chunk unnamed-chunk-9](figure_seqtime_tour/unnamed-chunk-9-1.png)
@@ -183,7 +183,7 @@ hubbell.taylor=seqtime::taylor(out.hubbell, pseudo=0.0001, col="blue", type="tay
 ```
 
 ```
-## [1] "Adjusted R2: 0.942483181718735"
+## [1] "Adjusted R2: 0.910522223156054"
 ```
 
 ![plot of chunk unnamed-chunk-11](figure_seqtime_tour/unnamed-chunk-11-1.png)
@@ -198,15 +198,15 @@ hubbell.noise=identifyNoisetypes(out.hubbell,abund.threshold=0)
 ```
 ## [1] "Number of taxa below the abundance threshold:  1"
 ## [1] "Number of taxa with non-significant power spectrum laws:  0"
-## [1] "Number of taxa with non-classified power spectrum:  31"
+## [1] "Number of taxa with non-classified power spectrum:  29"
 ## [1] "Number of taxa with white noise:  0"
-## [1] "Number of taxa with pink noise:  1"
-## [1] "Number of taxa with brown noise:  17"
+## [1] "Number of taxa with pink noise:  0"
+## [1] "Number of taxa with brown noise:  20"
 ## [1] "Number of taxa with black noise:  0"
 ```
 
 ```r
-plot(hubbell.noise)
+plotNoisetypes(hubbell.noise)
 ```
 
 ![plot of chunk unnamed-chunk-12](figure_seqtime_tour/unnamed-chunk-12-1.png)
@@ -229,7 +229,7 @@ dm.uneven.taylor=seqtime::taylor(dm.uneven, pseudo=0.0001, col="orange", type="t
 ```
 
 ```
-## [1] "Adjusted R2: 0.969040968392382"
+## [1] "Adjusted R2: 0.984134135763677"
 ```
 
 ![plot of chunk unnamed-chunk-14](figure_seqtime_tour/unnamed-chunk-14-1.png)
@@ -243,8 +243,8 @@ dm.uneven.noise=identifyNoisetypes(dm.uneven,abund.threshold=0)
 
 ```
 ## [1] "Number of taxa below the abundance threshold:  0"
-## [1] "Number of taxa with non-significant power spectrum laws:  49"
-## [1] "Number of taxa with non-classified power spectrum:  1"
+## [1] "Number of taxa with non-significant power spectrum laws:  46"
+## [1] "Number of taxa with non-classified power spectrum:  4"
 ## [1] "Number of taxa with white noise:  0"
 ## [1] "Number of taxa with pink noise:  0"
 ## [1] "Number of taxa with brown noise:  0"
@@ -252,7 +252,7 @@ dm.uneven.noise=identifyNoisetypes(dm.uneven,abund.threshold=0)
 ```
 
 ```r
-plot(dm.uneven.noise)
+plotNoisetypes(dm.uneven.noise)
 ```
 
 ![plot of chunk unnamed-chunk-15](figure_seqtime_tour/unnamed-chunk-15-1.png)
@@ -266,7 +266,7 @@ dm.even.taylor=seqtime::taylor(dm.even, pseudo=0.0001, col="orange", type="taylo
 ```
 
 ```
-## [1] "Adjusted R2: 0.211233525239954"
+## [1] "Adjusted R2: 0.355717117410069"
 ```
 
 ![plot of chunk unnamed-chunk-16](figure_seqtime_tour/unnamed-chunk-16-1.png)

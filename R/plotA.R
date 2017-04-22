@@ -85,8 +85,11 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
     #  stop("reshape2 is not installed. Please install it.")
     #}
     scale.plot<-max(c(max(A),-min(A)))
+    Var1=NA
+    Var2=NA
+    value=NA
     # theme(axis.text.x = element_text(angle = 90, hjust = 1))+ coord_fixed() + coord_fixed()
-    p1<-ggplot2::ggplot(reshape2::melt(A), aes(Var1,Var2, fill=value)) + geom_raster()+ scale_fill_gradient2(low = "red", mid = "white", high = "green",limits=c(-scale.plot, scale.plot)) + ggtitle(header) + labs(x = "",y="")
+    p1<-ggplot2::ggplot(reshape2::melt(A), ggplot2::aes(Var1,Var2, fill=value)) + ggplot2::geom_raster()+ ggplot2::scale_fill_gradient2(low = "red", mid = "white", high = "green",limits=c(-scale.plot, scale.plot)) + ggplot2::ggtitle(header) + ggplot2::labs(x = "",y="")
     plot(p1)
   }else if(method=="network"){
     if(removeOrphans==TRUE){

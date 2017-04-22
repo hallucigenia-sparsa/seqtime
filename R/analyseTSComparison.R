@@ -65,7 +65,7 @@ analyseTSComparison<-function(data, timeseries=NULL, algorithm="ricker", propert
       valx=unique(x)
       valy=unique(y)
       if(length(valx)==2 && length(valy)==2){
-        warn("Both variables can be treated as binary. One is selected randomly!")
+        warning("Both variables can be treated as binary. One is selected randomly!")
       }
       if(length(valx)==2){
         categories=valx

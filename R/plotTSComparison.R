@@ -123,9 +123,9 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
     title=paste("Generator versus ",descript, " colored by ",colorByDescript,sep="")
     ymin=min(data[property],na.rm=TRUE)
     ymax=max(data[property],na.rm=TRUE)
-    p <- ggplot(data, aes(factor(algorithm),data[property]))
+    p <- ggplot2::ggplot(data, ggplot2::aes(factor(algorithm),data[property]))
     # remove legend title: theme(legend.title=element_blank())
-    p + geom_boxplot() + geom_jitter(aes(colour=factor(unlist(data[colorBy]))), width=jitter.width, size=dot.size) + coord_cartesian(ylim=c(ymin,ymax)) + ggtitle(title) + xlab("Generator") + ylab(firstup(descript)) + theme(legend.title=element_blank())
+    p + ggplot2::geom_boxplot() + ggplot2::geom_jitter(ggplot2::aes(colour=factor(unlist(data[colorBy]))), width=jitter.width, size=dot.size) + ggplot2::coord_cartesian(ylim=c(ymin,ymax)) + ggplot2::ggtitle(title) + ggplot2::xlab("Generator") + ggplot2::ylab(firstup(descript)) + ggplot2::theme(legend.title=ggplot2::element_blank())
   }else if(type=="summary"){
     # bar plot with OTU percentages in each category
     nrowComp=4
@@ -205,12 +205,15 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
       #if (!require("reshape2")) {
       #  stop("reshape2 is not installed. Please install it.")
       #}
+      id=NA
+      value=NA
+      variable=NA
       mat=rbind(c(1:length(names)),composition)
       rownames(mat)=c("id",rownames(composition))
       df=as.data.frame(t(mat))
       df.m=reshape2::melt(df,id.var="id")
-      ggplot(df.m, aes(x = id, y = value, fill = variable)) +
-        geom_bar(stat = "identity") + ylab(ylab) + xlab("Experiment id") + scale_fill_manual(values=colors)
+      ggplot2::ggplot(df.m, ggplot2::aes(x = id, y = value, fill = variable)) +
+        ggplot2::geom_bar(stat = "identity") + ggplot2::ylab(ylab) + ggplot2::xlab("Experiment id") + ggplot2::scale_fill_manual(values=colors)
     }else{
       colnames(composition)=NULL
       par(las=2, srt=90, mar = c(5, 5, 4, 2))

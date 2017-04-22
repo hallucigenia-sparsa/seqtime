@@ -31,6 +31,6 @@ Row sums need to be above the given abundance threshold and the spectral density
 N <- 10
 ricker.out <- ricker(N,generateA(N),K=rep(0.01,N))
 noise <- identifyNoisetypes(ricker.out, abund.threshold=0)
-plot(noise)
+plotNoisetypes(noise)
 
 }

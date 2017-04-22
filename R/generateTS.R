@@ -308,13 +308,17 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
       ts.out=simCountMat(N=N,pi=y, samples=tend, counts=count, distrib="dm", theta=theta)
     }else if(algorithm == "davida" || algorithm == "davidb"){
       if(algorithm == "davida"){
-        data("david_stoolA_otus")
-        data("david_stoolA_metadata")
+        david_stoolA_otus=matrix()
+        david_stoolA_metadata=matrix()
+        load(system.file("data/david_stoolA_otus.rda", package = "seqtime"))
+        load(system.file("data/david_stoolA_metadata.rda", package = "seqtime"))
         stool=david_stoolA_otus
         metadata=david_stoolA_metadata
       }else if(algorithm == "davidb"){
-        data("david_stoolB_otus")
-        data("david_stoolB_metadata")
+        david_stoolB_otus=matrix()
+        david_stoolB_metadata=matrix()
+        load(system.file("data/david_stoolB_otus.rda", package = "seqtime"))
+        load(system.file("data/david_stoolB_metadata.rda", package = "seqtime"))
         stool=david_stoolB_otus
         metadata=david_stoolB_metadata
         # omit the last sample in David data stool B, because there is a huge sampling gap of 66 days

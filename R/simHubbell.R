@@ -14,10 +14,12 @@
 #' @references Rosindell, Hubbell and Etienne (2011). The Unified Neutral Theory of Biodiversity and Biogeography at Age Ten. Trends in Ecology and Evolution, vol. 26 (7), 340-348.
 #' @seealso \code{\link{simUntb}} for the neutral model with the \pkg{untb} package
 #' @examples
+#' \dontrun{
 #'   N <- 50
 #'   M <- 500
 #'   metapop <- generateAbundances(N = M, mode = 5, probabs = TRUE)
 #'   x <- tsplot(simHubbell(N = N, M = M, I = 3000, d = N, m.vector = metapop, tskip=500, tend=1000))
+#' }
 #' @export
 simHubbell<-function(N=50, M=500, I=500, y=rep(1/N,N), m.vector=rep(1/M,M), m=0.02, d=10, tskip=0, tend=100){
   if(sum(m.vector) != 1){

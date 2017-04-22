@@ -108,6 +108,14 @@ compareTS <- function(input.folder="",expIds=c(), modif.folder="", modif="", sli
   entropy=c()
   autoslopes=c()
 
+  Algorithm=""
+  Input_experiment_identifier=NA
+  Sampling_frequency=NA
+  init_abundance_mode=NA
+  theta=NA
+  immigration_rate_Hubbell=NA
+  deathrate_Hubbell=NA
+
   # distribution list
   distribList = list()
 
@@ -234,8 +242,8 @@ compareTS <- function(input.folder="",expIds=c(), modif.folder="", modif="", sli
       if(norm==FALSE){
         # discretization needed (also for David data, because of interpolation)
         if(Algorithm=="glv" || Algorithm == "ricker" || Algorithm == "davida" || Algorithm == "davidb"){
-          disc=discretize(t(ts),disc="equalwidth")
-          ent=entropy(disc)
+          disc=infotheo::discretize(t(ts),disc="equalwidth")
+          ent=infotheo::entropy(disc)
         }else{
           ent=entropy(t(ts))
         }

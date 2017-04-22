@@ -28,12 +28,14 @@
 #' @param explosion.bound the explosion boundary in Ricker
 #' @return a list with the taxon numbers considered (taxonnum), the mean correlation of observed and predicted time series (meancrosscor), the slope of the former (slope), the value range in the estimated matrix (AestR), the mean correlation between predicted and original matrix (corAAest) and the mean autocorrelations up to lag 5 (meanautocor1 to meanautocor5)
 #' @examples
+#' \dontrun{
 #' N=20
 #' A=generateA(N,c=0.1)
 #' ts=ricker(N=N,A=A)
 #' ts=seqtime::normalize(ts)
 #' Aest=limits(ts,verbose=TRUE)
 #' out=limitsQuality(ts,A=Aest,A.ori=A, plot=TRUE)
+#' }
 #' @export
 
 limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", m.vector=c(), e.vector=c(), spec.subset=NA, norm=FALSE, plot=FALSE, predict.stepwise=TRUE, sim="r", noSchur=FALSE, ignoreExplosion=FALSE, sigma=-1, explosion.bound=10^8){
@@ -219,7 +221,7 @@ getCrossOriPredFull<-function(oriTS, A, sim="r", sigma=-1, explosion.bound=10^8,
     if(length(e.vector)==0){
       e.vector=runif(N,min=0,max=1)
     }
-    predTS=soc(N, I, A, m.vector=m.vector, e.vector=e.vector, tend)
+    predTS=soi(N, I, A, m.vector=m.vector, e.vector=e.vector, tend)
   }
   if(sim=="kld"){
     crossCor<-getMeanKLD(oriTS[,2:tend],predTS[,2:tend],lag=0)

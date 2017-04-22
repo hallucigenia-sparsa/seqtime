@@ -19,10 +19,12 @@
 #' @param scale.noise divide noise value by scale.noise before adding it to the observed value (only when add is true)
 #' @return if x is provided without an output.folder, the modified matrix is returned; if input.folder is provided without an output folder, the last processed experiment identifier is returned
 #' @examples
+#' \dontrun{
 #'   N <- 50
 #'   metapop <- generateAbundances(N=500, mode=5, probabs=TRUE)
 #'   ts <- simHubbell(N=N, M=500,I=1500,d=N, m.vector=metapop, tskip=500, tend=1000)
 #'   ts.noisy <- addNoise(ts)
+#'  }
 #' @export
 addNoise<-function(x, input.folder="", output.folder="", expIds=c(), add=FALSE, scaling.factor=1, noise.type="pois", param1=1, param2=1, scale.noise=1){
   if((is.null(x) && input.folder=="") || (!is.null(x) && input.folder!="")){
