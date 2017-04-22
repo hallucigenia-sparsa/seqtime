@@ -16,6 +16,8 @@ library(seqtime)
 For usage examples, see the package [vignette](vignettes/seqtime_tour.md).
 For examples on network inference with LIMITS and visualization, see the [network inference vignette](vignettes/network_inference.md).
 
+[![Travis-CI Build Status](https://travis-ci.org/hallucigenia-sparsa/seqtime.svg?branch=master)](https://travis-ci.org/hallucigenia-sparsa/seqtime)
+
 ### Contribute
 
 Contributions are very welcome:
