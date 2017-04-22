@@ -3,7 +3,7 @@
 The seqtime R package provides functions to analyse sequencing data time series and to simulate community dynamics.
 
 
-### Installation and use
+### Installation
 
 To install the development version in R, use
 
@@ -13,8 +13,12 @@ install_github("hallucigenia-sparsa/seqtime")
 library(seqtime)  
 ```
 
-For usage examples, see the package [vignette](vignettes/seqtime_tour.md).
-For examples on network inference with LIMITS and visualization, see the [network inference vignette](vignettes/network_inference.md).
+### Tutorials
+
+For a tour of seqtime, see the [overview vignette](articles/seqtime_tour.html).
+For examples on network inference with LIMITS and visualization, see the [network inference vignette](articles/network_inference.html).
+
+### Development status
 
 [![Travis-CI Build Status](https://travis-ci.org/hallucigenia-sparsa/seqtime.svg?branch=master)](https://travis-ci.org/hallucigenia-sparsa/seqtime)
 
