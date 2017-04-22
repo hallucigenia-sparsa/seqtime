@@ -15,8 +15,8 @@ library(seqtime)
 
 ### Tutorials
 
-For a tour of seqtime, see the [overview vignette](articles/seqtime_tour.html).
-For examples on network inference with LIMITS and visualization, see the [network inference vignette](articles/network_inference.html).
+For a tour of seqtime, see the [overview vignette](http://hallucigenia-sparsa.github.io/seqtime/articles/seqtime_tour.html).
+For examples on network inference with LIMITS and visualization, see the [network inference vignette](http://hallucigenia-sparsa.github.io/seqtime/articles/network_inference.html).
 
 ### Development status
 
