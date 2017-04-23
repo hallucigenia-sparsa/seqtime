@@ -84,7 +84,7 @@
     
 
     <pre class="usage"><span class='fu'>tsplot</span>(<span class='no'>x</span>, <span class='kw'>time.given</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>num</span> <span class='kw'>=</span> <span class='fu'>nrow</span>(<span class='no'>x</span>), <span class='kw'>sample.points</span> <span class='kw'>=</span> <span class='fu'>c</span>(),
-  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>pch</span> <span class='kw'>=</span> <span class='st'>"+"</span>, <span class='kw'>lty</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"l"</span>, <span class='kw'>header</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
+  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>header</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>pch</span> <span class='kw'>=</span> <span class='st'>"+"</span>, <span class='kw'>lty</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"l"</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -110,20 +110,24 @@
       <td><p>add a legend</p></td>
     </tr>
     <tr>
+      <th>header</th>
+      <td><p>string added to the plot title</p></td>
+    </tr>
+    <tr>
       <th>pch</th>
-      <td><p>plot parameter</p></td>
+      <td><p>plot parameter (point character)</p></td>
     </tr>
     <tr>
       <th>lty</th>
-      <td><p>line type</p></td>
+      <td><p>plot parameter (line type)</p></td>
     </tr>
     <tr>
       <th>type</th>
-      <td><p>pot parameter</p></td>
+      <td><p>plot parameter (plot type, e.g. dots, lines etc.)</p></td>
     </tr>
     <tr>
-      <th>header</th>
-      <td><p>header string</p></td>
+      <th>\dots</th>
+      <td><p>Additional arguments passed to plot()</p></td>
     </tr>
     </table>
     

@@ -19,10 +19,12 @@ tsDiagnostic(x, type = "ind", spec.index = 1, spec.meta = NA)
 Diagnostic plots for the outcome of a community simulation.
 }
 \examples{
+\dontrun{
 N=50
 m.vector=generateAbundances(N,mode=5,probabs=TRUE)
 outH=simHubbell(M=N,N=N,I=1000,m.vector=m.vector,tend=1000)
 tsDiagnostic(outH,type="distrib",spec.index = 4,spec.meta = m.vector[4])
 tsDiagnostic(outH,type="spec")
 tsDiagnostic(outH,type="ind")
+}
 }

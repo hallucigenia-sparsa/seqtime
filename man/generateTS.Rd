@@ -44,13 +44,13 @@ generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.05,
 
 \item{interval}{sampling frequency (if 1, each sample is taken, if 2, every second sample is taken etc.)}
 
-\item{output.folder}{path to result folder, if specified, input parameter and time series are exported to the output folder}
+\item{output.folder}{(optional) path to result folder, if specified, input parameter and time series are exported to the output folder}
 
-\item{output.expId}{the identifier of the time series generation experiment}
+\item{output.expId}{(optional) the identifier of the time series generation experiment}
 
-\item{input.folder}{the folder from which previously generated parameters can be read}
+\item{input.folder}{(optional) the folder from which previously generated parameters can be read}
 
-\item{input.expId}{the identifier of a previous experiment whose results will be read}
+\item{input.expId}{(optional) the identifier of a previous experiment whose results will be read}
 
 \item{read.A}{read the interaction matrix from the given previous experiment}
 
@@ -91,7 +91,23 @@ Extinction rates are sampled from the uniform distribution
 with values between 0 and 1. Carrying capacities/growth rates are sampled
 from the uniform distribution with values between 0 and 0.5.
 On the implementation of the neutral model: simHubbell is used to generate
-neutral model time series. The species number of the local community is
-set to 1/10th of the species number in the metacommunity.
-The local community is initialized with even abundances.
+neutral model time series. The 1000 first time points of the simulation are always skipped.
+The species number of the local community is set to 1/10th of the species number in the
+metacommunity. The local community is initialized with even abundances.
+On the interaction matrix:
+When the positive edge percentage is modified, symmetry is not enforced. The maximal
+absolute interaction strength in the interaction matrix is set to 1.
+Interaction matrix stability is tested with method "ricker", using an
+explosion bound of 10^8. For interaction stabilizing method tweak, conversion of positive into negative
+arcs is stopped when more than a third of the positive arcs were converted already.
+On the stool data:
+The stool data are processed as follows: for stool data set B, the last time point is omitted.
+The data are rarefied to 10000 reads per sample, omitting samples with insufficient read numbers.
+Then, using metadata on sampling days, values for missing days are interpolated with method stineman.
+The top-abundant 100 taxa (according to their sum across samples) are retained and small negative values
+introduced by the interpolation are set to zero.
+Other settings:
+For initial abundance mode 6, k is set to 0.5.
+The simulation step size is always 1 (larger intervals are introduced after simulation).
+Dirichet-Multinomial data are generated with a count number of 1000 per sample.
 }

@@ -138,4 +138,4 @@ dm.even.taylor=seqtime::taylor(dm.even, pseudo=0.0001, col="orange", type="taylo
 
 ## Noise simulation
 
-For further examples on simulating noise, see [noise_simulations.md](noise_simulations.md).
+For further examples on simulating noise, see [noise_simulations.html](noise_simulations.html).

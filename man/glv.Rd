@@ -27,8 +27,8 @@ a matrix with species abundances as rows and time points as columns, column name
 }
 \description{
 Simulate a community time series using the generalized Lotka-Volterra model, defined as
-\deqn{\frac{dx}{dt}=x(b+Ax)}
-where x is the vector of species abundances, A is the interaction matrix and b the vector of growth rates.
+\eqn{\frac{dx}{dt}=x(b+Ax)}, where x is the vector of species abundances, A is the interaction matrix
+and b the vector of growth rates.
 }
 \examples{
 tsplot(glv(N=4,generateA(4)),header="gLV",type="l")

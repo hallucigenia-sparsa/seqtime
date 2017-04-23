@@ -18,8 +18,9 @@ the taxonomy of the OTUs
 }
 \description{
 The lineage information is provided in form of a matrix,
-which contains for each OTU identifier the taxonomic levels. OTUS in
-the lineage matrix are rows, taxonomic levels columns.
+which contains for each OTU identifier the taxonomic levels from column
+2 to 8 (domain, phylum, class, order, family, genus, species) and the entire
+lineage in column 9.
 }
 \examples{
 data(david_stoolA_otus)

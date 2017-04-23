@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotNoisetypes.R
 \name{plotNoisetypes}
 \alias{plotNoisetypes}
-\title{Do a barplot of the noise type counts}
+\title{Do a barplot of the noise types}
 \usage{
 plotNoisetypes(noisetypes)
 }
@@ -10,5 +10,5 @@ plotNoisetypes(noisetypes)
 \item{noisetypes}{the noisetypes object}
 }
 \description{
-Plot the counts for each noise type in a barplot.
+Plot the count for each noise type in a barplot.
 }

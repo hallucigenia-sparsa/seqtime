@@ -76,14 +76,17 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
     }
     image(A,col=palette(colorNumber),main=header,axes=TRUE,xaxs="r",yaxs="r")
   }else if(method == "ggplot"){
+    # https://stat.ethz.ch/pipermail/r-help/2005-September/078958.html
+    searchGgplot2=length(grep(paste("^package:","ggplot2", "$", sep=""), search()))
+    searchReshape2=length(grep(paste("^package:","reshape2", "$", sep=""), search()))
     # check whether ggplot2 is there
-    #if (!require("ggplot2")) {
-    #  stop("ggplot2 is not installed. Please install it.")
-    #}
+    if (searchGgplot2==0) {
+      stop("ggplot2 is not installed/loaded. It is required for this option.")
+    }
     # check whether reshape2 is there
-    #if (!require("reshape2")) {
-    #  stop("reshape2 is not installed. Please install it.")
-    #}
+    if (searchReshape2==0) {
+      stop("reshape2 is not installed/loaded. It is required for this option.")
+    }
     scale.plot<-max(c(max(A),-min(A)))
     Var1=NA
     Var2=NA
@@ -124,5 +127,3 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
   }
   par=old.par
 }
-
-

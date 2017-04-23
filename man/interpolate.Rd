@@ -26,7 +26,7 @@ Wrapper function to interpolate a time series.
 }
 \details{
 If no interval is provided, the intervals in the time vector are computed and the most frequent one is taken as the interval.
-Note that natural, fmm, parabola and periodic can introduce negative values and are therefore not recommended for taxon abundance data. The default is stineman.
+The default interpolation method is stineman. Note that interpolation can introduce negative values in the abundance matrix.
 }
 \examples{
   data("david_stoolA_otus")

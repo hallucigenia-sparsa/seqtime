@@ -23,11 +23,16 @@
 compareTS <- function(input.folder="",expIds=c(), modif.folder="", modif="", sliceDef=c(1,NA), epsilon=0.2, norm=FALSE, hurstBins=c(0.5,0.7,0.9), maxautocorBins=c(0.3,0.5,0.8), timeDecaySliceDef=c(1,50), varEvolSliceDef=c(), returnDistribs=FALSE, returnTS=FALSE){
 
   # infotheo needed for entropy computation
-  # import
-  #infotheoThere=TRUE
-  #if (!require("infotheo")) {
-  #  infotheoThere=FALSE
-  #}
+  infotheoThere=FALSE
+  # https://stat.ethz.ch/pipermail/r-help/2005-September/078958.html
+  searchInfotheo=length(grep(paste("^package:","infotheo", "$", sep=""), search()))
+  if(searchInfotheo>0){
+    infotheoThere=TRUE
+  }else{
+    if(norm==FALSE){
+      print("Please install/load infotheo if you want to compute the entropy of non-normalized time series.")
+    }
+  }
 
   if(length(hurstBins) != 3){
     stop("Three Hurst bin thresholds required!")
@@ -45,12 +50,12 @@ compareTS <- function(input.folder="",expIds=c(), modif.folder="", modif="", sli
     if(!file.exists(input.folder)){
       stop(paste("The input folder",input.folder,"does not exist!"))
     }
-    input.settings.folder=paste(input.folder,"settings",sep="/")
+    input.settings.folder=file.path(input.folder,"settings")
     if(!file.exists(input.settings.folder)){
       stop("The input folder does not have a settings subfolder!")
     }
     if(modif.folder == ""){
-      input.timeseries.folder=paste(input.folder,"timeseries",sep="/")
+      input.timeseries.folder=file.path(input.folder,"timeseries")
       if(!file.exists(input.timeseries.folder)){
         stop("The input folder does not have a time series subfolder!")
       }
@@ -128,7 +133,7 @@ compareTS <- function(input.folder="",expIds=c(), modif.folder="", modif="", sli
     print(paste("Processing identifier",expId))
 
     input.settings.name=paste(expId,"settings",sep="_")
-    input.settings.expId.folder=paste(input.settings.folder,input.settings.name,sep="/")
+    input.settings.expId.folder=file.path(input.settings.folder,input.settings.name)
     #print(input.settings.expId.folder)
     if(!file.exists(input.settings.expId.folder)){
       stop("The input settings folder does not have a subfolder for the input experiment identifier!")
@@ -136,7 +141,7 @@ compareTS <- function(input.folder="",expIds=c(), modif.folder="", modif="", sli
 
     if(modif.folder == ""){
       input.timeseries.name=paste(expId,"timeseries",sep="_")
-      input.timeseries.expId.folder=paste(input.timeseries.folder,input.timeseries.name,sep="/")
+      input.timeseries.expId.folder=file.path(input.timeseries.folder,input.timeseries.name)
       if(!file.exists(input.timeseries.expId.folder)){
         stop("The input time series folder does not have a subfolder for the input experiment identifier!")
       }
@@ -144,7 +149,7 @@ compareTS <- function(input.folder="",expIds=c(), modif.folder="", modif="", sli
 
     # read settings file
     input.settings.expId.file=paste(expId,"settings.txt",sep="_")
-    settings.path=paste(input.settings.expId.folder,input.settings.expId.file,sep="/")
+    settings.path=file.path(input.settings.expId.folder,input.settings.expId.file)
     if(!file.exists(settings.path)){
       stop(paste("The settings file",settings.path,"does not exist!"))
     }
@@ -155,17 +160,17 @@ compareTS <- function(input.folder="",expIds=c(), modif.folder="", modif="", sli
 
     # read interaction matrix
     if(returnDistribs == FALSE && returnTS==FALSE){
-      if(Algorithm == "ricker" || Algorithm == "soc" || Algorithm == "glv"){
+      if(Algorithm == "ricker" || Algorithm == "soc" || Algorithm == "soi" || Algorithm == "glv"){
         source.expId = expId
         interactionmatrix.folder=input.settings.expId.folder
         # interaction matrix for current experiment was read from another experiment
         if(!is.na(Input_experiment_identifier) && Input_experiment_identifier!=FALSE){
           source.expId=Input_experiment_identifier
           source.expId.folder=paste(source.expId,"settings",sep="_")
-          interactionmatrix.folder=paste(input.settings.folder,source.expId.folder,sep="/")
+          interactionmatrix.folder=file.path(input.settings.folder,source.expId.folder)
         }
         A.name=paste(source.expId,"interactionmatrix.txt",sep="_")
-        input.path.A=paste(interactionmatrix.folder,A.name,sep="/")
+        input.path.A=file.path(interactionmatrix.folder,A.name)
         print(paste("Reading interaction matrix from:",input.path.A,sep=" "))
         A=read.table(file=input.path.A,sep="\t",header=FALSE)
         A=as.matrix(A)
@@ -208,10 +213,10 @@ compareTS <- function(input.folder="",expIds=c(), modif.folder="", modif="", sli
     # read time series file
     if(modif.folder == ""){
       ts.name=paste(expId,"timeseries.txt",sep="_")
-      input.path.ts=paste(input.timeseries.expId.folder,ts.name,sep="/")
+      input.path.ts=file.path(input.timeseries.expId.folder,ts.name)
     }else{
       ts.name=paste(expId,modif,"timeseries.txt",sep="_")
-      input.path.ts=paste(modif.folder, ts.name, sep="/")
+      input.path.ts=file.path(modif.folder, ts.name)
     }
     print(paste("Reading time series from:",input.path.ts,sep=" "))
     ts=read.table(file=input.path.ts,sep="\t",header=FALSE)
@@ -239,7 +244,7 @@ compareTS <- function(input.folder="",expIds=c(), modif.folder="", modif="", sli
 
     if(returnDistribs == FALSE && returnTS==FALSE){
       # entropy
-      if(norm==FALSE){
+      if(norm==FALSE && infotheoThere==TRUE){
         # discretization needed (also for David data, because of interpolation)
         if(Algorithm=="glv" || Algorithm == "ricker" || Algorithm == "davida" || Algorithm == "davidb"){
           disc=infotheo::discretize(t(ts),disc="equalwidth")

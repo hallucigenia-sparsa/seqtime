@@ -2,7 +2,7 @@
 % Please edit documentation in R/doc.R
 \name{doc}
 \alias{doc}
-\title{The DOC method by Bashan et al.}
+\title{Dissimilarity-Overlap Curve (DOC)}
 \usage{
 doc(x, B = 100, polygons = FALSE, rand = FALSE, lower.conf = 0.03,
   upper.conf = 0.97, null.model = "assembly")

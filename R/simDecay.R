@@ -1,6 +1,7 @@
-#' @title Plot sample-wise taxon dissimilarities
+#' @title Plot community similarity decay against selected taxa or metadata
 #'
-#' @description Taxon dissimilarities are plotted sample-wise against the abundance difference of selected taxa or metadata.
+#' @description All pair-wise community dissimilarities are plotted
+#' against the corresponding abundance difference of selected taxa or metadata.
 #'
 #' @param x taxon-sample matrix with taxa as rows and samples as columns
 #' @param taxa vector of taxon row indices or row names present in x

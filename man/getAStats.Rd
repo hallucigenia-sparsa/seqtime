@@ -21,11 +21,11 @@ for degree a matrix with positive, negative and total degree (including self-loo
 }
 \description{
 Count interaction types or compute network properties of interaction matrix.
-The mean interaction strength is computed according to Coyte et al.
+The mean interaction strength is computed according to Coyte and colleagues
 by fitting a half-normal distribution to the realized interaction strengths.
 Graph properties (modularity, average clustering coefficient, average path length)
 are computed using igraph functions.
 }
 \references{
-Coyte et al., Science 2015: "The ecology of the microbiome: Networks, competition, and stability"
+Coyte et al., Science: "The ecology of the microbiome: Networks, competition, and stability" 350 (6261), 663-666 (2015).
 }

@@ -23,15 +23,18 @@ soi(N, I, A, m.vector = runif(N), e.vector = runif(N), tend)
 a matrix with species abundances as rows and time points as columns
 }
 \description{
-Generate time series with the self-organized instable (SOI) model based on Sole et al. (model B).
+Generate time series with the self-organized instable (SOI) model
+implementing model B by Sole et al. 2002.
 }
 \examples{
+\dontrun{
 N=10
 A=generateA(N,c=0.1)
 tsplot(soi(N=N,I=1000,A=A,tend=100), header="SOI")
 }
+}
 \references{
-Sole et al. 2002 "Self-organized instability in complex ecosystems"
+Sole et al. Philos Trans R Soc Lond B Biol. Sci. "Self-organized instability in complex ecosystems" 357:667-671 (2002)
 }
 \seealso{
 \code{\link{ricker}} for the Ricker model

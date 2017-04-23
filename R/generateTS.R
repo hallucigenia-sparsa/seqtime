@@ -22,9 +22,25 @@
 #' with values between 0 and 1. Carrying capacities/growth rates are sampled
 #' from the uniform distribution with values between 0 and 0.5.
 #' On the implementation of the neutral model: simHubbell is used to generate
-#' neutral model time series. The species number of the local community is
-#' set to 1/10th of the species number in the metacommunity.
-#' The local community is initialized with even abundances.
+#' neutral model time series. The 1000 first time points of the simulation are always skipped.
+#' The species number of the local community is set to 1/10th of the species number in the
+#' metacommunity. The local community is initialized with even abundances.
+#' On the interaction matrix:
+#' When the positive edge percentage is modified, symmetry is not enforced. The maximal
+#' absolute interaction strength in the interaction matrix is set to 1.
+#' Interaction matrix stability is tested with method "ricker", using an
+#' explosion bound of 10^8. For interaction stabilizing method tweak, conversion of positive into negative
+#' arcs is stopped when more than a third of the positive arcs were converted already.
+#' On the stool data:
+#' The stool data are processed as follows: for stool data set B, the last time point is omitted.
+#' The data are rarefied to 10000 reads per sample, omitting samples with insufficient read numbers.
+#' Then, using metadata on sampling days, values for missing days are interpolated with method stineman.
+#' The top-abundant 100 taxa (according to their sum across samples) are retained and small negative values
+#' introduced by the interpolation are set to zero.
+#' Other settings:
+#' For initial abundance mode 6, k is set to 0.5.
+#' The simulation step size is always 1 (larger intervals are introduced after simulation).
+#' Dirichet-Multinomial data are generated with a count number of 1000 per sample.
 #'
 #' @param N species number (for hubbell, refers to the species number in the metacommunity)
 #' @param I individual number (only for SOI and hubbell)
@@ -42,10 +58,10 @@
 #' @param deathrate number of individuals that are replaced at each time step (only for hubbell)
 #' @param algorithm how time series should be generated (can be hubbell, soi, ricker, glv, dm, davida or davidb)
 #' @param interval sampling frequency (if 1, each sample is taken, if 2, every second sample is taken etc.)
-#' @param output.folder path to result folder, if specified, input parameter and time series are exported to the output folder
-#' @param output.expId the identifier of the time series generation experiment
-#' @param input.folder the folder from which previously generated parameters can be read
-#' @param input.expId the identifier of a previous experiment whose results will be read
+#' @param output.folder (optional) path to result folder, if specified, input parameter and time series are exported to the output folder
+#' @param output.expId (optional) the identifier of the time series generation experiment
+#' @param input.folder (optional) the folder from which previously generated parameters can be read
+#' @param input.expId (optional) the identifier of a previous experiment whose results will be read
 #' @param read.A read the interaction matrix from the given previous experiment
 #' @param read.K read the carrying capacities/growth rates from the given previous experiment
 #' @param read.y read the initial abundances/SOI immigration rates from the given previous experiment (for hubbell, initial abundances refer to the metacommunity)
@@ -63,7 +79,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
 
   # CONSTANTS
   negedge.symm=FALSE # negative interactions are not forced to be symmetric
-  A.max=1 # maximal absolute interaction strength in the interaction matrix
+  A.max=1 # maximal interaction strength in the interaction matrix
   count=1000 # number of read counts per sample (for generation of Dirichlet-Multinomial time series)
   k=0.5 # parameter for initAbundMode=6 (evenness of geometric series, does not affect any other initAbundMode)
   tstep=1 # step size for glv
@@ -92,8 +108,8 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
     if(!file.exists(output.folder)){
       dir.create(output.folder)
     }
-    settings.folder=paste(output.folder,"settings",sep="/")
-    timeseries.folder=paste(output.folder,"timeseries",sep="/")
+    settings.folder=file.path(output.folder,"settings")
+    timeseries.folder=file.path(output.folder,"timeseries")
     if(!file.exists(settings.folder)){
       dir.create(settings.folder)
     }
@@ -104,12 +120,12 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
     # create experiment-specific output folders
     if(output.expId != ""){
       exp.settings.name=paste(output.expId,"settings",sep="_")
-      exp.settings.folder=paste(settings.folder,exp.settings.name,sep="/")
+      exp.settings.folder=file.path(settings.folder,exp.settings.name)
       if(!file.exists(exp.settings.folder)){
         dir.create(exp.settings.folder)
       }
       exp.timeseries.name=paste(output.expId,"timeseries",sep="_")
-      exp.timeseries.folder=paste(timeseries.folder,exp.timeseries.name,sep="/")
+      exp.timeseries.folder=file.path(timeseries.folder,exp.timeseries.name)
       if(!file.exists(exp.timeseries.folder)){
         dir.create(exp.timeseries.folder)
       }
@@ -121,21 +137,21 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
     if(!file.exists(input.folder)){
       stop(paste("The input folder",input.folder,"does not exist!"))
     }
-    input.settings.folder=paste(input.folder,"settings",sep="/")
+    input.settings.folder=file.path(input.folder,"settings")
     if(!file.exists(input.settings.folder)){
       stop("The input folder does not have a settings subfolder!")
     }
-    input.timeseries.folder=paste(input.folder,"timeseries",sep="/")
+    input.timeseries.folder=file.path(input.folder,"timeseries")
     if(!file.exists(input.settings.folder) && read.ts==TRUE){
       stop("The input folder does not have a time series subfolder!")
     }
     input.settings.name=paste(input.expId,"settings",sep="_")
-    input.settings.expId.folder=paste(input.settings.folder,input.settings.name,sep="/")
+    input.settings.expId.folder=file.path(input.settings.folder,input.settings.name)
     if(!file.exists(input.settings.expId.folder)){
       stop("The input settings folder does not have a subfolder for the input experiment identifier!")
     }
     input.timeseries.name=paste(input.expId,"timeseries",sep="_")
-    input.timeseries.expId.folder=paste(input.timeseries.folder,input.timeseries.name,sep="/")
+    input.timeseries.expId.folder=file.path(input.timeseries.folder,input.timeseries.name)
     if(!file.exists(input.timeseries.expId.folder) && read.ts==TRUE){
       stop("The input time series folder does not have a subfolder for the input experiment identifier!")
     }
@@ -146,7 +162,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
     if(read.ts == FALSE){
       if(input.folder != "" && read.y==TRUE){
         y.name=paste(input.expId,"initabund.txt",sep="_")
-        input.path.y=paste(input.settings.expId.folder,y.name,sep="/")
+        input.path.y=file.path(input.settings.expId.folder,y.name)
         print(paste("Reading initial abundances from:",input.path.y,sep=" "))
         y=as.numeric(scan(input.path.y))
       }else{
@@ -154,7 +170,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
         y=generateAbundances(N=N,mode=initAbundMode, count=count, k=k, probabs=TRUE)
         if(output.folder != ""){
           y.name=paste(output.expId,"initabund.txt",sep="_")
-          y.path=paste(exp.settings.folder,y.name,sep="/")
+          y.path=file.path(exp.settings.folder,y.name)
           write(t(y),file=y.path,ncolumns=1,sep="\t")
         }
       }
@@ -166,7 +182,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
     if(read.ts == FALSE){
       if(input.folder != "" && read.K==TRUE){
         K.name=paste(input.expId,"capacities.txt",sep="_")
-        input.path.K=paste(input.settings.expId.folder,K.name,sep="/")
+        input.path.K=file.path(input.settings.expId.folder,K.name)
         print(paste("Reading capacities from:",input.path.K,sep=" "))
         K=as.numeric(scan(input.path.K))
       }else{
@@ -174,7 +190,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
         # save carrying capacities/growth rates
         if(output.folder != ""){
           K.name=paste(output.expId,"capacities.txt",sep="_")
-          K.path=paste(exp.settings.folder,K.name,sep="/")
+          K.path=file.path(exp.settings.folder,K.name)
           write(t(K),file=K.path,ncolumns=1,sep="\t")
         }
       }
@@ -185,7 +201,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
   if(algorithm == "soc" && read.ts == FALSE){
     if(input.folder != "" && read.extinct==TRUE){
       ext.name=paste(input.expId,"extinction.txt",sep="_")
-      input.path.ext=paste(input.settings.expId.folder,ext.name,sep="/")
+      input.path.ext=file.path(input.settings.expId.folder,ext.name)
       print(paste("Reading extinction probabilities from:",input.path.ext,sep=" "))
       extinction.probab=as.numeric(scan(input.path.ext))
     }else{
@@ -193,7 +209,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
       # save extinction probabilities
       if(output.folder != ""){
         ext.name=paste(output.expId,"extinction.txt",sep="_")
-        ext.path=paste(exp.settings.folder,ext.name,sep="/")
+        ext.path=file.path(exp.settings.folder,ext.name)
         write(t(extinction.probab),file=ext.path,ncolumns=1,sep="\t")
       }
     }
@@ -206,7 +222,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
     if(input.folder != "" && read.A==TRUE){
       if(read.ts == FALSE){
         A.name=paste(input.expId,"interactionmatrix.txt",sep="_")
-        input.path.A=paste(input.settings.expId.folder,A.name,sep="/")
+        input.path.A=file.path(input.settings.expId.folder,A.name)
         print(paste("Reading interaction matrix from:",input.path.A,sep=" "))
         A=read.table(file=input.path.A,sep="\t",header=FALSE)
         A=as.matrix(A)
@@ -256,15 +272,15 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
 
         if(output.folder != ""){
           A.name=paste(output.expId,"interactionmatrix.txt",sep="_")
-          A.path=paste(exp.settings.folder,A.name,sep="/")
+          A.path=file.path(exp.settings.folder,A.name)
           write(t(A),file=A.path,ncolumns=ncol(A),sep="\t")
           Aplot.name=paste(output.expId,"interactionmatrix.pdf",sep="_")
-          Aplot.path=paste(exp.settings.folder,Aplot.name,sep="/")
+          Aplot.path=file.path(exp.settings.folder,Aplot.name)
           pdf(Aplot.path)
           plotA(A,header=paste("interaction matrix experiment",output.expId))
           dev.off()
           Aprop.name=paste(output.expId,"interactionmatrix_properties.txt",sep="_")
-          Aprop.path=paste(exp.settings.folder,Aprop.name,sep="/")
+          Aprop.path=file.path(exp.settings.folder,Aprop.name)
           Astats=getAStats(A)
           Aconnectance=getConnectance(A)
           APep=round(getPep(A),2)
@@ -283,7 +299,7 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
   # generate time series
   if(input.folder != "" && read.ts==TRUE){
     ts.name=paste(input.expId,"timeseries.txt",sep="_")
-    input.path.ts=paste(input.timeseries.expId.folder,ts.name,sep="/")
+    input.path.ts=file.path(input.timeseries.expId.folder,ts.name)
     print(paste("Reading time series from:",input.path.ts,sep=" "))
     ts.out=read.table(file=input.path.ts,sep="\t",header=FALSE)
     ts.out=as.matrix(ts.out)
@@ -317,8 +333,8 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
       }else if(algorithm == "davidb"){
         david_stoolB_otus=matrix()
         david_stoolB_metadata=matrix()
-        load(system.file("data/david_stoolB_otus.rda", package = "seqtime"))
-        load(system.file("data/david_stoolB_metadata.rda", package = "seqtime"))
+        load(system.file(file.path("data","david_stoolB_otus.rda"), package = "seqtime"))
+        load(system.file(file.path("data","david_stoolB_metadata.rda"), package = "seqtime"))
         stool=david_stoolB_otus
         metadata=david_stoolB_metadata
         # omit the last sample in David data stool B, because there is a huge sampling gap of 66 days
@@ -369,18 +385,18 @@ generateTS<-function(N=100, I=1500, tend=100, initAbundMode=5,c=0.05,clique.size
   if(output.folder != ""){
     # save time series
     ts.name=paste(output.expId,"timeseries.txt",sep="_")
-    ts.path=paste(exp.timeseries.folder,ts.name,sep="/")
+    ts.path=file.path(exp.timeseries.folder,ts.name)
     write(t(ts.out),file=ts.path,ncolumns=ncol(ts.out),sep="\t")
     # save a plot of the time series in settings folder, for control
     ts.plot.name=paste(output.expId,"timeseriesplot.pdf",sep="_")
-    ts.plot.path=paste(exp.settings.folder,ts.plot.name,sep="/")
+    ts.plot.path=file.path(exp.settings.folder,ts.plot.name)
     pdf(ts.plot.path)
     tsplot(ts.out,header=paste("experiment",output.expId))
     dev.off()
 
     # save settings
     settings.name=paste(output.expId,"settings.txt",sep="_")
-    settings.path=paste(exp.settings.folder,settings.name,sep="/")
+    settings.path=file.path(exp.settings.folder,settings.name)
     write(settings.str,file=settings.path)
   }
 

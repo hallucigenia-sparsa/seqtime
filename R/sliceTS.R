@@ -8,7 +8,7 @@
 #' Sliced time series are stored in the output folder without subfolders.
 #'
 #' @param slices a matrix with rows and 2 columns, where each row codes the time series identifier, the first column the start and the second the end time point; NA means until end of the time series
-#' @param slice.def.path path to a slice definition file, which has two columns for the start and end time points, respectively; NA means until end of the time series
+#' @param slice.def.path path to a slice definition file, which has two tab-delimited columns for the start and end time points, respectively; NA means until end of the time series
 #' @param input.folder location of time series and settings sub folders
 #' @param output.folder folder in which all slices go (no sub-folders)
 #' @param expIds set of experiment identifiers to process
@@ -19,7 +19,7 @@ sliceTS<-function(slices=NULL, slice.def.path="", input.folder="", output.folder
     if(!file.exists(input.folder)){
       stop(paste("The input folder",input.folder,"does not exist!"))
     }
-    input.timeseries.folder=paste(input.folder,"timeseries",sep="/")
+    input.timeseries.folder=file.path(input.folder,"timeseries")
     if(!file.exists(input.timeseries.folder)){
       stop("The input folder does not have a time series subfolder!")
     }
@@ -53,14 +53,14 @@ sliceTS<-function(slices=NULL, slice.def.path="", input.folder="", output.folder
     print(paste("Processing identifier",expId))
 
     input.timeseries.name=paste(expId,"timeseries",sep="_")
-    input.timeseries.expId.folder=paste(input.timeseries.folder,input.timeseries.name,sep="/")
+    input.timeseries.expId.folder=file.path(input.timeseries.folder,input.timeseries.name)
     if(!file.exists(input.timeseries.expId.folder)){
       stop("The input time series folder does not have a subfolder for the input experiment identifier!")
     }
 
     # read time series file
     ts.name=paste(expId,"timeseries.txt",sep="_")
-    input.path.ts=paste(input.timeseries.expId.folder,ts.name,sep="/")
+    input.path.ts=file.path(input.timeseries.expId.folder,ts.name)
     print(paste("Reading time series from:",input.path.ts,sep=" "))
     ts=read.table(file=input.path.ts,sep="\t",header=FALSE)
     ts=as.matrix(ts)
@@ -77,7 +77,7 @@ sliceTS<-function(slices=NULL, slice.def.path="", input.folder="", output.folder
 
     # save time series
     ts.name=paste(expId,"sliced_timeseries.txt",sep="_")
-    ts.path=paste(output.folder,ts.name,sep="/")
+    ts.path=file.path(output.folder,ts.name)
     write(t(slicedTS),file=ts.path,ncolumns=ncol(slicedTS),sep="\t")
 
   } # end loop expIds

@@ -14,7 +14,7 @@ simHubbell(N = 50, M = 500, I = 500, y = rep(1/N, N),
 
 \item{I}{number of individuals}
 
-\item{y}{initial species probabilities, should sum to one}
+\item{y}{initial species proportions, should sum to one}
 
 \item{m.vector}{species proportions in the metacommunity, should sum to one}
 

@@ -1,6 +1,7 @@
-#' @title Do a time-decay plot of a taxon matrix
+#' @title Plot the time decay.
 #'
-#' @description Plot the time against the sample distance.
+#' @description Plot time elapsed against the community dissimilarity
+#' for all possible pairs of time points.
 #'
 #' @param x a taxon matrix with rows representing taxa and columns samples
 #' @param time vector with time steps

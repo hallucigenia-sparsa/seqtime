@@ -1,7 +1,7 @@
 #' @title Analyse an interaction matrix
 #'
 #' @description Count interaction types or compute network properties of interaction matrix.
-#' The mean interaction strength is computed according to Coyte et al.
+#' The mean interaction strength is computed according to Coyte and colleagues
 #' by fitting a half-normal distribution to the realized interaction strengths.
 #' Graph properties (modularity, average clustering coefficient, average path length)
 #' are computed using igraph functions.
@@ -11,7 +11,7 @@
 #' @param plot.degree plot the degree distribution (for statsType network)
 #' @param collapse.degree sum degrees for taxa with the same name (for statsType degree)
 #' @return for degree a matrix with positive, negative and total degree (including self-loops, excluding missing values), else a list; for statsType interactions: meanstrength = average interaction strength, varstrength = variance of interaction strength, nbinteractions = total interaction number (excluding diagonal), nbmut = number of mutualisms, nbcomp = number of competitions, nbcom = number of commensalisms, nbam = number of amensalisms, nbexp = number of exploitations, for statsType network: nodenum (node number), arcnum (arc number, including diagonal), mod (fast greedy modularity), cc (average clustering coefficient), avgpathlength (average shortest path length)
-#' @references Coyte et al., Science 2015: "The ecology of the microbiome: Networks, competition, and stability"
+#' @references Coyte et al., Science: "The ecology of the microbiome: Networks, competition, and stability" 350 (6261), 663-666 (2015).
 #' @export
 
 getAStats<-function(A, statsType = "interactions", plot.degree=FALSE, collapse.degree=FALSE){

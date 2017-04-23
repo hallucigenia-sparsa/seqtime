@@ -7,13 +7,13 @@
 noisetypes(white = 0, pink = 0, brown = 0, black = 0)
 }
 \arguments{
-\item{white}{percentage of white noise rows in matrix}
+\item{white}{indices of matrix rows with white noise}
 
-\item{pink}{percentage of pink noise rows in matrix}
+\item{pink}{indices of matrix rows with pink noise}
 
-\item{brown}{percentage of brown noise rows in matrix}
+\item{brown}{indices of matrix rows with brown noise}
 
-\item{black}{percentage of black noise rows in matrix}
+\item{black}{indices of matrix rows with black noise}
 }
 \value{
 noisetypes class

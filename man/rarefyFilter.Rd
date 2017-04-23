@@ -7,16 +7,17 @@
 rarefyFilter(x, min = 0)
 }
 \arguments{
-\item{x}{a matrix or vector}
+\item{x}{a matrix}
 
-\item{min}{minimum count to which x is to be rarefied (if equal to zero, minimum column sum is taken as min)}
+\item{min}{minimum count to which x is to be rarefied (if equal to zero, the minimum column sum is taken as min)}
 }
 \value{
-a list with the rarefied vector or matrix (rar) and the indices of the columns that were kept (colindices)
+a list with the rarefied matrix (rar) and the indices of the columns that were kept (colindices)
 }
 \description{
-Rarefy a given count vector or matrix column-wise using vegan's rrarefy function.
-If columns have less than the minimum count number, they are discarded.
+Rarefy a matrix to the given minimum count number column-wise
+using vegan's rrarefy function. If columns have less than the minimum count number,
+they are discarded.
 }
 \examples{
 data(david_stoolA_otus)

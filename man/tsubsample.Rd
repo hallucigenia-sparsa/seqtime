@@ -13,9 +13,14 @@ tsubsample(x, target = NA, interval = NA)
 
 \item{interval}{interval}
 }
+\value{
+the subsampled time series matrix
+}
 \description{
-Subsample a time series.
+Subsample a matrix of time series.
 }
 \details{
-Subsample the given time series down to a target time point number using equal intervals or select the time points with the given interval. Assumes that time points are columns and time points are equidistant.
+Subsample the given time series matrix down to a target time point number
+using equal intervals or select the time points with the given interval.
+Assumes that time points are columns and time points are equidistant.
 }

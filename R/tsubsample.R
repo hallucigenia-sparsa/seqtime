@@ -1,9 +1,12 @@
 #' @title Subsample Time Series
-#' @description Subsample a time series.
-#' @details Subsample the given time series down to a target time point number using equal intervals or select the time points with the given interval. Assumes that time points are columns and time points are equidistant.
+#' @description Subsample a matrix of time series.
+#' @details Subsample the given time series matrix down to a target time point number
+#' using equal intervals or select the time points with the given interval.
+#' Assumes that time points are columns and time points are equidistant.
 #' @param x a matrix
 #' @param target target
 #' @param interval interval
+#' @return the subsampled time series matrix
 #' @export
 tsubsample <- function(x, target=NA, interval=NA){
   timepoints=ncol(x)

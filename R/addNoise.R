@@ -41,7 +41,7 @@ addNoise<-function(x, input.folder="", output.folder="", expIds=c(), add=FALSE, 
     if(!file.exists(input.folder)){
       stop(paste("The input folder",input.folder,"does not exist!"))
     }
-    input.timeseries.folder=paste(input.folder,"timeseries",sep="/")
+    input.timeseries.folder=file.path(input.folder,"timeseries")
     if(!file.exists(input.timeseries.folder)){
       stop("The input folder does not have a time series subfolder!")
     }
@@ -51,14 +51,14 @@ addNoise<-function(x, input.folder="", output.folder="", expIds=c(), add=FALSE, 
       print(paste("Processing identifier",expId))
 
       input.timeseries.name=paste(expId,"timeseries",sep="_")
-      input.timeseries.expId.folder=paste(input.timeseries.folder,input.timeseries.name,sep="/")
+      input.timeseries.expId.folder=file.path(input.timeseries.folder,input.timeseries.name)
       if(!file.exists(input.timeseries.expId.folder)){
         stop("The input time series folder does not have a subfolder for the input experiment identifier!")
       }
 
       # read time series file
       ts.name=paste(expId,"timeseries.txt",sep="_")
-      input.path.ts=paste(input.timeseries.expId.folder,ts.name,sep="/")
+      input.path.ts=file.path(input.timeseries.expId.folder,ts.name)
       print(paste("Reading time series from:",input.path.ts,sep=" "))
       ts=read.table(file=input.path.ts,sep="\t",header=FALSE)
       ts=as.matrix(ts)
@@ -81,7 +81,7 @@ addNoise<-function(x, input.folder="", output.folder="", expIds=c(), add=FALSE, 
       # save time series
       if(output.folder!=""){
         ts.name=paste(expId,noise.type,"timeseries.txt",sep="_")
-        ts.path=paste(output.folder,ts.name,sep="/")
+        ts.path=file.path(output.folder,ts.name)
         write(t(noisyTS),file=ts.path,ncolumns=ncol(noisyTS),sep="\t")
       }else{
         if(expId==lastExpId){
@@ -97,7 +97,7 @@ addNoise<-function(x, input.folder="", output.folder="", expIds=c(), add=FALSE, 
       return(noisyTS)
     }else{
       ts.name=paste(noise.type,"timeseries.txt",sep="_")
-      ts.path=paste(output.folder,ts.name,sep="/")
+      ts.path=file.path(output.folder,ts.name)
       write(t(noisyTS),file=ts.path,ncolumns=ncol(noisyTS),sep="\t")
     }
   }

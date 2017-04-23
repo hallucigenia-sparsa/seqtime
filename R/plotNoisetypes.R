@@ -1,6 +1,6 @@
-#' @title Do a barplot of the noise type counts
+#' @title Do a barplot of the noise types
 #'
-#' @description Plot the counts for each noise type in a barplot.
+#' @description Plot the count for each noise type in a barplot.
 #'
 #' @param noisetypes the noisetypes object
 #' @export

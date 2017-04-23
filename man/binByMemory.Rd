@@ -2,7 +2,7 @@
 % Please edit documentation in R/binByMemory.R
 \name{binByMemory}
 \alias{binByMemory}
-\title{Bin rows in a matrix by amount of memory.}
+\title{Bin rows in a matrix by memory.}
 \usage{
 binByMemory(x, thresholds = c(0.3, 0.5, 0.8), method = "autocor")
 }

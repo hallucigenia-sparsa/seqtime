@@ -2,17 +2,16 @@
 #'
 #' @description Construct a noisetypes object.
 #'
-#' @param white percentage of white noise rows in matrix
-#' @param pink percentage of pink noise rows in matrix
-#' @param brown percentage of brown noise rows in matrix
-#' @param black percentage of black noise rows in matrix
+#' @param white indices of matrix rows with white noise
+#' @param pink indices of matrix rows with pink noise
+#' @param brown indices of matrix rows with brown noise
+#' @param black indices of matrix rows with black noise
 #' @return noisetypes class
 #' @export
 
 noisetypes<-function(white=0, pink=0, brown=0, black=0){
-  nonclass=100-(white+pink+brown+black)
-  noisetypes=list(white,pink,brown,black,nonclass)
-  names(noisetypes)=c("white","pink","brown","black","nonclass")
+  noisetypes=list(white,pink,brown,black)
+  names(noisetypes)=c("white","pink","brown","black")
   attr(noisetypes, "class") <- "noisetypes"
   return(noisetypes)
 }

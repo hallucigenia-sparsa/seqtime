@@ -2,7 +2,7 @@
 % Please edit documentation in R/simDecay.R
 \name{simDecay}
 \alias{simDecay}
-\title{Plot sample-wise taxon dissimilarities}
+\title{Plot community similarity decay against selected taxa or metadata}
 \usage{
 simDecay(x, taxa = c(), metadata = c(), metadataName = "",
   samplegroups = rep(1, ncol(x)), dissim = "bray", normtaxa = FALSE,
@@ -30,7 +30,8 @@ simDecay(x, taxa = c(), metadata = c(), metadataName = "",
 \item{header}{a string to be appended to the plot title (Dissimilarity change)}
 }
 \description{
-Taxon dissimilarities are plotted sample-wise against the abundance difference of selected taxa or metadata.
+All pair-wise community dissimilarities are plotted
+against the corresponding abundance difference of selected taxa or metadata.
 }
 \examples{
 N=50

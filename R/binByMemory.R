@@ -1,4 +1,4 @@
-#' @title Bin rows in a matrix by amount of memory.
+#' @title Bin rows in a matrix by memory.
 #'
 #' @description Memory is assessed either with the Hurst exponent or with the maximum auto-
 #' correlation (omitting lag zero). Hurst exponents are computed with

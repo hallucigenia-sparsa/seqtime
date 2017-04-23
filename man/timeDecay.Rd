@@ -2,7 +2,7 @@
 % Please edit documentation in R/timeDecay.R
 \name{timeDecay}
 \alias{timeDecay}
-\title{Do a time-decay plot of a taxon matrix}
+\title{Plot the time decay.}
 \usage{
 timeDecay(x, time = c(1:ncol(x)), dissim = "bray", normtaxa = FALSE,
   logdissim = FALSE, logtime = FALSE, header = "", units = "",
@@ -31,7 +31,8 @@ timeDecay(x, time = c(1:ncol(x)), dissim = "bray", normtaxa = FALSE,
 a list with the time intervals, dissimilarity values, intersection, slope, p-value, adjusted R2, dissimilarity measure used and log status of dissimilarity measure
 }
 \description{
-Plot the time against the sample distance.
+Plot time elapsed against the community dissimilarity
+for all possible pairs of time points.
 }
 \examples{
 data("david_stoolA_otus")

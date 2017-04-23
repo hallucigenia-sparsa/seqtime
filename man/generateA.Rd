@@ -17,7 +17,7 @@ generateA(N = 100, type = "random", pep = 50, d = -0.5,
 
 \item{d}{diagonal values (should be negative)}
 
-\item{min.strength}{random: minimal off-diagonal interaction strength}
+\item{min.strength}{random: minimal off-diagonal interaction strength (only for random)}
 
 \item{max.strength}{random: maximal off-diagonal interaction strength, klemm: maximal absolute off-diagonal interaction strength}
 

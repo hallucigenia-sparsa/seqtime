@@ -7,7 +7,7 @@
 #' @param type random (sample a uniform distribution), klemm (generate a Klemm-Eguiluz matrix) or empty (zero everywhere, except for diagonal which is set to d)
 #' @param pep desired positive edge percentage (only for klemm)
 #' @param d diagonal values (should be negative)
-#' @param min.strength random: minimal off-diagonal interaction strength
+#' @param min.strength random: minimal off-diagonal interaction strength (only for random)
 #' @param max.strength random: maximal off-diagonal interaction strength, klemm: maximal absolute off-diagonal interaction strength
 #' @param c desired connectance (interaction probability)
 #' @param ignore.c do not adjust connectance

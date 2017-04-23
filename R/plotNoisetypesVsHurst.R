@@ -7,21 +7,26 @@
 #' @param x a matrix
 #' @param noisetypes the noisetypes of the matrix
 #' @param header header string
+#' @examples
+#' \dontrun{
 #' N=50
 #' M=500
 #' metapop=generateAbundances(N=M, mode=5, probabs=TRUE)
 #' ts=simHubbell(N=N, M=M,I=1500,d=N, m.vector=metapop, tskip=50, tend=500)
 #' noisetypes=identifyNoisetypes(ts)
 #' noisetypesHurst(ts,noisetypes,header="Hurst exponent stratified by noise type")
+#' }
 #' @export
 
-noisetypesHurst<-function(x, noisetypes, header=""){
+plotNoisetypesVsHurst<-function(x, noisetypes, header=""){
   hurst.pink=c()
   if(length(noisetypes$pink) > 0){
     for(i in 1:length(noisetypes$pink)){
       h=FGN::HurstK(x[noisetypes$pink[i],])
       hurst.pink=c(hurst.pink,h)
     }
+  }else{
+    hurst.pink=c(NA)
   }
   hurst.white=c()
   if(length(noisetypes$white) > 0){
@@ -29,6 +34,8 @@ noisetypesHurst<-function(x, noisetypes, header=""){
       h=FGN::HurstK(x[noisetypes$white[i],])
       hurst.white=c(hurst.white,h)
     }
+  }else{
+    hurst.white=c(NA)
   }
   hurst.brown=c()
   if(length(noisetypes$brown) > 0){
@@ -36,6 +43,8 @@ noisetypesHurst<-function(x, noisetypes, header=""){
       h=FGN::HurstK(x[noisetypes$brown[i],])
       hurst.brown=c(hurst.brown,h)
     }
+  }else{
+    hurst.brown=c(NA)
   }
   hurst.black=c()
   if(length(noisetypes$black) > 0){
@@ -43,6 +52,8 @@ noisetypesHurst<-function(x, noisetypes, header=""){
       h=FGN::HurstK(x[noisetypes$black[i],])
       hurst.black=c(hurst.black,h)
     }
+  }else{
+    hurst.black=c(NA)
   }
   print(paste("white mean Hurst:",mean(hurst.white)))
   print(paste("pink mean Hurst:",mean(hurst.pink)))

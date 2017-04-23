@@ -1,10 +1,11 @@
 #' @title Rarefaction combined with sample filtering
 #'
-#' @description Rarefy a given count vector or matrix column-wise using vegan's rrarefy function.
-#' If columns have less than the minimum count number, they are discarded.
-#' @param x a matrix or vector
-#' @param min minimum count to which x is to be rarefied (if equal to zero, minimum column sum is taken as min)
-#' @return a list with the rarefied vector or matrix (rar) and the indices of the columns that were kept (colindices)
+#' @description Rarefy a matrix to the given minimum count number column-wise
+#' using vegan's rrarefy function. If columns have less than the minimum count number,
+#' they are discarded.
+#' @param x a matrix
+#' @param min minimum count to which x is to be rarefied (if equal to zero, the minimum column sum is taken as min)
+#' @return a list with the rarefied matrix (rar) and the indices of the columns that were kept (colindices)
 #' @examples
 #' data(david_stoolA_otus)
 #' filtered=rarefyFilter(david_stoolA_otus,min=1000)

@@ -5,7 +5,7 @@
 \title{Time Series Plot}
 \usage{
 tsplot(x, time.given = FALSE, num = nrow(x), sample.points = c(),
-  legend = FALSE, pch = "+", lty = 1, type = "l", header = "")
+  legend = FALSE, header = "", pch = "+", lty = 1, type = "l", ...)
 }
 \arguments{
 \item{x}{the matrix of time series}
@@ -18,13 +18,15 @@ tsplot(x, time.given = FALSE, num = nrow(x), sample.points = c(),
 
 \item{legend}{add a legend}
 
-\item{pch}{plot parameter}
+\item{header}{string added to the plot title}
 
-\item{lty}{line type}
+\item{pch}{plot parameter (point character)}
 
-\item{type}{pot parameter}
+\item{lty}{plot parameter (line type)}
 
-\item{header}{header string}
+\item{type}{plot parameter (plot type, e.g. dots, lines etc.)}
+
+\item{\\dots}{Additional arguments passed to plot()}
 }
 \description{
 Plot the time series row-wise.
