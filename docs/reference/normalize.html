@@ -80,10 +80,10 @@
     </div>
 
     
-    <p>Normalize a matrix column-wise by dividing each entry by its corresponding column sum</p>
+    <p>Normalize a matrix column-wise by dividing each entry by its corresponding column sum.</p>
     
 
-    <pre class="usage"><span class='fu'>normalize</span>(<span class='no'>x</span>)</pre>
+    <pre class="usage"><span class='fu'>normalize</span>(<span class='no'>x</span>, <span class='kw'>removeZero</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -92,11 +92,19 @@
       <th>x</th>
       <td><p>a matrix</p></td>
     </tr>
+    <tr>
+      <th>removeZero</th>
+      <td><p>remove columns summing to zero.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a normalized matrix</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Columns summing to zero are removed by default.</p>
     
 
   </div>
@@ -106,6 +114,8 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
           </ul>
 
   </div>

@@ -153,7 +153,7 @@ compareTS <- function(input.folder="",expIds=c(), modif.folder="", modif="", sli
     if(!file.exists(settings.path)){
       stop(paste("The settings file",settings.path,"does not exist!"))
     }
-    source(settings.path)
+    source(settings.path, local=TRUE)
 
     algorithms=c(algorithms,Algorithm)
     samplingfreqs=c(samplingfreqs,Sampling_frequency)

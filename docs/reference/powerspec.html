@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Report slope of periodogram in log-log scale — powerspec • seqtime</title>
+<title>Report slope of periodogram in log scale — powerspec • seqtime</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -76,12 +76,16 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Report slope of periodogram in log-log scale</h1>
+    <h1>Report slope of periodogram in log scale</h1>
     </div>
 
     
-    <p>The function uses stats::spectrum to compute the periodogram. It also reports the significance
-and goodness of fit of the power law.</p>
+    <p>The periodogram plots frequencies (f) versus their power (spectrum).
+In case their relationship is well described by a line in log scale,
+its slope can be used to determine the noise type of a time series.
+If the slope is around -1, the time series displays 1/f (pink) noise.
+If it is around -2, the time series displays 1/f^2 (brown) noise. If the slope
+is even steeper, the time series displays black noise.</p>
     
 
     <pre class="usage"><span class='fu'>powerspec</span>(<span class='no'>v</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>header</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>)</pre>
@@ -111,7 +115,15 @@ and goodness of fit of the power law.</p>
 
     <p>return the slope, p-value, adjusted R2, log frequencies and log spectra</p>
     
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
+    <p>The function uses stats::spectrum to compute the periodogram. It also reports the significance
+and goodness of fit of the power law.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>brownNoise</span><span class='kw'>=</span><span class='fu'>cumsum</span>(<span class='fu'>rnorm</span>(<span class='fl'>500</span>,<span class='kw'>mean</span><span class='kw'>=</span><span class='fl'>10</span>))
+<span class='no'>out.spec</span><span class='kw'>=</span><span class='fu'>powerspec</span>(<span class='no'>brownNoise</span>, <span class='kw'>header</span><span class='kw'>=</span><span class='st'>"brown noise"</span>, <span class='kw'>plot</span><span class='kw'>=</span><span class='fl'>TRUE</span>)</div><img src='powerspec-2.png' alt='' width='540' height='400' /></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -119,7 +131,11 @@ and goodness of fit of the power law.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

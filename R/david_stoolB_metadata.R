@@ -1,6 +1,6 @@
-#' David et al. stool sample metadata object of subject B
+#' @title David et al. stool sample metadata object of subject B
 #'
-#' The metadata collected on stool samples of subject B over time.
+#' @description The metadata collected on stool samples of subject B over time.
 #' In contrast to subject A, these include only collection day and age.
 #' Salmonella infection (food poisoning) peaked at day 159.
 #'

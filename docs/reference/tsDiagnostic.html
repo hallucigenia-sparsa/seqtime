@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Diagnostic Plot for Community Simulation — tsDiagnostic • seqtime</title>
+<title>Diagnostics for Community Simulation — tsDiagnostic • seqtime</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -76,14 +76,18 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Diagnostic Plot for Community Simulation</h1>
+    <h1>Diagnostics for Community Simulation</h1>
     </div>
 
     
-    <p>Diagnostic plots for the outcome of a community simulation.</p>
+    <p>Diagnostics for the outcome of a community simulation.
+Reports the number of species that went extinct at the end of the simulation
+and the number and proportion of zeros in the time series. In addition,
+it offers diagnostic plots.</p>
     
 
-    <pre class="usage"><span class='fu'>tsDiagnostic</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"ind"</span>, <span class='kw'>spec.index</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>spec.meta</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>tsDiagnostic</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"ind"</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>spec.index</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>spec.meta</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -94,15 +98,19 @@
     </tr>
     <tr>
       <th>type</th>
-      <td><p>plot time vs number of species (spec), number of individuals (ind) or the distribution of the species with given index together with its proportion in the metacommunity, if provided</p></td>
+      <td><p>plot time vs number of species (spec), number of individuals/sum of abundance (ind) or the distribution of the species with given index (distrib)</p></td>
+    </tr>
+    <tr>
+      <th>plot</th>
+      <td><p>plot the diagnostic plot of selected type</p></td>
     </tr>
     <tr>
       <th>spec.index</th>
-      <td><p>row index of selected species (required for type distrib)</p></td>
+      <td><p>row index of selected species (optional, required for type distrib)</p></td>
     </tr>
     <tr>
       <th>spec.meta</th>
-      <td><p>proportion of selected species in the meta-community (optional)</p></td>
+      <td><p>proportion of selected species in the meta-community (optional, if provided it is added in plot type distrib)</p></td>
     </tr>
     </table>
     

@@ -8,11 +8,13 @@
 #' @param metadata vector with values in the same order as samples in the taxon matrix
 #' @param metadataName name of the metadata vector (e.g. age)
 #' @param samplegroups supposed to assign an integer to each sample, with integers ranging from 1 to group number. If provided, intra-group dissimilarity dots are colored by sample group
-#' @param dissim dissimilarity measure to use
-#' @param header a string to be appended to the plot title (Dissimilarity change)
+#' @param dissim dissimilarity measure to use, a measure supported by vegan's vegdist function
 #' @param normtaxa divide each taxon vector in x by its sum
 #' @param logdissim take the logarithm of the dissimilarity before fitting a line
 #' @param intragroupsOnly only take sample pairs within the same group into account for dissimilarity computation
+#' @param header a string to be appended to the plot title (Dissimilarity change)
+#' @param groupName the name for the groups displayed in the legend (defaults to group)
+#' @param inversePlot plot community dissimilarity on the x-axis instead of on the y-axis
 #'
 #' @examples
 #' N=50
@@ -28,7 +30,7 @@
 #'
 #' @export
 
-simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,ncol(x)), dissim="bray", normtaxa=FALSE, logdissim=FALSE, intragroupsOnly=FALSE, header=""){
+simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,ncol(x)), dissim="bray", normtaxa=FALSE, logdissim=FALSE, intragroupsOnly=FALSE, header="", groupName="", inversePlot=FALSE){
   if(length(taxa)==0 && length(metadata) == 0){
     stop("Please provide at least the index or the name of one taxon or alternatively provide a metadata vector.")
   }
@@ -42,12 +44,8 @@ simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,
     stop("There should be as many sample group vector entries as samples in the taxon matrix.")
   }
   if(normtaxa == TRUE){
-    rowsums = apply(x,1,sum)
-    # remove taxa with only zeros from matrix, to avoid dividing by a zero
-    zero.indices=which(rowsums==0)
-    rowsums=rowsums[setdiff(1:nrow(x),zero.indices)]
-    x=x[setdiff(1:nrow(x),zero.indices),]
-    x=x/rowsums
+    # normalize row-wise, then re-transpose
+    x=t(normalize(t(x)))
   }
   differences = c()
   dissimValues = c()
@@ -57,7 +55,7 @@ simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,
   if(groupNum == 1){
     hues=c("black")
   }else{
-    generator = seq(0,1,1/groupNum)
+    generator = seq(0,1,1/(groupNum+1))
     hues = hsv(generator)
   }
   taxonStr = ""
@@ -71,6 +69,7 @@ simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,
       indices=c()
       # grep row indices from row names
       for(taxon.index in 1:length(taxa)){
+        # \b denotes the word boundary
         index=grep(paste(taxa[taxon.index],"\\b",sep=""),rownames(x),perl=TRUE)
         if(length(index)==0){
           print(paste("Taxon",taxa[taxon.index],"not found as a row name."))
@@ -114,7 +113,7 @@ simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,
         if(samplegroups[index1] == samplegroups[index2]){
           group=samplegroups[index1]
           col=hues[group]
-          colorlookup[[paste("group",group)]]=col
+          colorlookup[[paste(groupName,group)]]=col
           colors=c(colors,col)
         }else{
           colors=c(colors,"grey")
@@ -126,18 +125,23 @@ simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,
   if(logdissim==TRUE){
     dissimValues=log(dissimValues)
   }
-  linreg = lm(formula = dissimValues~differences)
+  if(inversePlot==TRUE){
+    linreg = lm(formula = differences~dissimValues)
+  }else{
+    linreg = lm(formula = dissimValues~differences)
+  }
   intersection = linreg$coefficients[1]
   slope=linreg$coefficients[2]
   sum=summary(linreg)
   pval=1-pf(sum$fstatistic[1], sum$fstatistic[2], sum$fstatistic[3])
+  #print(sum)
   #print(paste("slope",slope))
   #print(paste("p-value",pval))
   #print(paste("Adjusted R2:",sum$adj.r.squared))
   if(logdissim == TRUE){
-    ylab=paste("Log community dissimilarity (",dissim,") difference", sep="")
+    ylab=paste("Log community dissimilarity (",dissim,")", sep="")
   }else{
-    ylab=paste("Community dissimilarity (",dissim,") difference", sep="")
+    ylab=paste("Community dissimilarity (",dissim,")", sep="")
   }
   xlab="Difference"
   if(length(taxa)>0){
@@ -149,8 +153,20 @@ simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,
   }else{
     xlab=paste(xlab,"in ",metadataName)
   }
-  plot(differences,dissimValues, xlab=xlab, ylab=ylab, main=paste("Dissimilarity change",header,"\nP-value",round(pval,3),", R2.adj",round(sum$adj.r.squared,3),", Slope",round(slope,3)),col=colors)
-  abline(linreg,bty="n",col="red")
+  if(inversePlot==TRUE){
+    tmp=xlab
+    xlab=ylab
+    ylab=tmp
+    xmax=max(dissimValues,na.omit=TRUE)
+    if(dissim=="bray"){
+      xmax=1
+    }
+    plot(dissimValues, differences, xlab=xlab, ylab=ylab, xlim=c(0,xmax), main=paste("Dissimilarity change",header,"\nP-value",round(pval,3),", R2.adj",round(sum$adj.r.squared,3),", Slope",round(slope,3)),col=colors)
+    abline(linreg,bty="n",col="red")
+  }else{
+    plot(differences,dissimValues, xlab=xlab, ylab=ylab, main=paste("Dissimilarity change",header,"\nP-value",round(pval,3),", R2.adj",round(sum$adj.r.squared,3),", Slope",round(slope,3)),col=colors)
+    abline(linreg,bty="n",col="red")
+  }
   #lines(seq(0,1,by=0.1),seq(0,1,by=0.1),col="gray")
   if(groupNum > 1){
     legendnames=c()

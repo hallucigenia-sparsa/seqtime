@@ -1,6 +1,6 @@
 #' @title Connectance
 #' @description Compute connectance of an interaction matrix.
-#' @details The connectance is defined as \eqn{c=E/(N*(N-1)}, where \eqn{E} is the number
+#' @details The connectance is defined as \eqn{c=E/(N*(N-1))}, where \eqn{E} is the number
 #' of realized arcs (the number of non-zero entries in the interaction matrix)
 #' and \eqn{N*(N-1)} the number of possible arcs.
 #' The diagonal (self-arcs) is excluded.

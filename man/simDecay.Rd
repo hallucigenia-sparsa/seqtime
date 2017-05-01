@@ -6,7 +6,8 @@
 \usage{
 simDecay(x, taxa = c(), metadata = c(), metadataName = "",
   samplegroups = rep(1, ncol(x)), dissim = "bray", normtaxa = FALSE,
-  logdissim = FALSE, intragroupsOnly = FALSE, header = "")
+  logdissim = FALSE, intragroupsOnly = FALSE, header = "",
+  groupName = "", inversePlot = FALSE)
 }
 \arguments{
 \item{x}{taxon-sample matrix with taxa as rows and samples as columns}
@@ -19,7 +20,7 @@ simDecay(x, taxa = c(), metadata = c(), metadataName = "",
 
 \item{samplegroups}{supposed to assign an integer to each sample, with integers ranging from 1 to group number. If provided, intra-group dissimilarity dots are colored by sample group}
 
-\item{dissim}{dissimilarity measure to use}
+\item{dissim}{dissimilarity measure to use, a measure supported by vegan's vegdist function}
 
 \item{normtaxa}{divide each taxon vector in x by its sum}
 
@@ -28,6 +29,10 @@ simDecay(x, taxa = c(), metadata = c(), metadataName = "",
 \item{intragroupsOnly}{only take sample pairs within the same group into account for dissimilarity computation}
 
 \item{header}{a string to be appended to the plot title (Dissimilarity change)}
+
+\item{groupName}{the name for the groups displayed in the legend (defaults to group)}
+
+\item{inversePlot}{plot community dissimilarity on the x-axis instead of on the y-axis}
 }
 \description{
 All pair-wise community dissimilarities are plotted

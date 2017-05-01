@@ -12,22 +12,21 @@
 #' @param brown.type the algorithm to generate brown noise, options: bm (Brown motion) and gbm (geometrical Brown motion; requires sde package)
 #' @param mean parameter for white and brown noise (type bm)
 #' @param sd parameter for white and brown noise (type bm)
-#' @param c constant added to pink noise
 #' @param r parameter for brown noise (type gbm)
 #' @param stayDead once a time series hits zero or below, it stays at zero
 #' @return a matrix where each row represents a distribution following a specified noise type
 #' @examples
 #'   # plot the power spectrum of pink noise
-#'   ps <- powerspec(simNoiseMat(samples=100,noisetypes=list(white=0,brown=0,pink=1))[1,], plot=TRUE)
+#'   ps <- powerspec(simNoiseMat(samples=100,noisetypes=list(white=0,pink=1,brown=0))[1,], plot=TRUE)
 #'   # plot a matrix with mixed noise types
-#'   mat <- simNoiseMat(samples=300,noisetypes=list(white=0,brown=20,pink=30))
+#'   mat <- simNoiseMat(samples=300,noisetypes=list(white=0,pink=30,brown=20))
 #'   tsplot(mat,type="l", header="simulated noise")
 #'   # Taylor law of brown noise
-#'   t <- taylor(simNoiseMat(samples=300,noisetypes=list(white=0,brown=50,pink=0)),type="taylor")
+#'   t <- taylor(simNoiseMat(samples=300,noisetypes=list(white=0,pink=0,brown=50)),type="taylor")
 #'   # Check generation of pink noise
-#'   i <- identifyNoisetypes(simNoiseMat(samples=500,noisetypes=list(white=0,brown=0,pink=10)))
+#'   i <- identifyNoisetypes(simNoiseMat(samples=500,noisetypes=list(white=0,pink=10,brown=0)))
 #' @export
-simNoiseMat<-function(samples=100, noisetypes=list(white=2,brown=3,pink=5), brown.type="bm", mean=5, sd=1, c=1, r=2, stayDead=FALSE){
+simNoiseMat<-function(samples=100, noisetypes=list(white=2,pink=5,brown=3), brown.type="bm", mean=5, sd=1, r=2, stayDead=FALSE){
   noiseMat=matrix(nrow=noisetypes$white+noisetypes$brown+noisetypes$pink,ncol=samples)
   counter=1
   # generate requested number of instances of white noise
@@ -63,7 +62,8 @@ simNoiseMat<-function(samples=100, noisetypes=list(white=2,brown=3,pink=5), brow
   # generate requested number of instances of pink noise
   if(noisetypes$pink > 0){
     for(i in 1:noisetypes$pink){
-      pink=tuneR::noise(kind="pink")
+      # bit=0: do not rescale
+      pink=tuneR::noise(kind="pink", bit=0)
       noiseMat[counter,]=pink@left[1:samples]
       counter = counter+1
     }

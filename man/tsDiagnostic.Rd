@@ -2,21 +2,27 @@
 % Please edit documentation in R/tsDiagnostic.R
 \name{tsDiagnostic}
 \alias{tsDiagnostic}
-\title{Diagnostic Plot for Community Simulation}
+\title{Diagnostics for Community Simulation}
 \usage{
-tsDiagnostic(x, type = "ind", spec.index = 1, spec.meta = NA)
+tsDiagnostic(x, type = "ind", plot = TRUE, spec.index = 1,
+  spec.meta = NA)
 }
 \arguments{
 \item{x}{community time series, rows are species and columns are time points}
 
-\item{type}{plot time vs number of species (spec), number of individuals (ind) or the distribution of the species with given index together with its proportion in the metacommunity, if provided}
+\item{type}{plot time vs number of species (spec), number of individuals/sum of abundance (ind) or the distribution of the species with given index (distrib)}
 
-\item{spec.index}{row index of selected species (required for type distrib)}
+\item{plot}{plot the diagnostic plot of selected type}
 
-\item{spec.meta}{proportion of selected species in the meta-community (optional)}
+\item{spec.index}{row index of selected species (optional, required for type distrib)}
+
+\item{spec.meta}{proportion of selected species in the meta-community (optional, if provided it is added in plot type distrib)}
 }
 \description{
-Diagnostic plots for the outcome of a community simulation.
+Diagnostics for the outcome of a community simulation.
+Reports the number of species that went extinct at the end of the simulation
+and the number and proportion of zeros in the time series. In addition,
+it offers diagnostic plots.
 }
 \examples{
 \dontrun{

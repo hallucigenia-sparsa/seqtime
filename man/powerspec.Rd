@@ -2,7 +2,7 @@
 % Please edit documentation in R/powerspec.R
 \name{powerspec}
 \alias{powerspec}
-\title{Report slope of periodogram in log-log scale}
+\title{Report slope of periodogram in log scale}
 \usage{
 powerspec(v, plot = FALSE, header = "", col = "blue")
 }
@@ -19,6 +19,18 @@ powerspec(v, plot = FALSE, header = "", col = "blue")
 return the slope, p-value, adjusted R2, log frequencies and log spectra
 }
 \description{
+The periodogram plots frequencies (f) versus their power (spectrum).
+In case their relationship is well described by a line in log scale,
+its slope can be used to determine the noise type of a time series.
+If the slope is around -1, the time series displays 1/f (pink) noise.
+If it is around -2, the time series displays 1/f^2 (brown) noise. If the slope
+is even steeper, the time series displays black noise.
+}
+\details{
 The function uses stats::spectrum to compute the periodogram. It also reports the significance
 and goodness of fit of the power law.
+}
+\examples{
+brownNoise=cumsum(rnorm(500,mean=10))
+out.spec=powerspec(brownNoise, header="brown noise", plot=TRUE)
 }

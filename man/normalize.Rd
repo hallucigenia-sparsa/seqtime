@@ -4,14 +4,19 @@
 \alias{normalize}
 \title{Normalize a matrix}
 \usage{
-normalize(x)
+normalize(x, removeZero = TRUE)
 }
 \arguments{
 \item{x}{a matrix}
+
+\item{removeZero}{remove columns summing to zero.}
 }
 \value{
 a normalized matrix
 }
 \description{
-Normalize a matrix column-wise by dividing each entry by its corresponding column sum
+Normalize a matrix column-wise by dividing each entry by its corresponding column sum.
+}
+\details{
+Columns summing to zero are removed by default.
 }

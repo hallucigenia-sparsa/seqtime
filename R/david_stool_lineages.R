@@ -1,6 +1,6 @@
-#' David et al. stool OTU lineages
+#' @title David et al. stool OTU lineages
 #'
-#' The lineages for OTUs in David data stool subject A and B.
+#' @description The lineages for OTUs in David data stool subject A and B.
 #' The first column holds the OTU, column 2 to 8 hold the domain, phylum,
 #' class, order, family, genus and species level classification and column 9 holds the lineage
 #' ending with the OTU. If the OTU has not been classified to a given

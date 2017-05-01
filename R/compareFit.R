@@ -193,7 +193,10 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
         if(!file.exists(settings.path)){
           stop(paste("The settings file",settings.path,"does not exist!"))
         }
-        source(settings.path)
+        print(paste("Reading settings file from:",settings.path))
+        source(settings.path, local=TRUE)
+        #print(paste("Algorithm",Algorithm))
+        #print(paste("steps",steps))
 
         # read time series
         input.ori.timeseries.expId.file=paste(expId,"timeseries.txt",sep="_")
@@ -387,13 +390,15 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
       deltaAest=max(Aest)-min(Aest)
 
       if(input.folder != ""){
+        print(paste("Algorithm",Algorithm))
         if(Algorithm == "glv" || Algorithm == "soc" || Algorithm == "ricker"){
           if(fit.method=="limits"){
             # get selected sub-set of A
             #print(selectedSpec[1:2,])
             A=A[selectedSpec[,1],selectedSpec[,1]]
           }
-          Acorr=sum(diag(cor(A,Aest)))/nrow(Aest)
+          Acorr=sum(diag(cor(A,Aest,use="pairwise.complete.obs")))/nrow(Aest)
+          #print(paste("mean correl A vs Aest",Acorr))
         }else{
           Acorr=NA
         }

@@ -1,6 +1,6 @@
-#' David et al. stool sample metadata object of subject A
+#' @title David et al. stool sample metadata object of subject A
 #'
-#' The metadata collected on stool samples of subject A over time.
+#' @description The metadata collected on stool samples of subject A over time.
 #' Subject A traveled from day 71 to day 122 and contracted diarrhea on
 #' days 80 to 85 and 104 to 113.
 #'

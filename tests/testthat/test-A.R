@@ -8,7 +8,7 @@ test_that("A has desired connectance",{
   expect_equal(c,cobs)
 })
 
-test_that("A has desired negative edge percentage",{
+test_that("A has increased negative edge percentage",{
   nep=70
   A=generateA(N=50,c=0.1) # random assignment of edge strength results on average in 50%
   pep=getPep(A)

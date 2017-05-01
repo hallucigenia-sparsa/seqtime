@@ -86,7 +86,8 @@ against the corresponding abundance difference of selected taxa or metadata.</p>
 
     <pre class="usage"><span class='fu'>simDecay</span>(<span class='no'>x</span>, <span class='kw'>taxa</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>metadata</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>metadataName</span> <span class='kw'>=</span> <span class='st'>""</span>,
   <span class='kw'>samplegroups</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fl'>1</span>, <span class='fu'>ncol</span>(<span class='no'>x</span>)), <span class='kw'>dissim</span> <span class='kw'>=</span> <span class='st'>"bray"</span>, <span class='kw'>normtaxa</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>logdissim</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>intragroupsOnly</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>header</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
+  <span class='kw'>logdissim</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>intragroupsOnly</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>header</span> <span class='kw'>=</span> <span class='st'>""</span>,
+  <span class='kw'>groupName</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>inversePlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -113,7 +114,7 @@ against the corresponding abundance difference of selected taxa or metadata.</p>
     </tr>
     <tr>
       <th>dissim</th>
-      <td><p>dissimilarity measure to use</p></td>
+      <td><p>dissimilarity measure to use, a measure supported by vegan's vegdist function</p></td>
     </tr>
     <tr>
       <th>normtaxa</th>
@@ -130,6 +131,14 @@ against the corresponding abundance difference of selected taxa or metadata.</p>
     <tr>
       <th>header</th>
       <td><p>a string to be appended to the plot title (Dissimilarity change)</p></td>
+    </tr>
+    <tr>
+      <th>groupName</th>
+      <td><p>the name for the groups displayed in the legend (defaults to group)</p></td>
+    </tr>
+    <tr>
+      <th>inversePlot</th>
+      <td><p>plot community dissimilarity on the x-axis instead of on the y-axis</p></td>
     </tr>
     </table>
     
