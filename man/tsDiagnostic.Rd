@@ -5,7 +5,7 @@
 \title{Diagnostics for Community Simulation}
 \usage{
 tsDiagnostic(x, type = "ind", plot = TRUE, spec.index = 1,
-  spec.meta = NA)
+  spec.meta = NA, K = NA, header = "")
 }
 \arguments{
 \item{x}{community time series, rows are species and columns are time points}
@@ -17,6 +17,10 @@ tsDiagnostic(x, type = "ind", plot = TRUE, spec.index = 1,
 \item{spec.index}{row index of selected species (optional, required for type distrib)}
 
 \item{spec.meta}{proportion of selected species in the meta-community (optional, if provided it is added in plot type distrib)}
+
+\item{K}{carrying capacity, in case of Hubbell and SOI, the number of individuals (optional, if provided it is shown in plot type ind)}
+
+\item{header}{optional plot title (for types spec and ind)}
 }
 \description{
 Diagnostics for the outcome of a community simulation.

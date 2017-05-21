@@ -37,7 +37,8 @@ enforceneg: multiply off-diagonal negative entries in interaction matrix with th
 removeorphans: remove all taxa that do not interact with other taxa and thus represent orphan nodes in the network representation of the interaction matrix
 mergeposlinks: remove redundant taxon names by summing replicate positive arcs and keeping the sum as entries in the matrix (negative arcs are ignored)
 mergeneglinks: same as mergeposlinks, but only negative entries are kept
-mergelinks: same as mergeposlinks, but all entries are kept
+mergelinks: All entries are kept. Negative entries are subtracted, positive entries are added.
+The modes mergeposlinks, mergeneglinks and mergelinks expect a first column with the taxon names. They will return a matrix with row and column names representing unique taxa.
 }
 \details{
 An entry in the interaction matrix represents an arc in a directed network. An interaction involves two

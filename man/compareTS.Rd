@@ -7,7 +7,7 @@
 compareTS(input.folder = "", expIds = c(), modif.folder = "",
   modif = "", sliceDef = c(1, NA), epsilon = 0.2, norm = FALSE,
   hurstBins = c(0.5, 0.7, 0.9), maxautocorBins = c(0.3, 0.5, 0.8),
-  timeDecaySliceDef = c(1, 50), varEvolSliceDef = c(),
+  timeDecaySliceDef = c(1, 50), varEvolSliceDef = c(), radSliceDef = c(),
   returnDistribs = FALSE, returnTS = FALSE)
 }
 \arguments{
@@ -31,7 +31,9 @@ compareTS(input.folder = "", expIds = c(), modif.folder = "",
 
 \item{timeDecaySliceDef}{the time series subset considered to compute the time decay, a vector with the start and the end time point (if the end time point is NA, the entire time series is used)}
 
-\item{varEvolSliceDef}{the time series subset considered to compute the evolution of variance, a vector with the start and the end time point (if the end time point is NA, the entire time series is used)}
+\item{varEvolSliceDef}{(optional, by default not computed) the time series subset considered to compute the evolution of variance, a vector with the start and the end time point (if the end time point is NA, the entire time series is used)}
+
+\item{radSliceDef}{(optional, by default not computed) the time series subset considered to analyse the species abundance versus rank curve, a vector with the start and the end time point (if the end time point is NA, the entire time series is used)}
 
 \item{returnDistribs}{return distributions at the final time point (no time series properties are computed, cannot be used together with returnTS)}
 

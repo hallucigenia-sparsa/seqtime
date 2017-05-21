@@ -9,9 +9,10 @@
 # data: output of compareTS.R, optionally merged with output of compareFit.R
 # distribs: only needed for type rankabund, output of compareTS with returnDistribs set to TRUE
 # colorBy: a model parameter by which to color, determines the labels of the summary plot, not supported by pca or by rankabund with generator set to all, expId can be selected to color by experiment
-# type: the plot to do (boxplot, summary, rankabund or pca), boxplot will plot a boxplot with the property values per generator and color dots according to colorBy (requires ggplot2), summary will summarize noise types for each experiment, rankabund will do rank-abundance plots and pca will do a PCA plot across the 4 maximum autocorrelation bins
+# type: the plot to do (boxplot, summary, rankabund, biplot or pca), boxplot will plot a boxplot with the property values per generator and color dots according to colorBy (requires ggplot2), summary will summarize noise types for each experiment, rankabund will do rank-abundance plots, biplot will draw a biplot (requires ggplot2 and ggbiplot) and pca will do a PCA plot across the 4 maximum autocorrelation bins
 # property: a time series property (boxplot)
 # summary.type: the type of the summary plot, either noise, hurst or autocor (summary)
+# summary.header: header for the summary plot, is combined with default header
 # jitter.width: jitter control (boxplot)
 # dot.size: dot size control (boxplot)
 # pcs: principal components (pca)
@@ -19,6 +20,7 @@
 # skipIntervals: only plot time series with interval 1, supported for box plot, pca and summary plot
 # skipHighDeathrate: avoid hubbell time series with high death rate (> 100), supported for box plot, pca and summary plot
 # skipGenerators: list of generators to skip, supported for box plot, pca and summary plot
+# includeSOI: include SOI R2 values in biplot
 # addInitAbund: add broken-stick-distributed initial abundances (rankabund)
 # norm: normalize abundances (rankabund)
 # taxonNum: the number of taxa to plot, if NA, all are plotted (rankabund)
@@ -26,20 +28,26 @@
 # pch: which point character to use for the plot (rankabund)
 # maxautocorBins: the bins used for the maximal autocorrelation, needed to set labels correctly (boxplot)
 # hurstBins: the bins used for the Hurst exponent, needed to set labels correctly (boxplot)
+# makeggplot: plot the ggplot2 object (only if ggplot2 plot was made)
+#
+# Returns: a ggplot2 object if ggplot2 plot was carried out
 #
 # Examples:
-# plotTSComparison(table,property="taylorslope", colorBy="pep", jitter.width = 0.01)
+# plotObj=plotTSComparison(table,property="taylorslope", colorBy="pep", jitter.width = 0.01)
 # plotTSComparison(table,type="summary",colorBy ="algorithm")
 # plotTSComparison(table,distribs, type="rankabund", norm=TRUE, taxonNum=10)
 # plotTSComparison(table,distribs, type="rankabund", generator="dm", colorBy="initabundmode", addInitAbund = TRUE,norm = TRUE, taxonNum=15)
+#
+# Note: princomp and ggbiplot are outcommented so as not to disturb the seqtime build
 
-plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", property="pink", summary.type="noise", jitter.width=0.1, dot.size=3, pcs=c(1,2), useGgplot=FALSE, skipIntervals=FALSE, skipHighDeathrate=FALSE, skipGenerators=c(), addInitAbund=FALSE, norm=FALSE, taxonNum=NA, generator="all", pch="", maxautocorBins=c(0.3,0.5,0.8), hurstBins=c(0.5,0.7,0.9)){
+plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", property="pink", summary.type="noise", summary.header="", jitter.width=0.1, dot.size=3, pcs=c(1,2), useGgplot=FALSE, skipIntervals=FALSE, skipHighDeathrate=FALSE, skipGenerators=c(), addInitAbund=FALSE, includeSOI=FALSE, norm=FALSE, taxonNum=NA, generator="all", pch="", maxautocorBins=c(0.3,0.5,0.8), hurstBins=c(0.5,0.7,0.9), makeggplot=TRUE){
   if(!is.data.frame(data)){
     data=as.data.frame(data)
   }
   if(type=="rankabund" && !is.data.frame(distribs)){
     distribs=as.data.frame(distribs)
   }
+  ggplotObj=NULL
   data["expId"]=c(1:length(data$algorithm))
   # update SOC to SOI
   levels(data$algorithm)[levels(data$algorithm)=="soc"]="soi"
@@ -72,10 +80,10 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
   }else if(property=="varevolr2"){
     descript="R2 of variance over time"
   }else if(property == "Acorr"){
-    descript="mean correlation between known and predicted interaction matrix"
+    descript="LIMITS interaction matrix correlation"
   }else if(property=="corrAll"){
     # for all species considered for fit
-    descript="mean cross-correlation between known and predicted time series"
+    descript="LIMITS mean cross-correlation"
   }else if(property=="neutralfull" || property=="neutralslice"){
     descript="p-value"
   }else if(property=="maxcorr"){
@@ -90,13 +98,15 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
   }else if(property=="deltaAest"){
     descript="range of inferred interaction strengths"
   }else if(property=="autoslope"){
-    descript="slope of mean auto-correlation (lag 1) and species number"
+    descript="slope of mean autocorrelation and species number"
   }else if(property=="timedecayr2"){
     descript="R2 of log(dissimilarity) and log(deltaT)"
   }else if(property=="timedecayslope"){
     descript="slope of log(dissimilarity) and log(deltaT)"
   }else if(property=="initlast"){
     descript="difference between initial and final taxon proportions"
+  }else if(property=="soir2"){
+    descript="SOI fitting mean R2"
   }
 
   if(colorBy=="pep"){
@@ -104,7 +114,7 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
   }else if(colorBy=="initabundmode"){
     colorByDescript="initial abundance distribution type"
   }else if(colorBy=="c"){
-    colorByDescript="interaction matrix connectance"
+    colorByDescript="connectance"
   }
 
   if(skipIntervals==TRUE || skipHighDeathrate==TRUE || length(skipGenerators)>0){
@@ -112,20 +122,39 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
   }
 
   # check whether ggplot2 is there
-  if(type=="boxplot" || (type=="summary") && useGgplot==TRUE){
-    # check whether ggplot2 is there
-    #if (!require("ggplot2")) {
-    #  stop("ggplot2 is not installed. Please install it.")
-    #}
+  if(type=="boxplot" || (type=="summary" && useGgplot==TRUE) || type=="biplot"){
+    searchggplot=length(grep(paste("^package:","ggplot2", "$", sep=""), search()))
+    if(searchggplot>0){
+      infotggplot=TRUE
+    }else{
+      stop("Please install/load ggplot2 for this plot option.")
+    }
+  }
+
+  # check whether ggbiplot is there
+  if(type=="biplot"){
+    searchggbiplot=length(grep(paste("^package:","ggbiplot", "$", sep=""), search()))
+    if(searchggbiplot>0){
+      infotggbiplot=TRUE
+    }else{
+      stop("Please install/load ggbiplot for this plot option.")
+    }
   }
 
   if(type=="boxplot"){
-    title=paste("Generator versus ",descript, " colored by ",colorByDescript,sep="")
+    if(property=="autoslope"){
+      title=paste("Generator versus autocorrelation slope colored by ",colorByDescript,sep="")
+    }else if(property=="Acorr"){
+      title=paste("Generator versus LIMITS accuracy colored by ",colorByDescript,sep="")
+    }else if(property=="corrAll"){
+      title=paste("Generator versus LIMITS correlation colored by ",colorByDescript,sep="")
+    }else{
+      title=paste("Generator versus ",descript, " colored by ",colorByDescript,sep="")
+    }
     ymin=min(data[property],na.rm=TRUE)
     ymax=max(data[property],na.rm=TRUE)
-    p <- ggplot2::ggplot(data, ggplot2::aes(factor(algorithm),data[property]))
+    ggplotObj <- ggplot2::ggplot(data, ggplot2::aes(factor(algorithm),data[property])) + ggplot2::geom_boxplot() + ggplot2::geom_jitter(ggplot2::aes(colour=factor(unlist(data[colorBy]))), width=jitter.width, size=dot.size) + ggplot2::coord_cartesian(ylim=c(ymin,ymax)) + ggplot2::ggtitle(title) + ggplot2::xlab("Generator") + ggplot2::ylab(firstup(descript)) + ggplot2::theme(legend.title=ggplot2::element_blank(), axis.text.x = ggplot2::element_text(angle=90,size=11))
     # remove legend title: theme(legend.title=element_blank())
-    p + ggplot2::geom_boxplot() + ggplot2::geom_jitter(ggplot2::aes(colour=factor(unlist(data[colorBy]))), width=jitter.width, size=dot.size) + ggplot2::coord_cartesian(ylim=c(ymin,ymax)) + ggplot2::ggtitle(title) + ggplot2::xlab("Generator") + ggplot2::ylab(firstup(descript)) + ggplot2::theme(legend.title=ggplot2::element_blank())
   }else if(type=="summary"){
     # bar plot with OTU percentages in each category
     nrowComp=4
@@ -200,6 +229,9 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
       main="Hurst exponent bin composition"
       colors=c("white","orange","red","darkred","gray")
     }
+    if(summary.header != ""){
+      main=paste(main, summary.header, sep=" ")
+    }
     if(useGgplot==TRUE){
       # check whether reshape2 is there
       #if (!require("reshape2")) {
@@ -212,7 +244,7 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
       rownames(mat)=c("id",rownames(composition))
       df=as.data.frame(t(mat))
       df.m=reshape2::melt(df,id.var="id")
-      ggplot2::ggplot(df.m, ggplot2::aes(x = id, y = value, fill = variable)) +
+      ggplotObj=ggplot2::ggplot(df.m, ggplot2::aes(x = id, y = value, fill = variable)) +
         ggplot2::geom_bar(stat = "identity") + ggplot2::ylab(ylab) + ggplot2::xlab("Experiment id") + ggplot2::scale_fill_manual(values=colors)
     }else{
       colnames(composition)=NULL
@@ -222,6 +254,22 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
       # set default par
       par(las = 1, srt=0, cex=1, mar = c(4, 5, 4, 2))
     }
+  }else if(type=="biplot"){
+    groups=as.factor(data$algorithm)
+    if(includeSOI==TRUE){
+      # this gives error: covariance matrix is not non-negative definite with princomp(covmat=cov.mat) and cov.mat=cov(t(mat),use="pairwise.complete.obs")
+      mat=cbind(data$pink, data$brown, data$black, data$taylorslope, data$taylorr2, data$autoslope, data$neutralfull, data$soir2, data$corrAll)
+      colnames(mat)=c("pink","brown","black","T.slope","T.R2","autocor", "neutrality", "SOI","LIMITS")
+      # work-around by removing time series with missing values
+      complete.indices=which(complete.cases(mat))
+      mat=mat[complete.indices,]
+      groups=groups[complete.indices]
+    }else{
+      mat=cbind(data$pink, data$brown, data$black, data$taylorslope, data$taylorr2, data$autoslope, data$neutralfull, data$corrAll)
+      colnames(mat)=c("pink","brown","black","T.slope","T.R2","autocor", "neutrality","LIMITS")
+    }
+    #prin.out=princomp(mat,cor=TRUE) # center & scale
+    #ggplotObj=ggbiplot(prin.out, groups=groups)
   }else if(type=="pca"){
     mat=cbind(data$maxautocorbin1, data$maxautocorbin2, data$maxautocorbin3, data$maxautocorbin4)
     mat=scale(mat)
@@ -352,6 +400,10 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
       }
     }
   }
+  if(!is.null(ggplotObj) && makeggplot==TRUE){
+    plot(ggplotObj)
+  }
+  ggplotObj
 }
 
 # filter out intervals > 1 and/or death rate > 100

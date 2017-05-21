@@ -87,6 +87,7 @@ any modification of the interaction strengths. If interaction strengths are scal
 ones are used, the method ggplot is recommended, since it adds a color legend.
 Alternatively, the interaction matrix can also be visualized as a directed network with method network.
 In this case, the igraph network object is returned, to allow for manual adjustment of the layout with igraph's tkplot function.
+Method network recognizes separate taxon name columns in unmerged taxon matrices.
 Method ggplot requires ggplot2 and reshape2.</p>
     
 
@@ -143,7 +144,7 @@ Method ggplot requires ggplot2 and reshape2.</p>
 #&gt; [1] "Number of edges removed 342"
 #&gt; [1] "Final connectance 0.1"
 #&gt; [1] "Final connectance: 0.1"
-#&gt; [1] "Largest value: 0.412951024482027"
+#&gt; [1] "Largest value: 0.438352458644658"
 #&gt; [1] "Smallest value: -0.5"</div><img src='plotA-3.png' alt='' width='540' height='400' /></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

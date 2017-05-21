@@ -10,12 +10,15 @@
 #' @export
 
 normalize<-function(x, removeZero=TRUE){
-  colsums = apply(x,2,sum)
   # remove columns with only zeros from matrix, to avoid dividing by a zero
   if(removeZero==TRUE){
+    colsums = apply(x,2,sum)
     zero.col.indices=which(colsums==0)
-    colsums=colsums[setdiff(1:ncol(x),zero.col.indices)]
-    x=x[setdiff(1:ncol(x),zero.col.indices),]
+    #print(length(zero.col.indices))
+    if(length(zero.col.indices)>0){
+      colsums=colsums[setdiff(1:ncol(x),zero.col.indices)]
+      x=x[setdiff(1:ncol(x),zero.col.indices),]
+    }
   }
   for(i in 1:ncol(x)){
     x[,i]=x[,i]/colsums[i]

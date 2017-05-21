@@ -9,7 +9,8 @@
 #' removeorphans: remove all taxa that do not interact with other taxa and thus represent orphan nodes in the network representation of the interaction matrix
 #' mergeposlinks: remove redundant taxon names by summing replicate positive arcs and keeping the sum as entries in the matrix (negative arcs are ignored)
 #' mergeneglinks: same as mergeposlinks, but only negative entries are kept
-#' mergelinks: same as mergeposlinks, but all entries are kept
+#' mergelinks: All entries are kept. Negative entries are subtracted, positive entries are added.
+#' The modes mergeposlinks, mergeneglinks and mergelinks expect a first column with the taxon names. They will return a matrix with row and column names representing unique taxa.
 #'
 #' @details An entry in the interaction matrix represents an arc in a directed network. An interaction involves two
 #' entries in the interaction matrix, which represent the influence of species A on species B and vice versa.
@@ -73,7 +74,10 @@ modifyA<-function(A, mode="adjustc", strength="binary", factor=2, minstrength=0.
     }
     print(paste("Final connectance", c_obs))
   }else if(mode=="mergeposlinks" || mode=="mergeneglinks" || mode=="mergelinks"){
-    entries=unique(rownames(A))
+    taxonnames=as.character(A[,1])
+    entries=unique(taxonnames)
+    # remove taxon name column
+    A=A[,2:ncol(A)]
     mergedlinks=matrix(0,nrow=length(entries),ncol=length(entries))
     rownames(mergedlinks)=entries
     colnames(mergedlinks)=entries
@@ -81,8 +85,8 @@ modifyA<-function(A, mode="adjustc", strength="binary", factor=2, minstrength=0.
       for(j in 1 : ncol(A)){
         if(!is.na(A[i,j]) && A[i,j]!=0){
           merge=FALSE
-          xIndex=which(entries==rownames(A)[i])
-          yIndex=which(entries==rownames(A)[j])
+          xIndex=which(entries==taxonnames[i])
+          yIndex=which(entries==taxonnames[j])
           #print(paste("x index:",xIndex))
           #print(paste("y index:",yIndex))
           if(mode=="mergeposlinks" && A[i,j]>0){
@@ -93,7 +97,15 @@ modifyA<-function(A, mode="adjustc", strength="binary", factor=2, minstrength=0.
             merge=TRUE
           }
           if(merge==TRUE){
-            mergedlinks[xIndex,yIndex]=mergedlinks[xIndex,yIndex]+1
+            if(mode=="mergelinks"){
+              if(A[i,j]<0){
+                mergedlinks[xIndex,yIndex]=mergedlinks[xIndex,yIndex]-1
+              }else{
+                mergedlinks[xIndex,yIndex]=mergedlinks[xIndex,yIndex]+1
+              }
+            }else{
+              mergedlinks[xIndex,yIndex]=mergedlinks[xIndex,yIndex]+1
+            }
           }
         } # interaction is not zero
       } # column loop

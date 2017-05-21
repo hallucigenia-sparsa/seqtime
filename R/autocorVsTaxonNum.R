@@ -4,6 +4,8 @@
 #' @param ts a matrix with objects as rows and time points as columns
 #' @param lag the lag for which autocorrelation is computed
 #' @param plot plot the increasing number of taxa versus their autocorrelation
+#' @param col plot color
+#' @param pch plot point character
 #' @return a list with the taxon number, autocorrelations, slope and p-value
 #'
 #' @examples
@@ -15,7 +17,7 @@
 #' }
 #' @export
 
-autocorVsTaxonNum<-function(ts, lag=1, plot=FALSE){
+autocorVsTaxonNum<-function(ts, lag=1, plot=FALSE, col="black", pch="+"){
   tend=ncol(ts)
   rowMeans=apply(ts,1,mean)
   sortedTaxa=sort(rowMeans,decreasing=TRUE,index.return=TRUE)$ix
@@ -47,7 +49,7 @@ autocorVsTaxonNum<-function(ts, lag=1, plot=FALSE){
   }
 
   if(plot==TRUE){
-    plot(specNumberVec,autocorrels,main=paste("Mean autocorrelation for lag ",lag," versus taxon number\nSlope: ",round(autoslope,4),", p-value: ",round(pval,4),sep=""), xlab="Number of taxa added in decreasing order of abundance", ylab="Mean autocorrelation", ylim=c(0,1))
+    plot(specNumberVec,autocorrels,main=paste("Mean autocorrelation for lag ",lag," versus taxon number\nSlope: ",round(autoslope,4),", p-value: ",round(pval,4),sep=""), xlab="Number of taxa added in decreasing order of abundance", ylab="Mean autocorrelation", ylim=c(0,1), pch=pch, col=col)
     if(!is.na(autoslope)){
       abline(auto.linreg,bty="n",col="red")
     }

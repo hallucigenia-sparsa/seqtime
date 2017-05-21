@@ -8,6 +8,8 @@
 #' @param plot plot the diagnostic plot of selected type
 #' @param spec.index row index of selected species (optional, required for type distrib)
 #' @param spec.meta proportion of selected species in the meta-community (optional, if provided it is added in plot type distrib)
+#' @param K carrying capacity, in case of Hubbell and SOI, the number of individuals (optional, if provided it is shown in plot type ind)
+#' @param header optional plot title (for types spec and ind)
 #' @examples
 #' \dontrun{
 #' N=50
@@ -19,7 +21,7 @@
 #' }
 #' @export
 
-tsDiagnostic<-function(x, type="ind", plot=TRUE, spec.index=1, spec.meta=NA){
+tsDiagnostic<-function(x, type="ind", plot=TRUE, spec.index=1, spec.meta=NA, K=NA, header=""){
   numZeros=length(x[x==0])
   numValues=nrow(x)*ncol(x)
   onePerc=numValues/100
@@ -34,7 +36,14 @@ tsDiagnostic<-function(x, type="ind", plot=TRUE, spec.index=1, spec.meta=NA){
   if(plot==TRUE){
     if(type=="ind"){
       colsums=apply(x,2,sum)
-      plot(1:ncol(x),colsums, ylab="Sum of abundance", xlab="Time points") # no trend?
+      ylim=c(0,max(colsums))
+      if(!is.na(K) && K > max(colsums)){
+        ylim=c(0,K)
+      }
+      plot(1:ncol(x),colsums,ylim=ylim,main=header, ylab="Sum of abundances", xlab="Time points")
+      if(!is.na(K)){
+        abline(h=K, col="red")
+      }
     }else if(type=="spec"){
       # species number over time
       specnum=c()
@@ -42,7 +51,7 @@ tsDiagnostic<-function(x, type="ind", plot=TRUE, spec.index=1, spec.meta=NA){
         v=as.numeric(x[,j])
         specnum=c(specnum, length(v[v>0]))
       }
-      plot(1:ncol(x),specnum, ylab="Number of species", xlab="Time points")
+      plot(1:ncol(x),specnum, main=header, ylab="Number of species", xlab="Time points")
     }else if(type=="distrib"){
       if(spec.index < 0 || is.na(spec.index)){
         stop("Please provide the index of the species of interest!")

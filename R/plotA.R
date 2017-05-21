@@ -7,6 +7,7 @@
 #' ones are used, the method ggplot is recommended, since it adds a color legend.
 #' Alternatively, the interaction matrix can also be visualized as a directed network with method network.
 #' In this case, the igraph network object is returned, to allow for manual adjustment of the layout with igraph's tkplot function.
+#' Method network recognizes separate taxon name columns in unmerged taxon matrices.
 #' Method ggplot requires ggplot2 and reshape2.
 #'
 #' @param A interaction matrix
@@ -33,11 +34,13 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
   }
   old.par=par()
   # scale values from -1 to 1
-  max=max(A,na.rm=TRUE)
-  min=min(A,na.rm=TRUE)
-  print(paste("Largest value:",max))
-  print(paste("Smallest value:",min))
-  min=abs(min)
+  if(ncol(A)==nrow(A)){
+    max=max(A,na.rm=TRUE)
+    min=min(A,na.rm=TRUE)
+    print(paste("Largest value:",max))
+    print(paste("Smallest value:",min))
+    min=abs(min)
+  }
   if(original == FALSE){
     for(i in 1:nrow(A)){
       for(j in 1:ncol(A)){
@@ -95,6 +98,15 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
     p1<-ggplot2::ggplot(reshape2::melt(A), ggplot2::aes(Var1,Var2, fill=value)) + ggplot2::geom_raster()+ ggplot2::scale_fill_gradient2(low = "red", mid = "white", high = "green",limits=c(-scale.plot, scale.plot)) + ggplot2::ggtitle(header) + ggplot2::labs(x = "",y="")
     plot(p1)
   }else if(method=="network"){
+    taxonnames=c()
+    if((nrow(A)+1)==ncol(A)){
+      print("The interaction matrix contains a taxon column. Orphan removal not supported.")
+      taxonnames=as.character(A[,1])
+      A=as.matrix(A[,2:ncol(A)])
+      removeOrphans=FALSE
+    }else{
+      taxonnames=colnames(A)
+    }
     if(removeOrphans==TRUE){
       A=modifyA(A,mode="removeorphans")
     }
@@ -116,6 +128,7 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
     E(g)$arrow.size=0.3
     E(g)$color=colors
     V(g)$color="white"
+    V(g)$label=taxonnames
     V(g)$frame.color="black"
     V(g)$label.color="black"
     # alternative: https://www.ggplot2-exts.org/ggraph.html

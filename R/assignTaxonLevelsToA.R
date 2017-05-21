@@ -1,14 +1,24 @@
 #' @title Assign Taxon Levels
 #' @description Assign OTU identifiers or higher-level taxon names to an interaction matrix
 #'
+#' @details By default, interactions will be merged to the given higher-level taxon level by
+#' adding 1 for a positive entry and subtracting 1 for a negative entry. If only positive or only
+#' negative entries are merged, the sum of positive or negative entries will be returned.
+#' If uniqueNames is set to TRUE, merging is not carried out. Merging can also be suppressed with option no.merge.
+#' In this case, since non-unique row and column names are not allowed, taxon names are returned as a separate column
+#' in the interaction matrix.
+#'
 #' @param A an interaction matrix
 #' @param data (optional) a matrix with taxon abundances, rows are taxa and columns are samples (only needed if type is non-empty)
 #' @param metadata (optional) a matrix with metadata, samples match samples in OTU table (only needed if type is non-empty)
 #' @param lineages a matrix with lineages, for the format please see data david_stool_lineages
 #' @param type if non-empty, process data exactly as in method generateTS, supported: stoola and stoolb
 #' @param taxon.level the taxon level to be assigned as row and column names, supported: otu, species, genus, family, order, class, phylum
-#' @param uniqueNames make names unique by appending a counter if needed
+#' @param pos.only merge only positive entries such that final interaction matrix only contains positive entries (not carried out if uniqueNames is TRUE)
+#' @param neg.only merge only negative entries such that final interaction matrix only contains negative entries (not carried out if uniqueNames is TRUE)
+#' @param uniqueNames make names unique by appending a counter if needed (prevents merging of entries belonging to the same taxon)
 #' @param higherLevelNames if given level is not known, assign the highest level that is known
+#' @param no.merge suppress merging (in this case, taxon names are returned in a separate column of the matrix, not as row and column names)
 #'
 #' @examples
 #' data("david_stool_lineages")
@@ -22,7 +32,7 @@
 #' classnetwork=plotA(Aclass,method="network")
 #' @export
 
-assignTaxonLevelsToA <- function(A, data=NULL, metadata=NULL, lineages, type="", taxon.level="genus", uniqueNames=FALSE, higherLevelNames=TRUE){
+assignTaxonLevelsToA <- function(A, data=NULL, metadata=NULL, lineages, type="", taxon.level="genus", pos.only=FALSE, neg.only=FALSE, uniqueNames=FALSE, higherLevelNames=TRUE, no.merge=FALSE){
 
   # constants, only needed if type is non-empty
   david.minsamplesum=10000
@@ -97,7 +107,22 @@ assignTaxonLevelsToA <- function(A, data=NULL, metadata=NULL, lineages, type="",
     }
     taxa=append(taxa,taxon)
   }
-  rownames(A)=taxa
-  colnames(A)=rownames(A)
+  if(uniqueNames==TRUE){
+    rownames(A)=taxa
+    colnames(A)=rownames(A)
+  }else{
+    # avoid problems with duplicate row names
+    A=cbind(taxa,A)
+    if(no.merge==FALSE){
+      if(pos.only==TRUE){
+        A=modifyA(A,mode="mergeposlinks")
+      }else if(neg.only==TRUE){
+        A=modifyA(A,mode="mergeneglinks")
+      }
+      else{
+        A=modifyA(A,mode="mergelinks")
+      }
+    }
+  }
   return(A)
 }

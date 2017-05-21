@@ -87,7 +87,7 @@ it offers diagnostic plots.</p>
     
 
     <pre class="usage"><span class='fu'>tsDiagnostic</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"ind"</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>spec.index</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>spec.meta</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+  <span class='kw'>spec.meta</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>K</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>header</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -111,6 +111,14 @@ it offers diagnostic plots.</p>
     <tr>
       <th>spec.meta</th>
       <td><p>proportion of selected species in the meta-community (optional, if provided it is added in plot type distrib)</p></td>
+    </tr>
+    <tr>
+      <th>K</th>
+      <td><p>carrying capacity, in case of Hubbell and SOI, the number of individuals (optional, if provided it is shown in plot type ind)</p></td>
+    </tr>
+    <tr>
+      <th>header</th>
+      <td><p>optional plot title (for types spec and ind)</p></td>
     </tr>
     </table>
     

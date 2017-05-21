@@ -24,6 +24,7 @@ rarefyFilter<-function(x,min = 0){
   if(min == 0){
     min=min(colsums=apply(x,2,sum))
     print(paste("Rarefy to minimum count",min))
+    keep=c(1:ncol(x))
   }else{
     colsums=apply(x,2,sum)
     # there are columns below the minimum

@@ -4,7 +4,7 @@
 \alias{autocorVsTaxonNum}
 \title{Compute slope for increasing number of taxa versus their autocorrelation}
 \usage{
-autocorVsTaxonNum(ts, lag = 1, plot = FALSE)
+autocorVsTaxonNum(ts, lag = 1, plot = FALSE, col = "black", pch = "+")
 }
 \arguments{
 \item{ts}{a matrix with objects as rows and time points as columns}
@@ -12,6 +12,10 @@ autocorVsTaxonNum(ts, lag = 1, plot = FALSE)
 \item{lag}{the lag for which autocorrelation is computed}
 
 \item{plot}{plot the increasing number of taxa versus their autocorrelation}
+
+\item{col}{plot color}
+
+\item{pch}{plot point character}
 }
 \value{
 a list with the taxon number, autocorrelations, slope and p-value

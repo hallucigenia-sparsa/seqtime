@@ -56,7 +56,7 @@
     <div class="page-header toc-ignore">
       <h1>Noise simulation examples</h1>
             
-            <h4 class="date">2017-05-01</h4>
+            <h4 class="date">2017-05-21</h4>
           </div>
 
     
@@ -85,22 +85,22 @@ p &lt;-<span class="st"> </span>tuneR::<span class="kw">noise</span>(<span class
 <p>Estimating Hurst exponent for the noises</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(pracma)
 Hwhite &lt;-<span class="st"> </span><span class="kw">hurstexp</span>(w@left, <span class="dt">d =</span> <span class="dv">128</span>)</code></pre></div>
-<pre><code>## Simple R/S Hurst estimation:         0.4866424 
-## Corrected R over S Hurst exponent:   0.4969215 
-## Empirical Hurst exponent:            0.487284 
-## Corrected empirical Hurst exponent:  0.4718651 
+<pre><code>## Simple R/S Hurst estimation:         0.497775 
+## Corrected R over S Hurst exponent:   0.5070959 
+## Empirical Hurst exponent:            0.4906572 
+## Corrected empirical Hurst exponent:  0.4756437 
 ## Theoretical Hurst exponent:          0.5155387</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Hbrown &lt;-<span class="st"> </span><span class="kw">hurstexp</span>(b, <span class="dt">d =</span> <span class="dv">128</span>)</code></pre></div>
-<pre><code>## Simple R/S Hurst estimation:         0.9160734 
-## Corrected R over S Hurst exponent:   1.004794 
-## Empirical Hurst exponent:            1.003246 
-## Corrected empirical Hurst exponent:  0.9991554 
+<pre><code>## Simple R/S Hurst estimation:         0.9266811 
+## Corrected R over S Hurst exponent:   1.000119 
+## Empirical Hurst exponent:            0.9914064 
+## Corrected empirical Hurst exponent:  0.987335 
 ## Theoretical Hurst exponent:          0.5155387</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Hpink &lt;-<span class="st"> </span><span class="kw">hurstexp</span>(p@left, <span class="dt">d =</span> <span class="dv">128</span>)</code></pre></div>
-<pre><code>## Simple R/S Hurst estimation:         0.8308207 
-## Corrected R over S Hurst exponent:   0.9298882 
-## Empirical Hurst exponent:            0.9520252 
-## Corrected empirical Hurst exponent:  0.945857 
+<pre><code>## Simple R/S Hurst estimation:         0.8636086 
+## Corrected R over S Hurst exponent:   0.9212953 
+## Empirical Hurst exponent:            0.9241974 
+## Corrected empirical Hurst exponent:  0.9179512 
 ## Theoretical Hurst exponent:          0.5155387</code></pre>
 </div>
   </div>

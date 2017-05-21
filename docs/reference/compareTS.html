@@ -86,7 +86,7 @@
     <pre class="usage"><span class='fu'>compareTS</span>(<span class='kw'>input.folder</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>expIds</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>modif.folder</span> <span class='kw'>=</span> <span class='st'>""</span>,
   <span class='kw'>modif</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>sliceDef</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>NA</span>), <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.2</span>, <span class='kw'>norm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>hurstBins</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0.5</span>, <span class='fl'>0.7</span>, <span class='fl'>0.9</span>), <span class='kw'>maxautocorBins</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0.3</span>, <span class='fl'>0.5</span>, <span class='fl'>0.8</span>),
-  <span class='kw'>timeDecaySliceDef</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>50</span>), <span class='kw'>varEvolSliceDef</span> <span class='kw'>=</span> <span class='fu'>c</span>(),
+  <span class='kw'>timeDecaySliceDef</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>50</span>), <span class='kw'>varEvolSliceDef</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>radSliceDef</span> <span class='kw'>=</span> <span class='fu'>c</span>(),
   <span class='kw'>returnDistribs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>returnTS</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
@@ -134,7 +134,11 @@
     </tr>
     <tr>
       <th>varEvolSliceDef</th>
-      <td><p>the time series subset considered to compute the evolution of variance, a vector with the start and the end time point (if the end time point is NA, the entire time series is used)</p></td>
+      <td><p>(optional, by default not computed) the time series subset considered to compute the evolution of variance, a vector with the start and the end time point (if the end time point is NA, the entire time series is used)</p></td>
+    </tr>
+    <tr>
+      <th>radSliceDef</th>
+      <td><p>(optional, by default not computed) the time series subset considered to analyse the species abundance versus rank curve, a vector with the start and the end time point (if the end time point is NA, the entire time series is used)</p></td>
     </tr>
     <tr>
       <th>returnDistribs</th>
