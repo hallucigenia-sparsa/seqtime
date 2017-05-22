@@ -42,7 +42,7 @@ ricker<-function(N, A, K=rep(0.1,N), y=runif(N), sigma=0.05, tend=100, tskip=0, 
       stop("Species below 0!")
     }
     if(t > tskip){
-      out[,t]=y
+      out[,t-tskip]=y
     }
   }
   return(out)
