@@ -23,7 +23,7 @@ data(david_stoolB_otus)
 sorted <- sort(apply(david_stoolB_otus,1,sum),
                  decreasing=TRUE,index.return=TRUE)
 # Display the top 10 most abundant OTUs
-tsplot(david_stoolB_otus[sorted$ix[1:10],], type = "l", header = "Stool B")
+tsplot(david_stoolB_otus[sorted$ix[1:10],], header = "Stool B")
 }
 \references{
 David et al. (2014) Host lifestyle affects human microbiota on daily timescales Genome Biology vol. 15 (7):R89

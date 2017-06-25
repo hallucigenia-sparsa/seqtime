@@ -23,7 +23,7 @@ generateA(N = 100, type = "random", pep = 50, d = -0.5,
 
 \item{c}{desired connectance (interaction probability)}
 
-\item{ignore.c}{do not adjust connectance}
+\item{ignore.c}{do not adjust connectance (only for klemm)}
 
 \item{negedge.symm}{set symmetric negative interactions (only for klemm)}
 

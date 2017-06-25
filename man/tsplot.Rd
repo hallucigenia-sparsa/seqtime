@@ -5,7 +5,9 @@
 \title{Time Series Plot}
 \usage{
 tsplot(x, time.given = FALSE, num = nrow(x), sample.points = c(),
-  legend = FALSE, header = "", pch = "+", lty = 1, type = "l", ...)
+  mode = "lines", dist = "bray", identifyPoints = FALSE, topN = 10,
+  groups = c(), legend = FALSE, header = "", labels = c(),
+  noLabels = FALSE, perturb = NULL, ...)
 }
 \arguments{
 \item{x}{the matrix of time series}
@@ -16,18 +18,36 @@ tsplot(x, time.given = FALSE, num = nrow(x), sample.points = c(),
 
 \item{sample.points}{sample.points}
 
+\item{mode}{lines (default), pcoa (a PCoA plot with arrows showing the community trajectory) or bars (a stacked barplot for each sample)}
+
+\item{dist}{the distance to use for the PCoA plot}
+
+\item{identifyPoints}{click at points in the PCoA plot to identify them (using function identify), not active when noLabels is TRUE}
+
+\item{topN}{number of top taxa to be plotted for mode bars}
+
+\item{groups}{group membership vector with as many entries as samples, only supported for mode bars and pcoa}
+
 \item{legend}{add a legend}
 
 \item{header}{string added to the plot title}
 
-\item{pch}{plot parameter (point character)}
+\item{labels}{use the provided labels in the PCoA plot}
 
-\item{lty}{plot parameter (line type)}
+\item{noLabels}{do not use any labels in the PCoA plot}
 
-\item{type}{plot parameter (plot type, e.g. dots, lines etc.)}
+\item{perturb}{a perturbation object (adds polygons in mode lines highlighting the perturbation periods and colors dots in the PCoA plot)}
 
 \item{\\dots}{Additional arguments passed to plot()}
 }
 \description{
 Plot the time series row-wise.
+}
+\examples{
+N=50
+A=modifyA(generateA(N, c=0.1, d=-1),perc=70,strength="uniform",mode="negpercent")
+out.ricker=ricker(N,A=A,y=generateAbundances(N,mode=5,prob=TRUE),K=rep(0.1,N), sigma=-1,tend=500)
+tsplot(out.ricker)
+tsplot(out.ricker[,1:20],mode="bars",legend=TRUE)
+tsplot(simHubbell(),mode="pcoa") # example of the horseshoe effect
 }

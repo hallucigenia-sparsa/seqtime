@@ -10,7 +10,7 @@
 #' @param min.strength random: minimal off-diagonal interaction strength (only for random)
 #' @param max.strength random: maximal off-diagonal interaction strength, klemm: maximal absolute off-diagonal interaction strength
 #' @param c desired connectance (interaction probability)
-#' @param ignore.c do not adjust connectance
+#' @param ignore.c do not adjust connectance (only for klemm)
 #' @param negedge.symm set symmetric negative interactions (only for klemm)
 #' @param clique.size modularity parameter (only for klemm)
 #' @return the interaction matrix

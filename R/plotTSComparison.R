@@ -38,7 +38,7 @@
 # plotTSComparison(table,distribs, type="rankabund", norm=TRUE, taxonNum=10)
 # plotTSComparison(table,distribs, type="rankabund", generator="dm", colorBy="initabundmode", addInitAbund = TRUE,norm = TRUE, taxonNum=15)
 #
-# Note: princomp and ggbiplot are outcommented so as not to disturb the seqtime build
+# Note: ggbiplot is outcommented so as not to disturb the seqtime build (avoid ggbiplot package dependency)
 
 plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", property="pink", summary.type="noise", summary.header="", jitter.width=0.1, dot.size=3, pcs=c(1,2), useGgplot=FALSE, skipIntervals=FALSE, skipHighDeathrate=FALSE, skipGenerators=c(), addInitAbund=FALSE, includeSOI=FALSE, norm=FALSE, taxonNum=NA, generator="all", pch="", maxautocorBins=c(0.3,0.5,0.8), hurstBins=c(0.5,0.7,0.9), makeggplot=TRUE){
   if(!is.data.frame(data)){
@@ -125,7 +125,7 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
   if(type=="boxplot" || (type=="summary" && useGgplot==TRUE) || type=="biplot"){
     searchggplot=length(grep(paste("^package:","ggplot2", "$", sep=""), search()))
     if(searchggplot>0){
-      infotggplot=TRUE
+      ggplotPresent=TRUE
     }else{
       stop("Please install/load ggplot2 for this plot option.")
     }
@@ -135,7 +135,7 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
   if(type=="biplot"){
     searchggbiplot=length(grep(paste("^package:","ggbiplot", "$", sep=""), search()))
     if(searchggbiplot>0){
-      infotggbiplot=TRUE
+      ggbiplotPresent=TRUE
     }else{
       stop("Please install/load ggbiplot for this plot option.")
     }
@@ -229,6 +229,8 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
       main="Hurst exponent bin composition"
       colors=c("white","orange","red","darkred","gray")
     }
+    # convert relative abundances in percentages
+    composition=composition*100
     if(summary.header != ""){
       main=paste(main, summary.header, sep=" ")
     }
@@ -254,21 +256,22 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
       # set default par
       par(las = 1, srt=0, cex=1, mar = c(4, 5, 4, 2))
     }
-  }else if(type=="biplot"){
+  }else if(type=="biplot" && ggbiplotPresent==TRUE){
     groups=as.factor(data$algorithm)
     if(includeSOI==TRUE){
       # this gives error: covariance matrix is not non-negative definite with princomp(covmat=cov.mat) and cov.mat=cov(t(mat),use="pairwise.complete.obs")
-      mat=cbind(data$pink, data$brown, data$black, data$taylorslope, data$taylorr2, data$autoslope, data$neutralfull, data$soir2, data$corrAll)
-      colnames(mat)=c("pink","brown","black","T.slope","T.R2","autocor", "neutrality", "SOI","LIMITS")
+      # data$taylorr2 (T.R2) is redundant with data$taylorslope (points in the same direction)
+      mat=cbind(data$pink, data$brown, data$black, data$taylorslope, data$autoslope, data$neutralfull, data$soir2, data$corrAll)
+      colnames(mat)=c("pink","brown","black","T.slope","autocor", "neutrality", "SOI","LIMITS")
       # work-around by removing time series with missing values
       complete.indices=which(complete.cases(mat))
       mat=mat[complete.indices,]
       groups=groups[complete.indices]
     }else{
-      mat=cbind(data$pink, data$brown, data$black, data$taylorslope, data$taylorr2, data$autoslope, data$neutralfull, data$corrAll)
-      colnames(mat)=c("pink","brown","black","T.slope","T.R2","autocor", "neutrality","LIMITS")
+      mat=cbind(data$pink, data$brown, data$black, data$taylorslope, data$autoslope, data$neutralfull, data$corrAll)
+      colnames(mat)=c("pink","brown","black","T.slope","autocor", "neutrality","LIMITS")
     }
-    #prin.out=princomp(mat,cor=TRUE) # center & scale
+    prin.out=stats::princomp(mat,cor=TRUE) # center & scale
     #ggplotObj=ggbiplot(prin.out, groups=groups)
   }else if(type=="pca"){
     mat=cbind(data$maxautocorbin1, data$maxautocorbin2, data$maxautocorbin3, data$maxautocorbin4)

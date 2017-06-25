@@ -21,7 +21,7 @@ network=plotA(A,method="network")
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
 out.ricker=ricker(N,A=A)
-tsplot(out.ricker,type="l",header="Ricker")
+tsplot(out.ricker,header="Ricker")
 
 ## ------------------------------------------------------------------------
 Aest=limits(out.ricker)
@@ -41,7 +41,7 @@ limitsqual=limitsQuality(out.ricker,A=Aest,plot=TRUE)
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
 out.hubbell=simHubbell(N=N, M=N,I=1500,d=N, m=0.1, tskip=500, tend=1000)
-tsplot(out.hubbell,type="l",header="Hubbell")
+tsplot(out.hubbell,header="Hubbell")
 
 ## ------------------------------------------------------------------------
 Aesth=limits(out.hubbell)

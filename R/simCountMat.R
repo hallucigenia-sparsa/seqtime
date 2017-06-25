@@ -14,7 +14,7 @@
 #' @param norm normalize matrix column-wise, such that the entries in each column add to one
 #' @param shuffle.samples shuffle each sample
 #' @return a count matrix or relative abundance matrix
-#' @examples tsplot(simCountMat(N=10,samples=50,mode=6,k=0.5),type="l", header="Dirichlet-Multinomial")
+#' @examples tsplot(simCountMat(N=10,samples=50,mode=6,k=0.5),header="Dirichlet-Multinomial")
 #' @seealso \code{\link{generateAbundances}}
 #' @export
 

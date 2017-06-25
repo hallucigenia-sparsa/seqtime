@@ -32,7 +32,7 @@
 #' N=20
 #' A=generateA(N,c=0.1)
 #' ts=ricker(N=N,A=A)
-#' ts=seqtime::normalize(ts)
+#' ts=normalize(ts)
 #' Aest=limits(ts,verbose=TRUE)
 #' out=limitsQuality(ts,A=Aest,A.ori=A, plot=TRUE)
 #' }

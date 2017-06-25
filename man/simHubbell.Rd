@@ -5,7 +5,8 @@
 \title{Hubbell Simulation}
 \usage{
 simHubbell(N = 50, M = 500, I = 500, y = rep(1/N, N),
-  m.vector = rep(1/M, M), m = 0.02, d = 10, tskip = 0, tend = 100)
+  m.vector = rep(1/M, M), m = 0.02, d = 10, tskip = 0, tend = 100,
+  perturb = NULL)
 }
 \arguments{
 \item{N}{species number in the local community}
@@ -25,6 +26,8 @@ simHubbell(N = 50, M = 500, I = 500, y = rep(1/N, N),
 \item{tskip}{number of initial time points to be skipped when returning the result (to avoid the transient)}
 
 \item{tend}{number of time points (i.e. the number of generations)}
+
+\item{perturb}{a perturbation object}
 }
 \value{
 a matrix with species abundances as rows and time points as columns
@@ -40,7 +43,7 @@ For a recent review on the Hubbell model, see Rosindell, Hubbell and Etienne, 20
   N <- 50
   M <- 500
   metapop <- generateAbundances(N = M, mode = 5, probabs = TRUE)
-  x <- tsplot(simHubbell(N = N, M = M, I = 3000, d = N, m.vector = metapop, tskip=500, tend=1000))
+  tsplot(simHubbell(N = N, M = M, I = 3000, d = N, m.vector = metapop, tskip=500, tend=1000))
 }
 }
 \references{

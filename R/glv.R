@@ -14,7 +14,7 @@
 #' @return a matrix with species abundances as rows and time points as columns, column names give time points
 #' @seealso \code{\link{ricker}} for the Ricker model
 #' @examples
-#' tsplot(glv(N=4,generateA(4)),header="gLV",type="l")
+#' tsplot(glv(N=4,generateA(4)),header="gLV")
 #' @export
 
 glv<-function(N=4,A,b=runif(N),y=runif(N),tstart=0,tend=100,tstep=0.1){

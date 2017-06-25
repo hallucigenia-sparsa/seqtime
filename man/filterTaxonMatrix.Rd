@@ -4,12 +4,14 @@
 \alias{filterTaxonMatrix}
 \title{Filter taxa in an abundance matrix}
 \usage{
-filterTaxonMatrix(x, minocc = 0, keepSum = FALSE)
+filterTaxonMatrix(x, minocc = 0, dependency = FALSE, keepSum = FALSE)
 }
 \arguments{
 \item{x}{taxon abundance matrix, rows are taxa, columns are samples}
 
 \item{minocc}{minimum occurrence (minimum number of samples with non-zero taxon abundance)}
+
+\item{dependency}{if true, remove all taxa with a slope above -0.5 or a non-linear slope in the periodogram in log-scale (samples are supposed to represent equidistant time points)}
 
 \item{keepSum}{If keepSum is true, the discarded rows are summed and the sum is added as a row with name: summed-nonfeat-rows}
 }
@@ -25,7 +27,7 @@ data(david_stoolA_otus)
 minocc=round(ncol(david_stoolA_otus)/3)
 stoolAFiltered=filterTaxonMatrix(david_stoolA_otus,minocc=minocc)
 print(paste("Filtered taxa with less than a minimum occurrence of:",minocc))
-print(paste("Taxon number before filtering:",nrow(david_stoolA_otus))
+print(paste("Taxon number before filtering:",nrow(david_stoolA_otus)))
 print(paste("Taxon number after filtering:",nrow(stoolAFiltered)))
 }
 }

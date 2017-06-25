@@ -20,7 +20,7 @@
 #'   ps <- powerspec(simNoiseMat(samples=100,noisetypes=list(white=0,pink=1,brown=0))[1,], plot=TRUE)
 #'   # plot a matrix with mixed noise types
 #'   mat <- simNoiseMat(samples=300,noisetypes=list(white=0,pink=30,brown=20))
-#'   tsplot(mat,type="l", header="simulated noise")
+#'   tsplot(mat,header="simulated noise")
 #'   # Taylor law of brown noise
 #'   t <- taylor(simNoiseMat(samples=300,noisetypes=list(white=0,pink=0,brown=50)),type="taylor")
 #'   # Check generation of pink noise

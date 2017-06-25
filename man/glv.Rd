@@ -31,7 +31,7 @@ Simulate a community time series using the generalized Lotka-Volterra model, def
 and b the vector of growth rates.
 }
 \examples{
-tsplot(glv(N=4,generateA(4)),header="gLV",type="l")
+tsplot(glv(N=4,generateA(4)),header="gLV")
 }
 \seealso{
 \code{\link{ricker}} for the Ricker model

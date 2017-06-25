@@ -11,8 +11,8 @@
 
 normalize<-function(x, removeZero=TRUE){
   # remove columns with only zeros from matrix, to avoid dividing by a zero
+  colsums = apply(x,2,sum)
   if(removeZero==TRUE){
-    colsums = apply(x,2,sum)
     zero.col.indices=which(colsums==0)
     #print(length(zero.col.indices))
     if(length(zero.col.indices)>0){

@@ -5,7 +5,7 @@
 \title{Stability test for interaction matrix}
 \usage{
 testStability(A, method = "eigen", K = rep(0.1, N), y = runif(N),
-  sigma = 0.01, explosion.bound = 10^4)
+  sigma = 0.01, explosion.bound = 10^4, tend = 100)
 }
 \arguments{
 \item{A}{the interaction matrix to test}
@@ -19,6 +19,8 @@ testStability(A, method = "eigen", K = rep(0.1, N), y = runif(N),
 \item{sigma}{noise term for ricker test}
 
 \item{explosion.bound}{explosion boundary for ricker test}
+
+\item{tend}{end of simulation time for ricker test}
 }
 \value{
 boolean false if unstable and true if stable

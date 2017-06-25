@@ -2,6 +2,7 @@
 #' @description Discard taxa with less than the given minimum number of occurrences.
 #' @param x taxon abundance matrix, rows are taxa, columns are samples
 #' @param minocc minimum occurrence (minimum number of samples with non-zero taxon abundance)
+#' @param dependency if true, remove all taxa with a slope above -0.5 or a non-linear slope in the periodogram in log-scale (samples are supposed to represent equidistant time points)
 #' @param keepSum If keepSum is true, the discarded rows are summed and the sum is added as a row with name: summed-nonfeat-rows
 #' @return filtered abundance matrix
 #' @examples
@@ -10,12 +11,12 @@
 #' minocc=round(ncol(david_stoolA_otus)/3)
 #' stoolAFiltered=filterTaxonMatrix(david_stoolA_otus,minocc=minocc)
 #' print(paste("Filtered taxa with less than a minimum occurrence of:",minocc))
-#' print(paste("Taxon number before filtering:",nrow(david_stoolA_otus))
+#' print(paste("Taxon number before filtering:",nrow(david_stoolA_otus)))
 #' print(paste("Taxon number after filtering:",nrow(stoolAFiltered)))
 #' }
 #' @export
 
-filterTaxonMatrix<-function(x, minocc=0, keepSum=FALSE){
+filterTaxonMatrix<-function(x, minocc=0, dependency=FALSE, keepSum=FALSE){
   toFilter=c()
   for(i in 1:nrow(x)){
     occurrences=0
@@ -28,6 +29,14 @@ filterTaxonMatrix<-function(x, minocc=0, keepSum=FALSE){
     if(occurrences<minocc){
       toFilter=append(toFilter,i)
     }
+  }
+  if(dependency==TRUE){
+    # allow large deviations from pink and brown noise
+    # minimum slope: -0.5
+    nt=identifyNoisetypes(x, epsilon=0.5)
+    # remove all non-pink, non-brown and non-black taxa
+    toKeep=c(nt$pink, nt$brown, nt$black)
+    toFilter=c(toFilter, setdiff(c(1:nrow(x)),toKeep))
   }
   indices.tokeep=setdiff(c(1:nrow(x)),toFilter)
   #print(paste("Filtering",rownames(x)[toFilter]))

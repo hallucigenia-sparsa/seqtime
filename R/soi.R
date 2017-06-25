@@ -9,6 +9,7 @@
 #' @param m.vector species-specific immigration probabilities (these also determine initial abundances)
 #' @param e.vector species-specific extinction probabilities
 #' @param tend number of time points (i.e. the number of generations)
+#' @param perturb a perturbation object
 #' @return a matrix with species abundances as rows and time points as columns
 #' @seealso \code{\link{ricker}} for the Ricker model
 #' @references Sole et al. Philos Trans R Soc Lond B Biol. Sci. "Self-organized instability in complex ecosystems" 357:667-671 (2002)
@@ -20,14 +21,58 @@
 #' }
 #' @export
 
-soi<-function(N, I, A, m.vector=runif(N), e.vector=runif(N), tend){
+soi<-function(N, I, A, m.vector=runif(N), e.vector=runif(N), tend, perturb=NULL){
 
   results<-generate.parameters(N, I, A, m.vector, e.vector)
 
   abundances_over_time<-matrix(nrow=tend,ncol=N)
 
+  perturbCounter=1
+  durationCounter=1
+  perturbationOn=FALSE
+  ori.e.vector=e.vector
+  prev.abundances=c()
+
   for (i in 1:tend){
+
+    if(!is.null(perturb)){
+      prev.abundances=results$abundances
+      applied=applyPerturbation(perturb,t=i,perturbCounter=perturbCounter, durationCounter=durationCounter, perturbationOn=perturbationOn, ori.growthrates=m.vector, abundances=results$abundances)
+      durationCounter=applied$durationCounter
+      perturbCounter=applied$perturbCounter
+      perturbationOn=applied$perturbationOn
+      results$immigration_prob=applied$growthrates
+      # randomly select a species and remove a count
+      while(sum(applied$abundances)>I){
+        species.index=sample(applied$abundances)[1]
+        applied$abundances[species.index]=applied$abundances[species.index]-1
+      }
+      results$abundances=applied$abundances
+      if(perturbationOn==TRUE && !is.na(perturb$deathrate)){
+        if(length(perturb$deathrate)!=length(e.vector)){
+          warning("Perturbation death rate should have as many entries as the extinction vector! It is not applied.")
+        }else{
+          e.vector=perturb$deathrate
+        }
+      }else{
+        e.vector=ori.e.vector
+      }
+      if(perturbationOn && durationCounter==2){
+        print(results$immigration_prob)
+        print("immigration probabs during perturbation:")
+        print(results$immigration_prob)
+        print("Abundances after change:")
+        print(results$abundances)
+        print("Abundances just before change:")
+        print(prev.abundances)
+      }else if(i==1){
+        print("immigration probabs:")
+        print(results$immigration_prob)
+      }
+    }
+
     for (site in 1:length(results$sites)){
+
       if (results$sites[[site]] == 0){
         results<-immigration(site,results$A,results$species_list,
                              results$abundances,results$immigration_prob,

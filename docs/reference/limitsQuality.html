@@ -172,7 +172,7 @@ such that all its eigen values are negative using the Schur decomposition.</p>
   <span class='no'>N</span><span class='kw'>=</span><span class='fl'>20</span>
   <span class='no'>A</span><span class='kw'>=</span><span class='fu'><a href='generateA.html'>generateA</a></span>(<span class='no'>N</span>,<span class='kw'>c</span><span class='kw'>=</span><span class='fl'>0.1</span>)
   <span class='no'>ts</span><span class='kw'>=</span><span class='fu'><a href='ricker.html'>ricker</a></span>(<span class='kw'>N</span><span class='kw'>=</span><span class='no'>N</span>,<span class='kw'>A</span><span class='kw'>=</span><span class='no'>A</span>)
-  <span class='no'>ts</span><span class='kw'>=</span><span class='kw'>seqtime</span><span class='kw'>::</span><span class='fu'><a href='normalize.html'>normalize</a></span>(<span class='no'>ts</span>)
+  <span class='no'>ts</span><span class='kw'>=</span><span class='fu'><a href='normalize.html'>normalize</a></span>(<span class='no'>ts</span>)
   <span class='no'>Aest</span><span class='kw'>=</span><span class='fu'><a href='limits.html'>limits</a></span>(<span class='no'>ts</span>,<span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
   <span class='no'>out</span><span class='kw'>=</span><span class='fu'>limitsQuality</span>(<span class='no'>ts</span>,<span class='kw'>A</span><span class='kw'>=</span><span class='no'>Aest</span>,<span class='kw'>A.ori</span><span class='kw'>=</span><span class='no'>A</span>, <span class='kw'>plot</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
 })</div></pre>

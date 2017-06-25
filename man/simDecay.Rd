@@ -26,7 +26,7 @@ simDecay(x, taxa = c(), metadata = c(), metadataName = "",
 
 \item{logdissim}{take the logarithm of the dissimilarity before fitting a line}
 
-\item{intragroupsOnly}{only take sample pairs within the same group into account for dissimilarity computation}
+\item{intragroupsOnly}{only take sample pairs within the same group into account for dissimilarity computation (groups are labeled in the plot by their identifier)}
 
 \item{header}{a string to be appended to the plot title (Dissimilarity change)}
 

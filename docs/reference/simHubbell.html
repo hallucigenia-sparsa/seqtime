@@ -84,7 +84,8 @@
     
 
     <pre class="usage"><span class='fu'>simHubbell</span>(<span class='kw'>N</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>M</span> <span class='kw'>=</span> <span class='fl'>500</span>, <span class='kw'>I</span> <span class='kw'>=</span> <span class='fl'>500</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fl'>1</span>/<span class='no'>N</span>, <span class='no'>N</span>),
-  <span class='kw'>m.vector</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fl'>1</span>/<span class='no'>M</span>, <span class='no'>M</span>), <span class='kw'>m</span> <span class='kw'>=</span> <span class='fl'>0.02</span>, <span class='kw'>d</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>tskip</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>tend</span> <span class='kw'>=</span> <span class='fl'>100</span>)</pre>
+  <span class='kw'>m.vector</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fl'>1</span>/<span class='no'>M</span>, <span class='no'>M</span>), <span class='kw'>m</span> <span class='kw'>=</span> <span class='fl'>0.02</span>, <span class='kw'>d</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>tskip</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>tend</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+  <span class='kw'>perturb</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -125,6 +126,10 @@
       <th>tend</th>
       <td><p>number of time points (i.e. the number of generations)</p></td>
     </tr>
+    <tr>
+      <th>perturb</th>
+      <td><p>a perturbation object</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -149,7 +154,7 @@
     <span class='no'>N</span> <span class='kw'>&lt;-</span> <span class='fl'>50</span>
     <span class='no'>M</span> <span class='kw'>&lt;-</span> <span class='fl'>500</span>
     <span class='no'>metapop</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='generateAbundances.html'>generateAbundances</a></span>(<span class='kw'>N</span> <span class='kw'>=</span> <span class='no'>M</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>probabs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-    <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='tsplot.html'>tsplot</a></span>(<span class='fu'>simHubbell</span>(<span class='kw'>N</span> <span class='kw'>=</span> <span class='no'>N</span>, <span class='kw'>M</span> <span class='kw'>=</span> <span class='no'>M</span>, <span class='kw'>I</span> <span class='kw'>=</span> <span class='fl'>3000</span>, <span class='kw'>d</span> <span class='kw'>=</span> <span class='no'>N</span>, <span class='kw'>m.vector</span> <span class='kw'>=</span> <span class='no'>metapop</span>, <span class='kw'>tskip</span><span class='kw'>=</span><span class='fl'>500</span>, <span class='kw'>tend</span><span class='kw'>=</span><span class='fl'>1000</span>))
+    <span class='fu'><a href='tsplot.html'>tsplot</a></span>(<span class='fu'>simHubbell</span>(<span class='kw'>N</span> <span class='kw'>=</span> <span class='no'>N</span>, <span class='kw'>M</span> <span class='kw'>=</span> <span class='no'>M</span>, <span class='kw'>I</span> <span class='kw'>=</span> <span class='fl'>3000</span>, <span class='kw'>d</span> <span class='kw'>=</span> <span class='no'>N</span>, <span class='kw'>m.vector</span> <span class='kw'>=</span> <span class='no'>metapop</span>, <span class='kw'>tskip</span><span class='kw'>=</span><span class='fl'>500</span>, <span class='kw'>tend</span><span class='kw'>=</span><span class='fl'>1000</span>))
 })</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

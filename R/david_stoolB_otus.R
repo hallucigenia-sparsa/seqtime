@@ -15,5 +15,5 @@
 #' sorted <- sort(apply(david_stoolB_otus,1,sum),
 #'                  decreasing=TRUE,index.return=TRUE)
 #' # Display the top 10 most abundant OTUs
-#' tsplot(david_stoolB_otus[sorted$ix[1:10],], type = "l", header = "Stool B")
+#' tsplot(david_stoolB_otus[sorted$ix[1:10],], header = "Stool B")
 "david_stoolB_otus"

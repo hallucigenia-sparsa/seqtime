@@ -10,6 +10,7 @@
 #' @param d number of deaths at each time step
 #' @param tskip number of initial time points to be skipped when returning the result (to avoid the transient)
 #' @param tend number of time points (i.e. the number of generations)
+#' @param perturb a perturbation object
 #' @return a matrix with species abundances as rows and time points as columns
 #' @references Rosindell, Hubbell and Etienne (2011). The Unified Neutral Theory of Biodiversity and Biogeography at Age Ten. Trends in Ecology and Evolution, vol. 26 (7), 340-348.
 #' @seealso \code{\link{simUntb}} for the neutral model with the \pkg{untb} package
@@ -18,10 +19,10 @@
 #'   N <- 50
 #'   M <- 500
 #'   metapop <- generateAbundances(N = M, mode = 5, probabs = TRUE)
-#'   x <- tsplot(simHubbell(N = N, M = M, I = 3000, d = N, m.vector = metapop, tskip=500, tend=1000))
+#'   tsplot(simHubbell(N = N, M = M, I = 3000, d = N, m.vector = metapop, tskip=500, tend=1000))
 #' }
 #' @export
-simHubbell<-function(N=50, M=500, I=500, y=rep(1/N,N), m.vector=rep(1/M,M), m=0.02, d=10, tskip=0, tend=100){
+simHubbell<-function(N=50, M=500, I=500, y=rep(1/N,N), m.vector=rep(1/M,M), m=0.02, d=10, tskip=0, tend=100, perturb=NULL){
   if(sum(m.vector) != 1){
     stop("Species proportions in the metacommunity need to sum to one.")
   }
@@ -49,6 +50,11 @@ simHubbell<-function(N=50, M=500, I=500, y=rep(1/N,N), m.vector=rep(1/M,M), m=0.
 
   tseries=matrix(NA,nrow=M,ncol=(tend-tskip))
   tseriesCounter=1
+  perturbCounter=1
+  durationCounter=1
+  perturbationOn=FALSE
+  ori.deathrate=d
+  ori.m.vector=m.vector
 
   if(tskip==0){
     tseries[,tseriesCounter]=counts
@@ -56,6 +62,27 @@ simHubbell<-function(N=50, M=500, I=500, y=rep(1/N,N), m.vector=rep(1/M,M), m=0.
   }
 
   for(t in 2:tend){
+
+    if(!is.null(perturb)){
+      # neutral model: carrying capacity is kept constant
+      perturb$capacityConstant=TRUE
+      applied=applyPerturbation(perturb, t=tseriesCounter, perturbCounter=perturbCounter, durationCounter=durationCounter, perturbationOn=perturbationOn, ori.growthrates=ori.m.vector, abundances=counts)
+      durationCounter=applied$durationCounter
+      perturbCounter=applied$perturbCounter
+      perturbationOn=applied$perturbationOn
+      if(perturbationOn==TRUE && !is.na(perturb$deathrate)){
+        if(length(perturb$deathrate)>1){
+          warning("Perturbation death rate should be a constant! It is not applied.")
+        }else{
+          d=perturb$deathrate
+        }
+      }else{
+        d=ori.deathrate
+      }
+      m.vector=applied$growthrates
+      counts=applied$abundances
+    }
+
     z1=ceiling(gridsize*runif(d)) # x positions in the grid, ceil is like round, but guarantees no integer smaller than 1 will occur
     z2=ceiling(gridsize*runif(d)) # y positions in the grid
     z=runif(d) # generate d uniformly distributed values

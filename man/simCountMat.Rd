@@ -38,7 +38,7 @@ a count matrix or relative abundance matrix
 Simulate the output of a sequencing experiment, with taxa as rows and samples as columns.
 }
 \examples{
-tsplot(simCountMat(N=10,samples=50,mode=6,k=0.5),type="l", header="Dirichlet-Multinomial")
+tsplot(simCountMat(N=10,samples=50,mode=6,k=0.5),header="Dirichlet-Multinomial")
 }
 \seealso{
 \code{\link{generateAbundances}}

@@ -11,7 +11,7 @@
 #' @param dissim dissimilarity measure to use, a measure supported by vegan's vegdist function
 #' @param normtaxa divide each taxon vector in x by its sum
 #' @param logdissim take the logarithm of the dissimilarity before fitting a line
-#' @param intragroupsOnly only take sample pairs within the same group into account for dissimilarity computation
+#' @param intragroupsOnly only take sample pairs within the same group into account for dissimilarity computation (groups are labeled in the plot by their identifier)
 #' @param header a string to be appended to the plot title (Dissimilarity change)
 #' @param groupName the name for the groups displayed in the legend (defaults to group)
 #' @param inversePlot plot community dissimilarity on the x-axis instead of on the y-axis
@@ -51,6 +51,7 @@ simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,
   dissimValues = c()
   colors=c()
   groupNum=length(unique(samplegroups))
+  groupNumbers=c()
   colorlookup=list()
   if(groupNum == 1){
     hues=c("black")
@@ -109,6 +110,11 @@ simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,
         dissimVal = dissimMat[index1,index2]
         differences=c(differences,difference)
         dissimValues=c(dissimValues,dissimVal)
+        if(intragroupsOnly==TRUE){
+          groupNumbers=c(groupNumbers,samplegroups[index1])
+        }else{
+          groupNumbers=c(groupNumbers,paste(samplegroups[index1],"-",samplegroups[index2],sep=""))
+        }
         # color
         if(samplegroups[index1] == samplegroups[index2]){
           group=samplegroups[index1]
@@ -161,10 +167,14 @@ simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,
     if(dissim=="bray"){
       xmax=1
     }
-    plot(dissimValues, differences, xlab=xlab, ylab=ylab, xlim=c(0,xmax), main=paste("Dissimilarity change",header,"\nP-value",round(pval,3),", R2.adj",round(sum$adj.r.squared,3),", Slope",round(slope,3)),col=colors)
+    # sum$adj.r.squared
+    plot(dissimValues, differences, xlab=xlab, ylab=ylab, xlim=c(0,xmax), main=paste("Dissimilarity change",header,"\nP-value=",round(pval,3),", R2=",round(sum$r.squared,3),", Slope=",round(slope,3), sep=""),col=colors)
     abline(linreg,bty="n",col="red")
+    if(intragroupsOnly==TRUE){
+      text(dissimValues,differences,labels=groupNumbers, pos=3, cex=0.8)
+    }
   }else{
-    plot(differences,dissimValues, xlab=xlab, ylab=ylab, main=paste("Dissimilarity change",header,"\nP-value",round(pval,3),", R2.adj",round(sum$adj.r.squared,3),", Slope",round(slope,3)),col=colors)
+    plot(differences,dissimValues, xlab=xlab, ylab=ylab, main=paste("Dissimilarity change",header,"\nP-value=",round(pval,3),", R2=",round(sum$r.squared,3),", Slope=",round(slope,3), sep=""),col=colors)
     abline(linreg,bty="n",col="red")
   }
   #lines(seq(0,1,by=0.1),seq(0,1,by=0.1),col="gray")
@@ -177,7 +187,7 @@ simDecay<-function(x,taxa=c(),metadata=c(), metadataName="", samplegroups=rep(1,
         legendcolors=c(legendcolors,colorlookup[[groupname]])
       }
     }
-    legend("topright",legend=legendnames,cex=0.9, bg = "white", text.col=legendcolors)
+    legend("topright",legend=legendnames,cex=0.9, bg = "white", text.col=legendcolors, y.intersp=0.8)
   }
   res=list(differences, dissimValues, intersection, slope, pval, sum$adj.r.squared, dissim,logdissim)
   names(res)=c("differences", "dissimvals","intersection","slope","pval","adjR2","dissim", "logdissim")

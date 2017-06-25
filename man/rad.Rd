@@ -18,7 +18,7 @@ rad(x, remove.zeros = TRUE, fit.rad = FALSE, fit.distrib = FALSE,
 
 \item{fit.N}{(optional) number of samples drawn from the distribution to be fitted (defaults to the number of species in x after filtering of zeros)}
 
-\item{sample.index}{(optional) the sample index for which species abundance distribution, if not provided, the mean across samples is taken}
+\item{sample.index}{(optional) the sample index for which species abundance distribution is computed, if not provided, the mean across samples is taken}
 
 \item{plot}{plot the RAD curve}
 
