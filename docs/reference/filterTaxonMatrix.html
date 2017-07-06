@@ -83,7 +83,8 @@
     <p>Discard taxa with less than the given minimum number of occurrences.</p>
     
 
-    <pre class="usage"><span class='fu'>filterTaxonMatrix</span>(<span class='no'>x</span>, <span class='kw'>minocc</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>dependency</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>keepSum</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>filterTaxonMatrix</span>(<span class='no'>x</span>, <span class='kw'>minocc</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>dependency</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>keepSum</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>return.filtered.indices</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -103,6 +104,10 @@
     <tr>
       <th>keepSum</th>
       <td><p>If keepSum is true, the discarded rows are summed and the sum is added as a row with name: summed-nonfeat-rows</p></td>
+    </tr>
+    <tr>
+      <th>return.filtered.indices</th>
+      <td><p>if true, return an object with the filtered abundance matrix in mat and the indices of removed taxa in the original matrix in filtered.indices</p></td>
     </tr>
     </table>
     

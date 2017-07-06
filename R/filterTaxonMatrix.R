@@ -4,6 +4,7 @@
 #' @param minocc minimum occurrence (minimum number of samples with non-zero taxon abundance)
 #' @param dependency if true, remove all taxa with a slope above -0.5 or a non-linear slope in the periodogram in log-scale (samples are supposed to represent equidistant time points)
 #' @param keepSum If keepSum is true, the discarded rows are summed and the sum is added as a row with name: summed-nonfeat-rows
+#' @param return.filtered.indices if true, return an object with the filtered abundance matrix in mat and the indices of removed taxa in the original matrix in filtered.indices
 #' @return filtered abundance matrix
 #' @examples
 #' \dontrun{
@@ -16,20 +17,15 @@
 #' }
 #' @export
 
-filterTaxonMatrix<-function(x, minocc=0, dependency=FALSE, keepSum=FALSE){
+filterTaxonMatrix<-function(x, minocc=0, dependency=FALSE, keepSum=FALSE, return.filtered.indices=FALSE){
   toFilter=c()
-  for(i in 1:nrow(x)){
-    occurrences=0
-    # count occurrences in row i
-    for(j in 1:ncol(x)){
-      if(!is.na(x[i,j]) && x[i,j]!=0){
-        occurrences=occurrences+1
-      }
-    }
-    if(occurrences<minocc){
-      toFilter=append(toFilter,i)
-    }
-  }
+  xcopy=x
+  # convert into presence/absence matrix
+  xcopy[xcopy>0]=1
+  # sum for each taxon = number of occurrences across samples
+  rowsums=apply(xcopy,1,sum)
+  toFilter=which(rowsums<minocc)
+
   if(dependency==TRUE){
     # allow large deviations from pink and brown noise
     # minimum slope: -0.5
@@ -51,6 +47,12 @@ filterTaxonMatrix<-function(x, minocc=0, dependency=FALSE, keepSum=FALSE){
   }else{
     x=x[indices.tokeep,]
   }
-  return(x)
+  if(return.filtered.indices==TRUE){
+    res=list(x,toFilter)
+    names(res)=c("mat","filtered.indices")
+    return(res)
+  }else{
+    return(x)
+  }
 }
 

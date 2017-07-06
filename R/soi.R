@@ -58,16 +58,16 @@ soi<-function(N, I, A, m.vector=runif(N), e.vector=runif(N), tend, perturb=NULL)
         e.vector=ori.e.vector
       }
       if(perturbationOn && durationCounter==2){
-        print(results$immigration_prob)
-        print("immigration probabs during perturbation:")
-        print(results$immigration_prob)
-        print("Abundances after change:")
-        print(results$abundances)
-        print("Abundances just before change:")
-        print(prev.abundances)
+        #print(results$immigration_prob)
+        #print("immigration probabs during perturbation:")
+        #print(results$immigration_prob)
+        #print("Abundances after change:")
+        #print(results$abundances)
+        #print("Abundances just before change:")
+        #print(prev.abundances)
       }else if(i==1){
-        print("immigration probabs:")
-        print(results$immigration_prob)
+        #print("immigration probabs:")
+        #print(results$immigration_prob)
       }
     }
 

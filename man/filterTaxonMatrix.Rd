@@ -4,7 +4,8 @@
 \alias{filterTaxonMatrix}
 \title{Filter taxa in an abundance matrix}
 \usage{
-filterTaxonMatrix(x, minocc = 0, dependency = FALSE, keepSum = FALSE)
+filterTaxonMatrix(x, minocc = 0, dependency = FALSE, keepSum = FALSE,
+  return.filtered.indices = FALSE)
 }
 \arguments{
 \item{x}{taxon abundance matrix, rows are taxa, columns are samples}
@@ -14,6 +15,8 @@ filterTaxonMatrix(x, minocc = 0, dependency = FALSE, keepSum = FALSE)
 \item{dependency}{if true, remove all taxa with a slope above -0.5 or a non-linear slope in the periodogram in log-scale (samples are supposed to represent equidistant time points)}
 
 \item{keepSum}{If keepSum is true, the discarded rows are summed and the sum is added as a row with name: summed-nonfeat-rows}
+
+\item{return.filtered.indices}{if true, return an object with the filtered abundance matrix in mat and the indices of removed taxa in the original matrix in filtered.indices}
 }
 \value{
 filtered abundance matrix

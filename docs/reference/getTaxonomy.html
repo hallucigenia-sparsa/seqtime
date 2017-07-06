@@ -83,10 +83,14 @@
     <p>The lineage information is provided in form of a matrix,
 which contains for each OTU identifier the taxonomic levels from column
 2 to 8 (domain, phylum, class, order, family, genus, species) and the entire
-lineage in column 9.</p>
+lineage in column 9. The lineage in column 9 is optional.
+Alternatively, OTU identifiers can also be stored as column names.
+In this case, taxonomic levels are assumed to range from column 1 to 7.
+To differentiate between these two formats, set useRownames to false or true.</p>
     
 
-    <pre class="usage"><span class='fu'>getTaxonomy</span>(<span class='kw'>selected</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='no'>lineages</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='st'>"class"</span>)</pre>
+    <pre class="usage"><span class='fu'>getTaxonomy</span>(<span class='kw'>selected</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='no'>lineages</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='st'>"class"</span>,
+  <span class='kw'>useRownames</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -102,6 +106,10 @@ lineage in column 9.</p>
     <tr>
       <th>level</th>
       <td><p>the taxonomic level (domain, phylum, class, order, family, genus or species)</p></td>
+    </tr>
+    <tr>
+      <th>useRownames</th>
+      <td><p>match OTU identifiers to row names instead of the first column (in this case, taxonomic levels are assumed to range from column 1 to 7)</p></td>
     </tr>
     </table>
     

@@ -4,7 +4,8 @@
 \alias{getTaxonomy}
 \title{Get the taxonomy given OTU names and lineage information}
 \usage{
-getTaxonomy(selected = c(), lineages, level = "class")
+getTaxonomy(selected = c(), lineages, level = "class",
+  useRownames = FALSE)
 }
 \arguments{
 \item{selected}{a character vector of selected OTU identifiers}
@@ -12,6 +13,8 @@ getTaxonomy(selected = c(), lineages, level = "class")
 \item{lineages}{a lineage table}
 
 \item{level}{the taxonomic level (domain, phylum, class, order, family, genus or species)}
+
+\item{useRownames}{match OTU identifiers to row names instead of the first column (in this case, taxonomic levels are assumed to range from column 1 to 7)}
 }
 \value{
 the taxonomy of the OTUs
@@ -20,7 +23,10 @@ the taxonomy of the OTUs
 The lineage information is provided in form of a matrix,
 which contains for each OTU identifier the taxonomic levels from column
 2 to 8 (domain, phylum, class, order, family, genus, species) and the entire
-lineage in column 9.
+lineage in column 9. The lineage in column 9 is optional.
+Alternatively, OTU identifiers can also be stored as column names.
+In this case, taxonomic levels are assumed to range from column 1 to 7.
+To differentiate between these two formats, set useRownames to false or true.
 }
 \examples{
 data(david_stoolA_otus)

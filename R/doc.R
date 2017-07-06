@@ -102,8 +102,10 @@ doc<-function(x, B=100, polygons=FALSE, rand=FALSE, lower.conf=0.03, upper.conf=
     # Lowess line
     lines(outL, type="l", col=lowesscol, lwd=2)
     if(B>0){
-      polygon(upperConfO,upperConfD, col=fillcol, border="white")
-      polygon(lowerConfO, lowerConfD, col="white", border="white")
+      polygon(c(outL$x,lowerConfO),c(outL$x,lowerConfD), col=fillcol, border="white")
+      polygon(c(outL$x,upperConfO),c(outL$x,upperConfD), border="white", col="white")
+      #polygon(upperConfO,upperConfD, col=fillcol, border="white")
+      #polygon(lowerConfO, lowerConfD, col="white", border="white")
     }
   }
   res=list(res$overlap, res$dissim, outL$x, outL$y, lowerConfO, lowerConfD, upperConfO, upperConfD)
