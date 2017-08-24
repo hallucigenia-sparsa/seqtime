@@ -1,21 +1,23 @@
 #' @title Stability test for interaction matrix
 #'
-#' @description Test the stability of an interaction matrix using Coyte's criterium,
-#' the eigenvalue criterium or a simulation with Ricker.
+#' @description Test the stability of an interaction matrix.
+#' The first two methods (coyte and eigen) determine whether the community's
+#' steady state is stable in the sense that the community returns to it after
+#' a small perturbation. The last method tests for explosion in simulations
+#' with Ricker.
 #'
-#' @details Coyte's criterium is: max(r_e,r_s) - s < 0,
+#' @details Coyte's stability criterium is fulfilled if: max(r_e,r_s) - s < 0,
 #' where s is the average of the diagonal values (the intra-species competition),
-#' r_e is the half-horizontal radius of the eigenvalue ellipse of A and
-#' r_s is the eigenvalue corresponding to the average row sum.
+#' r_e is the half-horizontal radius of the eigenvalue ellipse of A
+#' (which equals its Jacobian) and r_s is the eigenvalue corresponding to the average row sum.
 #' The more negative max(r_e,r_s) - s is, the quicker the community returns
-#' to equilibrium.
+#' to steady state.
 #' This criterium assumes that realized inter-species interaction strengths are drawn
 #' from a half normal distribution |N(0,sigma2)| (the absolute of the normal
 #' distribution). Only non-zero, non-diagonal interactions are considered to
 #' compute the mean interaction strength.
-#' The eigenvalue criterium tests whether all real parts of the eigenvalues
-#' of the interaction matrix are smaller than zero.
-#' Ricker simply runs a simulation with Ricker and tests whether an explosion occurs.
+#' The eigen method implements the classical stability criterion, which tests whether all real
+#' parts of the eigenvalues of the interaction (=Jacobian) matrix are smaller than zero.
 #'
 #'
 #' @param A the interaction matrix to test
@@ -42,11 +44,31 @@ testStability<-function(A, method="eigen", K=rep(0.1,N), y=runif(N), sigma=0.01,
     res=getAStats(A)
     # convert into proportions
     P=res$nbinteractions
-    Pa=res$nbam/P
-    Pc=res$nbcomp/P
-    Pe=res$nbexp/P
-    Pm=res$nbmut/P
-    Pp=res$com/P
+    if(res$nbam>0){
+      Pa=res$nbam/P
+    }else{
+      Pa=0
+    }
+    if(res$nbcomp>0){
+      Pc=res$nbcomp/P
+    }else{
+      Pc=0
+    }
+    if(res$nbexp>0){
+      Pe=res$nbexp/P
+    }else{
+      Pe=0
+    }
+    if(res$nbmut>0){
+      Pm=res$nbmut/P
+    }else{
+      Pm=0
+    }
+    if(res$nbcom>0){
+      Pp=res$nbcom/P
+    }else{
+      Pp=0
+    }
 
     var=res$varstrength
     EX=res$meanstrength

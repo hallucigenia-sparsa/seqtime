@@ -5,14 +5,14 @@
 \title{Dissimilarity-Overlap Curve (DOC)}
 \usage{
 doc(x, B = 100, polygons = FALSE, rand = FALSE, lower.conf = 0.03,
-  upper.conf = 0.97, null.model = "assembly")
+  upper.conf = 0.97, null.model = "assembly", doc.res = NULL)
 }
 \arguments{
-\item{x}{rows are taxa, columns are samples}
+\item{x}{rows are taxa, columns are samples, abundance in each sample is assumed to sum to one}
 
 \item{B}{bootstrap iterations, if set to 0 or below, no bootstraps are carried out}
 
-\item{polygons}{draw a polygon instead of the lower and upper confidence line}
+\item{polygons}{draw a polygon instead of the lower and upper confidence line (in development)}
 
 \item{rand}{randomize the data sample-wise before starting the DOC analysis}
 
@@ -21,6 +21,8 @@ doc(x, B = 100, polygons = FALSE, rand = FALSE, lower.conf = 0.03,
 \item{upper.conf}{upper limit of the confidence interval}
 
 \item{null.model}{the null model to use, permut shuffles x sample-wise, assembly selects for each non-zero taxon one of the values taken across the samples at random}
+
+\item{doc.res}{the result of a previous run of the doc method is added in green with black points, current result is shown in red with grey points (to plot null model together with data)}
 }
 \value{
 a list with the overlaps, dissimilarities, lowess smoothed overlaps and dissimilarites and lower and upper confidence intervals
@@ -32,13 +34,10 @@ The DOC method was developed by Bashan and colleagues.
 \examples{
 \dontrun{
 data("david_stoolA_otus")
-data=rarefyFilter(david_stoolA_otus,min=10000)[[1]]
-out=doc(data[,1:100],B=10) # apply the DOC method on the first 100 time points
-N=50
-M=500
-metapop=generateAbundances(N=M, mode=5, probabs=TRUE)
-ts=simHubbell(N=N, M=M,I=1500,d=N, m.vector=metapop, tskip=500, tend=600)
-out2=doc(ts,B=10) # apply the DOC method to the Hubbell time series
+data=normalize(rarefyFilter(david_stoolA_otus,min=10000)[[1]])
+doc.out=doc(data[,1:50],B=10) # apply the DOC method to the first 50 samples
+# plot the DOC curve together with the curve for the null model
+doc.null=doc(data[,1:50],B=10,rand=TRUE,doc.res=doc.out)
 }
 }
 \references{

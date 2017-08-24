@@ -9,6 +9,7 @@
 #' @param identifyPoints click at points in the PCoA plot to identify them (using function identify), not active when noLabels is TRUE
 #' @param topN number of top taxa to be plotted for mode bars
 #' @param groups group membership vector with as many entries as samples, only supported for mode bars and pcoa
+#' @param hideGroups compute PCoA with all data, but do not show members of selected groups; expects one integer per group and consistency with groups parameter, only supported for mode pcoa
 #' @param legend add a legend
 #' @param header string added to the plot title
 #' @param labels use the provided labels in the PCoA plot
@@ -21,9 +22,9 @@
 #' out.ricker=ricker(N,A=A,y=generateAbundances(N,mode=5,prob=TRUE),K=rep(0.1,N), sigma=-1,tend=500)
 #' tsplot(out.ricker)
 #' tsplot(out.ricker[,1:20],mode="bars",legend=TRUE)
-#' tsplot(simHubbell(),mode="pcoa") # example of the horseshoe effect
+#' tsplot(out.ricker,mode="pcoa")
 #' @export
-tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="lines", dist="bray", identifyPoints=FALSE, topN=10, groups=c(), legend=FALSE, header="", labels=c(), noLabels=FALSE, perturb=NULL, ...){
+tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="lines", dist="bray", identifyPoints=FALSE, topN=10, groups=c(), hideGroups=c(), legend=FALSE, header="", labels=c(), noLabels=FALSE, perturb=NULL, ...){
   col.vec = seq(0,1,1/nrow(x))
   my.colors = hsv(col.vec)
   main=paste("Community time series",header)
@@ -73,6 +74,7 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
   }else if(mode=="pcoa"){
     pcoa.res=vegan::capscale(data.frame(t(x))~1,distance=dist)
     colors=c()
+    colors.copy=c()
     arrowColors=c()
     if(!is.null(perturb)){
       perturbCounter=1
@@ -110,10 +112,19 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
       colors="black"
       arrowColors=rep("black",ncol(x))
     }
+    # xlim with margin for the legend
+    if(legend==TRUE){
+      xlim=c(min(pcoa.res$CA$u[,1]),max(pcoa.res$CA$u[,1]+0.1))
+    }else{
+      xlim=c(min(pcoa.res$CA$u[,1]),max(pcoa.res$CA$u[,1]))
+    }
+    ylim=c(min(pcoa.res$CA$u[,2]),max(pcoa.res$CA$u[,2]))
+    labelNames=c(1:ncol(x))
+    groups.copy=groups
     # color points according to groups
     if(length(groups)>0){
       groupNum=length(unique(groups))
-      print(paste("group number: ",groupNum))
+      #print(paste("group number: ",groupNum))
       col.vec = seq(0,1,1/groupNum)
       hues = hsv(col.vec)
       hueCounter=1
@@ -126,29 +137,45 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
         }
         prevGroup=groups[group.index]
       }
+      colors.copy=colors
       #print(colors)
-    }
-    # xlim with margin for the legend
-    #xlim=c(min(pcoa.res$CA$u[,1]),max(pcoa.res$CA$u[,1]+0.1))
-    plot(pcoa.res$CA$u[,1:2], main=paste("PCoA",header), xlab="PCoA1", ylab="PCoA2", col=colors, ...)
+      if(length(hideGroups)>0){
+        hidden.sample.indices=c()
+        for(hidden.group.index in hideGroups){
+          hidden.sample.indices=c(hidden.sample.indices, which(groups==hidden.group.index))
+        }
+        visible.sample.indices=setdiff(1:length(groups),hidden.sample.indices)
+        pcoa.res$CA$u=pcoa.res$CA$u[visible.sample.indices,]
+        labelNames=labelNames[visible.sample.indices]
+        groups.copy=groups.copy[visible.sample.indices]
+        colors.copy=colors[visible.sample.indices]
+        colors.copy[length(colors.copy)]=colors.copy[length(colors.copy)-1]
+        if(length(labels)> 0){
+          labels=labels[visible.sample.indices]
+        }
+      }
+    } # groups provided
+    plot(pcoa.res$CA$u[,1:2], main=paste("PCoA",header), xlim=xlim, ylim=ylim, xlab="PCoA1", ylab="PCoA2", col=colors.copy, ...)
+    #points(x=pcoa.res$CA$u[nrow(pcoa.res$CA$u),1],y=pcoa.res$CA$u[nrow(pcoa.res$CA$u),2], col=colors.copy[length(colors.copy)-1])
     for(i in 1:(nrow(pcoa.res$CA$u)-1)){
-      if(length(groups)==0 || groups[i]==groups[i+1]){
+      if(length(groups)==0 || groups.copy[i]==groups.copy[i+1]){
         arrows(x0=pcoa.res$CA$u[i,1],y0=pcoa.res$CA$u[i,2],x1=pcoa.res$CA$u[i+1,1],y1=pcoa.res$CA$u[i+1,2], length=0.08, col=arrowColors[i])
       }
     }
+    #print(pcoa.res$CA$u[nrow(pcoa.res$CA$u),1:2])
     if(noLabels==FALSE){
-      labelNames=c(1:ncol(x))
-      if(length(labels)>0 && length(labels)==ncol(x)){
+      if(length(labels)>0){
         labelNames=labels
+        #print(labelNames)
       }
       text(pcoa.res$CA$u[,1],pcoa.res$CA$u[,2],labels=labelNames, pos=3, cex=0.8)
       if(identifyPoints==TRUE){
         identify(pcoa.res$CA$u[,1],pcoa.res$CA$u[,2])
       }
     }
-    #if(length(groups)>0){
-    #  legend("topright",legend=unique(groups),cex=0.8, pch = rep("-",length(unique(groups))), col = unique(colors), bg = "white", text.col="black")
-    #}
+    if(length(groups)>0 && legend==TRUE){
+      legend("topright",legend=unique(groups),cex=0.8, pch = rep("-",length(unique(groups))), col = unique(colors), bg = "white", text.col="black")
+    }
   }else if(mode=="bars"){
 
     if(is.null(colnames(x))){

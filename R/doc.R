@@ -3,29 +3,27 @@
 #' @description Given  matrix of relative taxon abundances, plot the dissimilarity-overlap curve (DOC) sample-wise.
 #' The DOC method was developed by Bashan and colleagues.
 #'
-#' @param x rows are taxa, columns are samples
+#' @param x rows are taxa, columns are samples, abundance in each sample is assumed to sum to one
 #' @param B bootstrap iterations, if set to 0 or below, no bootstraps are carried out
-#' @param polygons draw a polygon instead of the lower and upper confidence line
+#' @param polygons draw a polygon instead of the lower and upper confidence line (in development)
 #' @param rand randomize the data sample-wise before starting the DOC analysis
 #' @param lower.conf lower limit of the confidence interval
 #' @param upper.conf upper limit of the confidence interval
 #' @param null.model the null model to use, permut shuffles x sample-wise, assembly selects for each non-zero taxon one of the values taken across the samples at random
+#' @param doc.res the result of a previous run of the doc method is added in green with black points, current result is shown in red with grey points (to plot null model together with data)
 #' @return a list with the overlaps, dissimilarities, lowess smoothed overlaps and dissimilarites and lower and upper confidence intervals
 #' @references A. Bashan et al. (2016). Universality of human microbial dynamics, Nature 534, 259-262.
 #' @examples
 #' \dontrun{
 #' data("david_stoolA_otus")
-#' data=rarefyFilter(david_stoolA_otus,min=10000)[[1]]
-#' out=doc(data[,1:100],B=10) # apply the DOC method on the first 100 time points
-#' N=50
-#' M=500
-#' metapop=generateAbundances(N=M, mode=5, probabs=TRUE)
-#' ts=simHubbell(N=N, M=M,I=1500,d=N, m.vector=metapop, tskip=500, tend=600)
-#' out2=doc(ts,B=10) # apply the DOC method to the Hubbell time series
+#' data=normalize(rarefyFilter(david_stoolA_otus,min=10000)[[1]])
+#' doc.out=doc(data[,1:50],B=10) # apply the DOC method to the first 50 samples
+#' # plot the DOC curve together with the curve for the null model
+#' doc.null=doc(data[,1:50],B=10,rand=TRUE,doc.res=doc.out)
 #' }
 #' @export
 
-doc<-function(x, B=100, polygons=FALSE, rand=FALSE, lower.conf=0.03, upper.conf=0.97, null.model="assembly"){
+doc<-function(x, B=100, polygons=FALSE, rand=FALSE, lower.conf=0.03, upper.conf=0.97, null.model="assembly", doc.res=NULL){
   if(rand == TRUE){
     if(null.model == "permut"){
       # permute each sample separately
@@ -63,11 +61,15 @@ doc<-function(x, B=100, polygons=FALSE, rand=FALSE, lower.conf=0.03, upper.conf=
   if(B > 0){
     # do B bootstraps
     for(iteration in 1:B){
-      print(paste("Bootstrap",iteration))
+      #print(paste("Bootstrap",iteration))
       # sample with replacement
-      selected=sample(1:ncol(x),replace=TRUE)
-      bootX=x[,selected]
-      resB=computeOandD(bootX)
+      #selected=sample(1:ncol(x),replace=TRUE)
+      #bootX=x[,selected]
+      #resB=computeOandD(bootX)
+      # from the dissimilarities and overlaps previously computed
+      bootstrap.indices=sample(x=(1:length(res$overlap)), size=length(res$overlap), replace=TRUE)
+      resB=list(res$overlap[bootstrap.indices],res$dissim[bootstrap.indices])
+      names(resB)=c("overlap","dissim")
       outLB=lowess(resB$overlap,resB$dissim)
       bootstrapsO[iteration,]=outLB$x
       bootstrapsD[iteration,]=outLB$y
@@ -81,31 +83,67 @@ doc<-function(x, B=100, polygons=FALSE, rand=FALSE, lower.conf=0.03, upper.conf=
     }
   }
   outL=lowess(res$overlap,res$dissim)
+  if(!is.null(doc.res)){
+    xlim=c(min(c(res$overlap,doc.res$overlap)),max(c(res$overlap,doc.res$overlap)))
+    ylim=c(min(c(res$dissim,doc.res$dissim)),max(c(res$dissim,doc.res$dissim)))
+  }else{
+    xlim=c(min(res$overlap),max(res$overlap))
+    ylim=c(min(res$dissim),max(res$dissim))
+  }
+  if(!is.null(doc.res)){
+    points.color="darkgrey"
+    conf.line.col="orange"
+    lowess.col="red"
+    fillcol=rgb(1,0,0,alpha=0.5)
+  }else{
+    points.color="black"
+    lowess.col="darkgreen"
+    conf.line.col="green"
+    fillcol=rgb(0,1,0,alpha=0.5)
+  }
   if(polygons == FALSE){
-    plot(res$overlap, res$dissim, type="p", pch=".", xlab="overlap", ylab="dissimilarity (rJSD)", main="DOC", col="darkgrey")
+    plot(res$overlap, res$dissim, xlim=xlim, ylim=ylim, type="p", pch=16, xlab="overlap", ylab="dissimilarity (rJSD)", main="DOC", col=points.color)
     # Lowess line
-    lines(outL, type="l", col="blue")
+    lines(outL, type="l", col=lowess.col, lwd=2)
+    if(!is.null(doc.res)){
+      print("Adding previous results to plot...")
+      # add previously computed DOC result to the plot
+      lines(doc.res$overlap, doc.res$dissim, type="p", pch=16, col="black")
+      # Lowess line
+      outL.prev=list(doc.res$lowesso, doc.res$lowessd)
+      names(outL.prev)=c("x","y")
+      lines(outL.prev, type="l", col="darkgreen", lwd=2)
+      if(length(doc.res$lowconfo)>0){
+        # lower confidence interval
+        lines(doc.res$lowconfo, doc.res$lowconfd, type="l", col="green")
+        # upper confidence interval
+        lines(doc.res$highconfo, doc.res$highconfd, type="l", col="green")
+      }
+    }
     if(B>0){
       # lower confidence interval
-      lines(lowerConfO, lowerConfD, type="l", col="red")
+      lines(lowerConfO, lowerConfD, type="l", col=conf.line.col)
       # upper confidence interval
-      lines(upperConfO, upperConfD, type="l", col="red")
+      lines(upperConfO, upperConfD, type="l", col=conf.line.col)
     }
   }else{
-    lowesscol="blue"
-    fillcol=rgb(0,0,1,alpha=0.5)
-    if(rand == TRUE){
-      fillcol=rgb(1,0,0,alpha=0.5)
-      lowesscol="red"
-    }
-    plot(res$overlap, res$dissim, type="n", pch=".", xlab="overlap", ylab="dissimilarity (rJSD)", main="DOC", col="darkgrey")
+    plot(res$overlap, res$dissim, type="n",xlim=xlim,ylim=ylim, pch=".", xlab="overlap", ylab="dissimilarity (rJSD)", main="DOC", col=points.color)
     # Lowess line
-    lines(outL, type="l", col=lowesscol, lwd=2)
+    lines(outL, type="l", col=lowess.col, lwd=2)
     if(B>0){
       polygon(c(outL$x,lowerConfO),c(outL$x,lowerConfD), col=fillcol, border="white")
       polygon(c(outL$x,upperConfO),c(outL$x,upperConfD), border="white", col="white")
-      #polygon(upperConfO,upperConfD, col=fillcol, border="white")
-      #polygon(lowerConfO, lowerConfD, col="white", border="white")
+    }
+    if(!is.null(doc.res)){
+      print("Adding previous results to plot...")
+      # add previously computed Lowess line
+      outL.prev=list(doc.res$lowesso, doc.res$lowessd)
+      names(outL.prev)=c("x","y")
+      lines(outL.prev, type="l", col="darkgreen", lwd=2)
+      if(length(doc.res$lowconfo)>0){
+        polygon(c(doc.res$lowesso,doc.res$lowconfo),c(doc.res$lowesso,doc.res$lowconfd), col=rgb(0,1,0,alpha=0.5), border="white")
+        polygon(c(doc.res$lowesso,doc.res$highconfo),c(doc.res$lowesso,doc.res$highconfd), border="white", col="white")
+      }
     }
   }
   res=list(res$overlap, res$dissim, outL$x, outL$y, lowerConfO, lowerConfD, upperConfO, upperConfD)

@@ -6,8 +6,8 @@
 \usage{
 tsplot(x, time.given = FALSE, num = nrow(x), sample.points = c(),
   mode = "lines", dist = "bray", identifyPoints = FALSE, topN = 10,
-  groups = c(), legend = FALSE, header = "", labels = c(),
-  noLabels = FALSE, perturb = NULL, ...)
+  groups = c(), hideGroups = c(), legend = FALSE, header = "",
+  labels = c(), noLabels = FALSE, perturb = NULL, ...)
 }
 \arguments{
 \item{x}{the matrix of time series}
@@ -27,6 +27,8 @@ tsplot(x, time.given = FALSE, num = nrow(x), sample.points = c(),
 \item{topN}{number of top taxa to be plotted for mode bars}
 
 \item{groups}{group membership vector with as many entries as samples, only supported for mode bars and pcoa}
+
+\item{hideGroups}{compute PCoA with all data, but do not show members of selected groups; expects one integer per group and consistency with groups parameter, only supported for mode pcoa}
 
 \item{legend}{add a legend}
 
@@ -49,5 +51,5 @@ A=modifyA(generateA(N, c=0.1, d=-1),perc=70,strength="uniform",mode="negpercent"
 out.ricker=ricker(N,A=A,y=generateAbundances(N,mode=5,prob=TRUE),K=rep(0.1,N), sigma=-1,tend=500)
 tsplot(out.ricker)
 tsplot(out.ricker[,1:20],mode="bars",legend=TRUE)
-tsplot(simHubbell(),mode="pcoa") # example of the horseshoe effect
+tsplot(out.ricker,mode="pcoa")
 }
