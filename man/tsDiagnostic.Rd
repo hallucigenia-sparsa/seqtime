@@ -5,7 +5,7 @@
 \title{Diagnostics for Community Simulation}
 \usage{
 tsDiagnostic(x, mode = "ind", plot = TRUE, spec.index = 1,
-  spec.meta = NA, K = NA, ...)
+  spec.meta = NA, threshold = 0.01, K = NA, ...)
 }
 \arguments{
 \item{x}{community time series, rows are species and columns are time points}
@@ -18,9 +18,14 @@ tsDiagnostic(x, mode = "ind", plot = TRUE, spec.index = 1,
 
 \item{spec.meta}{proportion of selected species in the meta-community (optional, if provided it is added in plot mode distrib)}
 
+\item{threshold}{threshold below which species are considered dead}
+
 \item{K}{carrying capacity, in case of Hubbell and SOI, the number of individuals (optional, if provided it is shown in plot mode ind)}
 
 \item{\\dots}{Additional arguments passed to plot()}
+}
+\value{
+depending on the mode, the function returns the number of surviving species over time, the number of individuals over time or the species distribution at the given time point
 }
 \description{
 Diagnostics for the outcome of a community simulation.
@@ -33,8 +38,8 @@ it offers diagnostic plots.
 N=50
 m.vector=generateAbundances(N,mode=5,probabs=TRUE)
 outH=simHubbell(M=N,N=N,I=1000,m.vector=m.vector,tend=1000)
-tsDiagnostic(outH,mode="distrib",spec.index = 4,spec.meta = m.vector[4])
-tsDiagnostic(outH,mode="spec")
-tsDiagnostic(outH,mode="ind")
+diagnostics=tsDiagnostic(outH,mode="distrib",spec.index = 4,spec.meta = m.vector[4])
+diagnostics=tsDiagnostic(outH,mode="spec")
+diagnostics=tsDiagnostic(outH,mode="ind")
 }
 }

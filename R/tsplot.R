@@ -22,7 +22,7 @@
 #' out.ricker=ricker(N,A=A,y=generateAbundances(N,mode=5,prob=TRUE),K=rep(0.1,N), sigma=-1,tend=500)
 #' tsplot(out.ricker)
 #' tsplot(out.ricker[,1:20],mode="bars",legend=TRUE)
-#' tsplot(out.ricker,mode="pcoa")
+#' tsplot(out.ricker[,1:50],mode="pcoa")
 #' @export
 tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="lines", dist="bray", identifyPoints=FALSE, topN=10, groups=c(), hideGroups=c(), legend=FALSE, header="", labels=c(), noLabels=FALSE, perturb=NULL, ...){
   col.vec = seq(0,1,1/nrow(x))

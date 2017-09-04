@@ -85,8 +85,8 @@
 
     <pre class="usage"><span class='fu'>tsplot</span>(<span class='no'>x</span>, <span class='kw'>time.given</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>num</span> <span class='kw'>=</span> <span class='fu'>nrow</span>(<span class='no'>x</span>), <span class='kw'>sample.points</span> <span class='kw'>=</span> <span class='fu'>c</span>(),
   <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"lines"</span>, <span class='kw'>dist</span> <span class='kw'>=</span> <span class='st'>"bray"</span>, <span class='kw'>identifyPoints</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>topN</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>groups</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>header</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'>c</span>(),
-  <span class='kw'>noLabels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>perturb</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>groups</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>hideGroups</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>header</span> <span class='kw'>=</span> <span class='st'>""</span>,
+  <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>noLabels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>perturb</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -128,6 +128,10 @@
       <td><p>group membership vector with as many entries as samples, only supported for mode bars and pcoa</p></td>
     </tr>
     <tr>
+      <th>hideGroups</th>
+      <td><p>compute PCoA with all data, but do not show members of selected groups; expects one integer per group and consistency with groups parameter, only supported for mode pcoa</p></td>
+    </tr>
+    <tr>
       <th>legend</th>
       <td><p>add a legend</p></td>
     </tr>
@@ -167,7 +171,7 @@
 #&gt; [1] "Number of negative edges already present: 182"
 #&gt; [1] "Converting 24 edges into negative edges"
 #&gt; [1] "Final connectance: 0.1"</div><div class='input'><span class='no'>out.ricker</span><span class='kw'>=</span><span class='fu'><a href='ricker.html'>ricker</a></span>(<span class='no'>N</span>,<span class='kw'>A</span><span class='kw'>=</span><span class='no'>A</span>,<span class='kw'>y</span><span class='kw'>=</span><span class='fu'><a href='generateAbundances.html'>generateAbundances</a></span>(<span class='no'>N</span>,<span class='kw'>mode</span><span class='kw'>=</span><span class='fl'>5</span>,<span class='kw'>prob</span><span class='kw'>=</span><span class='fl'>TRUE</span>),<span class='kw'>K</span><span class='kw'>=</span><span class='fu'>rep</span>(<span class='fl'>0.1</span>,<span class='no'>N</span>), <span class='kw'>sigma</span><span class='kw'>=</span>-<span class='fl'>1</span>,<span class='kw'>tend</span><span class='kw'>=</span><span class='fl'>500</span>)
-<span class='fu'>tsplot</span>(<span class='no'>out.ricker</span>)</div><img src='tsplot-4.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>tsplot</span>(<span class='no'>out.ricker</span>[,<span class='fl'>1</span>:<span class='fl'>20</span>],<span class='kw'>mode</span><span class='kw'>=</span><span class='st'>"bars"</span>,<span class='kw'>legend</span><span class='kw'>=</span><span class='fl'>TRUE</span>)</div><img src='tsplot-6.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>tsplot</span>(<span class='fu'><a href='simHubbell.html'>simHubbell</a></span>(),<span class='kw'>mode</span><span class='kw'>=</span><span class='st'>"pcoa"</span>) <span class='co'># example of the horseshoe effect</span></div><img src='tsplot-8.png' alt='' width='540' height='400' /></pre>
+<span class='fu'>tsplot</span>(<span class='no'>out.ricker</span>)</div><img src='tsplot-4.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>tsplot</span>(<span class='no'>out.ricker</span>[,<span class='fl'>1</span>:<span class='fl'>20</span>],<span class='kw'>mode</span><span class='kw'>=</span><span class='st'>"bars"</span>,<span class='kw'>legend</span><span class='kw'>=</span><span class='fl'>TRUE</span>)</div><img src='tsplot-6.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>tsplot</span>(<span class='no'>out.ricker</span>[,<span class='fl'>1</span>:<span class='fl'>50</span>],<span class='kw'>mode</span><span class='kw'>=</span><span class='st'>"pcoa"</span>)</div><img src='tsplot-8.png' alt='' width='540' height='400' /></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

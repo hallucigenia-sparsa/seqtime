@@ -80,8 +80,11 @@
     </div>
 
     
-    <p>Test the stability of an interaction matrix using Coyte's criterium,
-the eigenvalue criterium or a simulation with Ricker.</p>
+    <p>Test the stability of an interaction matrix.
+The first two methods (coyte and eigen) determine whether the community's
+steady state is stable in the sense that the community returns to it after
+a small perturbation. The last method tests for explosion in simulations
+with Ricker.</p>
     
 
     <pre class="usage"><span class='fu'>testStability</span>(<span class='no'>A</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"eigen"</span>, <span class='kw'>K</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fl'>0.1</span>, <span class='no'>N</span>), <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>runif</span>(<span class='no'>N</span>),
@@ -126,19 +129,18 @@ the eigenvalue criterium or a simulation with Ricker.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Coyte's criterium is: max(r_e,r_s) - s &lt; 0,
+    <p>Coyte's stability criterium is fulfilled if: max(r_e,r_s) - s &lt; 0,
 where s is the average of the diagonal values (the intra-species competition),
-r_e is the half-horizontal radius of the eigenvalue ellipse of A and
-r_s is the eigenvalue corresponding to the average row sum.
+r_e is the half-horizontal radius of the eigenvalue ellipse of A
+(which equals its Jacobian) and r_s is the eigenvalue corresponding to the average row sum.
 The more negative max(r_e,r_s) - s is, the quicker the community returns
-to equilibrium.
+to steady state.
 This criterium assumes that realized inter-species interaction strengths are drawn
 from a half normal distribution |N(0,sigma2)| (the absolute of the normal
 distribution). Only non-zero, non-diagonal interactions are considered to
 compute the mean interaction strength.
-The eigenvalue criterium tests whether all real parts of the eigenvalues
-of the interaction matrix are smaller than zero.
-Ricker simply runs a simulation with Ricker and tests whether an explosion occurs.</p>
+The eigen method implements the classical stability criterion, which tests whether all real
+parts of the eigenvalues of the interaction (=Jacobian) matrix are smaller than zero.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 

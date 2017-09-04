@@ -84,7 +84,7 @@ testStability<-function(A, method="eigen", K=rep(0.1,N), y=runif(N), sigma=0.01,
 
     print(paste("re:",re))
     print(paste("rs:",rs))
-    print(paste("s:",s))
+    print(paste("s:",abs(s)))
 
     if(max(re,rs) - abs(s) < 0){
       stable = TRUE

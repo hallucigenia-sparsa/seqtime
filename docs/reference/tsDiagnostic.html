@@ -87,7 +87,7 @@ it offers diagnostic plots.</p>
     
 
     <pre class="usage"><span class='fu'>tsDiagnostic</span>(<span class='no'>x</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"ind"</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>spec.index</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>spec.meta</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>K</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>spec.meta</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.01</span>, <span class='kw'>K</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -113,6 +113,10 @@ it offers diagnostic plots.</p>
       <td><p>proportion of selected species in the meta-community (optional, if provided it is added in plot mode distrib)</p></td>
     </tr>
     <tr>
+      <th>threshold</th>
+      <td><p>threshold below which species are considered dead</p></td>
+    </tr>
+    <tr>
       <th>K</th>
       <td><p>carrying capacity, in case of Hubbell and SOI, the number of individuals (optional, if provided it is shown in plot mode ind)</p></td>
     </tr>
@@ -122,22 +126,28 @@ it offers diagnostic plots.</p>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>depending on the mode, the function returns the number of surviving species over time, the number of individuals over time or the species distribution at the given time point</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
   <span class='no'>N</span><span class='kw'>=</span><span class='fl'>50</span>
   <span class='no'>m.vector</span><span class='kw'>=</span><span class='fu'><a href='generateAbundances.html'>generateAbundances</a></span>(<span class='no'>N</span>,<span class='kw'>mode</span><span class='kw'>=</span><span class='fl'>5</span>,<span class='kw'>probabs</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
   <span class='no'>outH</span><span class='kw'>=</span><span class='fu'><a href='simHubbell.html'>simHubbell</a></span>(<span class='kw'>M</span><span class='kw'>=</span><span class='no'>N</span>,<span class='kw'>N</span><span class='kw'>=</span><span class='no'>N</span>,<span class='kw'>I</span><span class='kw'>=</span><span class='fl'>1000</span>,<span class='kw'>m.vector</span><span class='kw'>=</span><span class='no'>m.vector</span>,<span class='kw'>tend</span><span class='kw'>=</span><span class='fl'>1000</span>)
-  <span class='fu'>tsDiagnostic</span>(<span class='no'>outH</span>,<span class='kw'>mode</span><span class='kw'>=</span><span class='st'>"distrib"</span>,<span class='kw'>spec.index</span> <span class='kw'>=</span> <span class='fl'>4</span>,<span class='kw'>spec.meta</span> <span class='kw'>=</span> <span class='no'>m.vector</span>[<span class='fl'>4</span>])
-  <span class='fu'>tsDiagnostic</span>(<span class='no'>outH</span>,<span class='kw'>mode</span><span class='kw'>=</span><span class='st'>"spec"</span>)
-  <span class='fu'>tsDiagnostic</span>(<span class='no'>outH</span>,<span class='kw'>mode</span><span class='kw'>=</span><span class='st'>"ind"</span>)
+  <span class='no'>diagnostics</span><span class='kw'>=</span><span class='fu'>tsDiagnostic</span>(<span class='no'>outH</span>,<span class='kw'>mode</span><span class='kw'>=</span><span class='st'>"distrib"</span>,<span class='kw'>spec.index</span> <span class='kw'>=</span> <span class='fl'>4</span>,<span class='kw'>spec.meta</span> <span class='kw'>=</span> <span class='no'>m.vector</span>[<span class='fl'>4</span>])
+  <span class='no'>diagnostics</span><span class='kw'>=</span><span class='fu'>tsDiagnostic</span>(<span class='no'>outH</span>,<span class='kw'>mode</span><span class='kw'>=</span><span class='st'>"spec"</span>)
+  <span class='no'>diagnostics</span><span class='kw'>=</span><span class='fu'>tsDiagnostic</span>(<span class='no'>outH</span>,<span class='kw'>mode</span><span class='kw'>=</span><span class='st'>"ind"</span>)
 })</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
+      
+      <li><a href="#value">Value</a></li>
+      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
