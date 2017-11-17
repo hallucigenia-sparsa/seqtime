@@ -2,6 +2,8 @@
 #'
 #' @description Generate time series with the self-organized instable (SOI) model
 #' implementing model B by Sole et al. 2002.
+#' The model implements a K-leap method for accelerating stochastic simulation according to
+#' Cai et al. 2007
 #'
 #' @param N number of species
 #' @param I number of individuals
@@ -9,11 +11,13 @@
 #' @param m.vector species-specific immigration probabilities (these also determine initial abundances)
 #' @param e.vector species-specific extinction probabilities
 #' @param tend number of time points (i.e. the number of generations)
-#' @param K 
+#' @param K The parameter K gives the number of simulation reactions occurring during one leap.
+#' A higher K gives a faster simulation, but is less accurate.
 #' @param perturb a perturbation object
 #' @return a matrix with species abundances as rows and time points as columns
 #' @seealso \code{\link{ricker}} for the Ricker model
 #' @references Sole et al. Philos Trans R Soc Lond B Biol. Sci. "Self-organized instability in complex ecosystems" 357:667-671 (2002)
+#' Cai et al. The Journal of Chemical Physics "K-leap method for accelerating stochastic simulation of coupled chemical reactions" 126 (2007)
 #' @examples
 #' \dontrun{
 #' N=10
@@ -27,12 +31,6 @@
 soi<-function(N, I, A, m.vector=runif(N), e.vector=runif(N), tend, K=5, perturb=NULL){
   
   results<-generate.parameters(N, I, A, m.vector, e.vector)
-
-  perturbCounter=1
-  durationCounter=1
-  perturbationOn=FALSE
-  ori.e.vector=e.vector
-  prev.abundances=c()
   
   TS<-tend
   omega <-results$A
@@ -213,30 +211,38 @@ run.SOI<-function(time_steps,x0,nu,parms,K,perturb){
   ######
   x<-x0
   index<-1
+  
+  perturbCounter=1
+  durationCounter=1
+  perturbationOn=FALSE
+  ori.e.vector=parms[[4]]
+  prev.abundances=c()
+  
+  
   #############
   while(index<=time_steps){
     
     if(!is.null(perturb)){
-      prev.abundances=results$abundances
-      applied=applyPerturbation(perturb,t=i,perturbCounter=perturbCounter, durationCounter=durationCounter, perturbationOn=perturbationOn, ori.growthrates=m.vector, abundances=results$abundances)
+      prev.abundances=x
+      applied=applyPerturbation(perturb,t=i,perturbCounter=perturbCounter, durationCounter=durationCounter, perturbationOn=perturbationOn, ori.growthrates=parms[[3]], abundances=x)
       durationCounter=applied$durationCounter
       perturbCounter=applied$perturbCounter
       perturbationOn=applied$perturbationOn
-      results$immigration_prob=applied$growthrates
+      parms[[3]]=applied$growthrates
       # randomly select a species and remove a count
       while(sum(applied$abundances)>I){
-        species.index=sample(applied$abundances)[1]
+        species.index=sample(length(applied$abundances))[1]
         applied$abundances[species.index]=applied$abundances[species.index]-1
       }
-      results$abundances=applied$abundances
+      x=applied$abundances
       if(perturbationOn==TRUE && !is.na(perturb$deathrate)){
-        if(length(perturb$deathrate)!=length(e.vector)){
+        if(length(perturb$deathrate)!=length(parms[[4]])){
           warning("Perturbation death rate should have as many entries as the extinction vector! It is not applied.")
         }else{
-          e.vector=perturb$deathrate
+          parms[[4]]=perturb$deathrate
         }
       }else{
-        e.vector=ori.e.vector
+        parms[[4]]=ori.e.vector
       }
       if(perturbationOn && durationCounter==2){
         #print(results$immigration_prob)
@@ -276,4 +282,7 @@ run.SOI<-function(time_steps,x0,nu,parms,K,perturb){
   }
   return(abundances_over_time)
 }
+
+
+
 
