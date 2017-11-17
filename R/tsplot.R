@@ -119,7 +119,8 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
       xlim=c(min(pcoa.res$CA$u[,1]),max(pcoa.res$CA$u[,1]))
     }
     ylim=c(min(pcoa.res$CA$u[,2]),max(pcoa.res$CA$u[,2]))
-    labelNames=c(1:ncol(x))
+    #labelNames=c(1:ncol(x))
+    labelNames=time
     groups.copy=groups
     # color points according to groups
     if(length(groups)>0){

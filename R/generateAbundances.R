@@ -10,7 +10,7 @@
 #' @param N number of species
 #' @param count total number of individuals (ignored in mode 2, 4 and 7)
 #' @param mode 1=each species receives round(count/N) counts, 2=sampled from uniform distribution with 0 as lower and count as upper bound, 3=dominant species takes 95 percent of the counts and all others split the remaining counts equally, 4=counts are sampled from a Poisson distribution with lambda set to count/N, 5=using bstick function from vegan, 6=using geometric series with parameter k, 7=sample from the exponential distribution and scale with count/N
-#' @param k evenness parameter of geometric series
+#' @param k evenness parameter of geometric series (the smaller, the more even is the abundance vector)
 #' @param probabs if true, return probabilities instead of abundances
 #' @return species abundances
 #' @examples

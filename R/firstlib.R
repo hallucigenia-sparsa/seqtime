@@ -42,6 +42,8 @@
 #' @importFrom stats spline
 #' @importFrom stats var
 #' @importFrom stats wilcox.test
+#' @importFrom stats smooth.spline
+#' @importFrom stats predict
 #' @importFrom utils data
 #' @importFrom utils read.table
 #' @import igraph

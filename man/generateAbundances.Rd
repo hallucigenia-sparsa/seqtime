@@ -13,7 +13,7 @@ generateAbundances(N, count = 1000, mode = 1, k = 0.5, probabs = FALSE)
 
 \item{mode}{1=each species receives round(count/N) counts, 2=sampled from uniform distribution with 0 as lower and count as upper bound, 3=dominant species takes 95 percent of the counts and all others split the remaining counts equally, 4=counts are sampled from a Poisson distribution with lambda set to count/N, 5=using bstick function from vegan, 6=using geometric series with parameter k, 7=sample from the exponential distribution and scale with count/N}
 
-\item{k}{evenness parameter of geometric series}
+\item{k}{evenness parameter of geometric series (the smaller, the more even is the abundance vector)}
 
 \item{probabs}{if true, return probabilities instead of abundances}
 }

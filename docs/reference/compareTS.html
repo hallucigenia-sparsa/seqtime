@@ -84,10 +84,11 @@
     
 
     <pre class="usage"><span class='fu'>compareTS</span>(<span class='kw'>input.folder</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>expIds</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>modif.folder</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>modif</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>sliceDef</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>NA</span>), <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.2</span>, <span class='kw'>norm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>hurstBins</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0.5</span>, <span class='fl'>0.7</span>, <span class='fl'>0.9</span>), <span class='kw'>maxautocorBins</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0.3</span>, <span class='fl'>0.5</span>, <span class='fl'>0.8</span>),
-  <span class='kw'>timeDecaySliceDef</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>50</span>), <span class='kw'>varEvolSliceDef</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>radSliceDef</span> <span class='kw'>=</span> <span class='fu'>c</span>(),
-  <span class='kw'>returnDistribs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>returnTS</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>modif</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>testNeutral</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sliceDef</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>NA</span>), <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
+  <span class='kw'>predef</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>detrend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>norm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>hurstBins</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0.5</span>, <span class='fl'>0.7</span>,
+  <span class='fl'>0.9</span>), <span class='kw'>maxautocorBins</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0.3</span>, <span class='fl'>0.5</span>, <span class='fl'>0.8</span>), <span class='kw'>timeDecaySliceDef</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>50</span>),
+  <span class='kw'>varEvolSliceDef</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>radSliceDef</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>returnDistribs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>returnTS</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -109,12 +110,24 @@
       <td><p>modification (shared name of time series in modif.folder, sliced for time series sub-sets and pois for time series with Poisson noise added)</p></td>
     </tr>
     <tr>
+      <th>testNeutral</th>
+      <td><p>test neutrality (requires libraries WrightFisher and logitnorm)</p></td>
+    </tr>
+    <tr>
       <th>sliceDef</th>
-      <td><p>consider the time series sub-set defined by the given start and end time point for property computation, an end time point of NA means that the entire time series is considered; timeDecaySliceDef refers to the outcome of sliceDef</p></td>
+      <td><p>consider the time series sub-set defined by the given start and end time point for property computation, an end time point of NA means that the entire time series is considered; timeDecaySliceDef and varEvolSliceDef refer to the outcome of sliceDef</p></td>
     </tr>
     <tr>
       <th>epsilon</th>
       <td><p>allowed deviation from the expected slope for noise type identification</p></td>
+    </tr>
+    <tr>
+      <th>predef</th>
+      <td><p>recognize noise types with predefined slope boundaries (see identifyNoisetypes for details)</p></td>
+    </tr>
+    <tr>
+      <th>detrend</th>
+      <td><p>remove linear trends before computing the periodogram (recommended)</p></td>
     </tr>
     <tr>
       <th>norm</th>
@@ -138,7 +151,7 @@
     </tr>
     <tr>
       <th>radSliceDef</th>
-      <td><p>(optional, by default not computed) the time series subset considered to analyse the species abundance versus rank curve, a vector with the start and the end time point (if the end time point is NA, the entire time series is used)</p></td>
+      <td><p>(optional, by default not computed) the time series subset considered to analyse the (non-normalized also when norm is enabled) species abundance versus rank curve, a vector with the start and the end time point (if the end time point is NA, the entire time series is used); cannot be used together with sliceDef</p></td>
     </tr>
     <tr>
       <th>returnDistribs</th>
@@ -156,7 +169,8 @@
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>If infotheo is installed, the entropy will be also computed.</p>
+    <p>If infotheo is installed, the entropy will be also computed. Noise types are computed with smooth set to true.
+The neutrality test is carried out with ntests set to 500 and method logitnorm.</p>
     
 
   </div>

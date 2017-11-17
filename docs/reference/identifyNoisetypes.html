@@ -80,10 +80,11 @@
     </div>
 
     
-    <p>Identify noise types in a matrix row-wise.</p>
+    <p>Identify noise types in a matrix row-wise. The noise type is the slope of the frequency versus the spectral density in log-log scale.</p>
     
 
-    <pre class="usage"><span class='fu'>identifyNoisetypes</span>(<span class='no'>x</span>, <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.2</span>, <span class='kw'>pval.threshold</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
+    <pre class="usage"><span class='fu'>identifyNoisetypes</span>(<span class='no'>x</span>, <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.2</span>, <span class='kw'>predef</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>detrend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>pval.threshold</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>smooth</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>df</span> <span class='kw'>=</span> <span class='fu'>max</span>(<span class='fl'>2</span>, <span class='fu'>log10</span>(<span class='fu'>ncol</span>(<span class='no'>x</span>))),
   <span class='kw'>permut</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>abund.threshold</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
@@ -98,8 +99,24 @@
       <td><p>allowed deviation from the expected slope of 0 for white noise, -1 for pink noise and -2 for brown noise (all rows with a slope below -3 are classified as having black noise)</p></td>
     </tr>
     <tr>
+      <th>predef</th>
+      <td><p>use predefined slope ranges to determine noise type from the periodogram; overrides epsilon (slope ranges are: black=[-INF,-2.25]; brown=[-1.75, -2.25), pink=(-1.75,-0.5], white=(-0.5,INF])</p></td>
+    </tr>
+    <tr>
+      <th>detrend</th>
+      <td><p>remove a linear trend before computing the spectral density (recommended)</p></td>
+    </tr>
+    <tr>
       <th>pval.threshold</th>
       <td><p>significance threshold for periodogram powerlaw goodness of fit</p></td>
+    </tr>
+    <tr>
+      <th>smooth</th>
+      <td><p>instead of fitting a line to the frequency-spectrum power law, fit a spline with function smooth.spline and consider the minimum of its derivative as the slope. In this case, the frequency is no longer required to scale significantly with the spectral density in log-log scale.</p></td>
+    </tr>
+    <tr>
+      <th>df</th>
+      <td><p>smooth.spline parameter (degrees of freedom)</p></td>
     </tr>
     <tr>
       <th>permut</th>
@@ -117,7 +134,10 @@
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Row sums need to be above the given abundance threshold and the spectral density needs to scale significantly with the frequency (p-value below 0.05) in log-log scale. The periodogram is computed with <code>spectrum</code> from the <span class="pkg">stats</span> package. The function returns a noisetypes object, which groups matrix row indices by noise type.</p>
+    <p>Row sums need to be above the given abundance threshold and the spectral density needs to scale significantly with the frequency (p-value below 0.05) in log-log scale.
+The periodogram is computed with <code>spectrum</code> from the <span class="pkg">stats</span> package.
+The function returns a noisetypes object, which groups matrix row indices by noise type.
+Note that not all rows may be assigned a noise type.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -129,11 +149,11 @@
 #&gt; [1] "Final connectance 0.0111111111111111"
 #&gt; [1] "Final connectance: 0.0111111111111111"</div><div class='input'><span class='no'>noise</span> <span class='kw'>&lt;-</span> <span class='fu'>identifyNoisetypes</span>(<span class='no'>ricker.out</span>, <span class='kw'>abund.threshold</span><span class='kw'>=</span><span class='fl'>0</span>)</div><div class='output co'>#&gt; [1] "Number of taxa below the abundance threshold:  0"
 #&gt; [1] "Number of taxa with non-significant power spectrum laws:  0"
-#&gt; [1] "Number of taxa with non-classified power spectrum:  10"
+#&gt; [1] "Number of taxa with non-classified power spectrum:  0"
 #&gt; [1] "Number of taxa with white noise:  0"
 #&gt; [1] "Number of taxa with pink noise:  0"
 #&gt; [1] "Number of taxa with brown noise:  0"
-#&gt; [1] "Number of taxa with black noise:  0"</div><div class='input'><span class='fu'><a href='plotNoisetypes.html'>plotNoisetypes</a></span>(<span class='no'>noise</span>)</div><img src='identifyNoisetypes-6.png' alt='' width='540' height='400' /><div class='input'>
+#&gt; [1] "Number of taxa with black noise:  0"</div><div class='input'><span class='fu'><a href='plotNoisetypes.html'>plotNoisetypes</a></span>(<span class='no'>noise</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='error'>Error in plot.window(xlim, ylim, log = log, ...): need finite 'ylim' values</span></div><img src='identifyNoisetypes-9.png' alt='' width='540' height='400' /><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -88,7 +88,8 @@ If it is around -2, the time series displays 1/f^2 (brown) noise. If the slope
 is even steeper, the time series displays black noise.</p>
     
 
-    <pre class="usage"><span class='fu'>powerspec</span>(<span class='no'>v</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>header</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>)</pre>
+    <pre class="usage"><span class='fu'>powerspec</span>(<span class='no'>v</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>detrend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>smooth</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>df</span> <span class='kw'>=</span> <span class='fu'>max</span>(<span class='fl'>2</span>,
+  <span class='fu'>log10</span>(<span class='fu'>ncol</span>(<span class='no'>v</span>))), <span class='kw'>header</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -100,6 +101,18 @@ is even steeper, the time series displays black noise.</p>
     <tr>
       <th>plot</th>
       <td><p>plot the periodogram with the power law in log-scale</p></td>
+    </tr>
+    <tr>
+      <th>detrend</th>
+      <td><p>remove a linear trend prior to the computation of the periodogram</p></td>
+    </tr>
+    <tr>
+      <th>smooth</th>
+      <td><p>fit a cubic spline with smooth.spline and report the slope as the minimum of the derivative; in this case, the goodness of fit of a line to the frequency versus spectral density power law is not reported</p></td>
+    </tr>
+    <tr>
+      <th>df</th>
+      <td><p>smooth.spline parameter (degrees of freedom)</p></td>
     </tr>
     <tr>
       <th>header</th>

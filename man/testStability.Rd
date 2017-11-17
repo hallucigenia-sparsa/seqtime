@@ -36,7 +36,8 @@ with Ricker.
 Coyte's stability criterium is fulfilled if: max(r_e,r_s) - s < 0,
 where s is the average of the diagonal values (the intra-species competition),
 r_e is the half-horizontal radius of the eigenvalue ellipse of A
-(which equals its Jacobian) and r_s is the eigenvalue corresponding to the average row sum.
+(which equals its Jacobian when assuming that species abundances sum to one) and r_s is
+the eigenvalue corresponding to the average row sum.
 The more negative max(r_e,r_s) - s is, the quicker the community returns
 to steady state.
 This criterium assumes that realized inter-species interaction strengths are drawn

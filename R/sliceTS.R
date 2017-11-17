@@ -68,8 +68,12 @@ sliceTS<-function(slices=NULL, slice.def.path="", input.folder="", output.folder
 
     startSlice=slices[expId,1]
     endSlice=slices[expId,2]
-    if(is.na(endSlice)){
+    if(is.na(endSlice) || endSlice>ncol(ts)){
       endSlice=ncol(ts)
+    }
+
+    if(startSlice >= endSlice){
+      stop(paste("The start of the subset definition for time series",expId,"is equal to or larger than the end."))
     }
 
     slicedTS=ts[,startSlice:endSlice]

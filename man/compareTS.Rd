@@ -5,10 +5,11 @@
 \title{Community Time Series Comparison}
 \usage{
 compareTS(input.folder = "", expIds = c(), modif.folder = "",
-  modif = "", sliceDef = c(1, NA), epsilon = 0.2, norm = FALSE,
-  hurstBins = c(0.5, 0.7, 0.9), maxautocorBins = c(0.3, 0.5, 0.8),
-  timeDecaySliceDef = c(1, 50), varEvolSliceDef = c(), radSliceDef = c(),
-  returnDistribs = FALSE, returnTS = FALSE)
+  modif = "", testNeutral = FALSE, sliceDef = c(1, NA), epsilon = 0.2,
+  predef = FALSE, detrend = TRUE, norm = FALSE, hurstBins = c(0.5, 0.7,
+  0.9), maxautocorBins = c(0.3, 0.5, 0.8), timeDecaySliceDef = c(1, 50),
+  varEvolSliceDef = c(), radSliceDef = c(), returnDistribs = FALSE,
+  returnTS = FALSE)
 }
 \arguments{
 \item{input.folder}{the folder where results (settings and time series) of function generateTS are stored.}
@@ -19,9 +20,15 @@ compareTS(input.folder = "", expIds = c(), modif.folder = "",
 
 \item{modif}{modification (shared name of time series in modif.folder, sliced for time series sub-sets and pois for time series with Poisson noise added)}
 
-\item{sliceDef}{consider the time series sub-set defined by the given start and end time point for property computation, an end time point of NA means that the entire time series is considered; timeDecaySliceDef refers to the outcome of sliceDef}
+\item{testNeutral}{test neutrality (requires libraries WrightFisher and logitnorm)}
+
+\item{sliceDef}{consider the time series sub-set defined by the given start and end time point for property computation, an end time point of NA means that the entire time series is considered; timeDecaySliceDef and varEvolSliceDef refer to the outcome of sliceDef}
 
 \item{epsilon}{allowed deviation from the expected slope for noise type identification}
+
+\item{predef}{recognize noise types with predefined slope boundaries (see identifyNoisetypes for details)}
+
+\item{detrend}{remove linear trends before computing the periodogram (recommended)}
 
 \item{norm}{normalize time series by dividing each entry in a sample by the sum of its sample; if norm is true, entropy computation is omitted}
 
@@ -33,7 +40,7 @@ compareTS(input.folder = "", expIds = c(), modif.folder = "",
 
 \item{varEvolSliceDef}{(optional, by default not computed) the time series subset considered to compute the evolution of variance, a vector with the start and the end time point (if the end time point is NA, the entire time series is used)}
 
-\item{radSliceDef}{(optional, by default not computed) the time series subset considered to analyse the species abundance versus rank curve, a vector with the start and the end time point (if the end time point is NA, the entire time series is used)}
+\item{radSliceDef}{(optional, by default not computed) the time series subset considered to analyse the (non-normalized also when norm is enabled) species abundance versus rank curve, a vector with the start and the end time point (if the end time point is NA, the entire time series is used); cannot be used together with sliceDef}
 
 \item{returnDistribs}{return distributions at the final time point (no time series properties are computed, cannot be used together with returnTS)}
 
@@ -46,5 +53,6 @@ a table with experiment parameters (algorithm, connectance, sigma, theta and so 
 Compute properties of community time series generated with generateTS.
 }
 \details{
-If infotheo is installed, the entropy will be also computed.
+If infotheo is installed, the entropy will be also computed. Noise types are computed with smooth set to true.
+The neutrality test is carried out with ntests set to 500 and method logitnorm.
 }

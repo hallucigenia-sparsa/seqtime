@@ -4,7 +4,7 @@
 \alias{soi}
 \title{Self-organized instable model}
 \usage{
-soi(N, I, A, m.vector = runif(N), e.vector = runif(N), tend,
+soi(N, I, A, m.vector = runif(N), e.vector = runif(N), tend, K = 5,
   perturb = NULL)
 }
 \arguments{
@@ -19,6 +19,8 @@ soi(N, I, A, m.vector = runif(N), e.vector = runif(N), tend,
 \item{e.vector}{species-specific extinction probabilities}
 
 \item{tend}{number of time points (i.e. the number of generations)}
+
+\item{K}{TODO}
 
 \item{perturb}{a perturbation object}
 }

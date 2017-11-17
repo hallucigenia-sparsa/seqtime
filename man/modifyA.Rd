@@ -31,7 +31,7 @@ the modified interaction matrix
 The interaction matrix can be manipulated in the following ways:
 adjustc: Adjust the connectance to the given value
 schur: apply a Schur decomposition to remove positive eigenvalues that lead to explosions in simulations with Ricker or gLV
-negpercent: convert positive into negative interactions, such that the interaction matrix reaches the specified percentage of negative edges/arcs
+negpercent: convert positive into negative interactions, such that the interaction matrix reaches the specified percentage of negative edges/arcs (diagonal is not specially treated)
 tweak: multiply a randomly chosen positive entry in the interaction matrix with -1. This is useful when searching for an interaction matrix that does not lead to explosions in Ricker and gLV simulations.
 enforceneg: multiply off-diagonal negative entries in interaction matrix with the given factor
 removeorphans: remove all taxa that do not interact with other taxa and thus represent orphan nodes in the network representation of the interaction matrix

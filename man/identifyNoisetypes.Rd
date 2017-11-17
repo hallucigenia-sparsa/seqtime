@@ -4,7 +4,8 @@
 \alias{identifyNoisetypes}
 \title{Identify Noise Types}
 \usage{
-identifyNoisetypes(x, epsilon = 0.2, pval.threshold = 0.05,
+identifyNoisetypes(x, epsilon = 0.2, predef = FALSE, detrend = TRUE,
+  pval.threshold = 0.05, smooth = FALSE, df = max(2, log10(ncol(x))),
   permut = FALSE, abund.threshold = 0)
 }
 \arguments{
@@ -12,7 +13,15 @@ identifyNoisetypes(x, epsilon = 0.2, pval.threshold = 0.05,
 
 \item{epsilon}{allowed deviation from the expected slope of 0 for white noise, -1 for pink noise and -2 for brown noise (all rows with a slope below -3 are classified as having black noise)}
 
+\item{predef}{use predefined slope ranges to determine noise type from the periodogram; overrides epsilon (slope ranges are: black=[-INF,-2.25]; brown=[-1.75, -2.25), pink=(-1.75,-0.5], white=(-0.5,INF])}
+
+\item{detrend}{remove a linear trend before computing the spectral density (recommended)}
+
 \item{pval.threshold}{significance threshold for periodogram powerlaw goodness of fit}
+
+\item{smooth}{instead of fitting a line to the frequency-spectrum power law, fit a spline with function smooth.spline and consider the minimum of its derivative as the slope. In this case, the frequency is no longer required to scale significantly with the spectral density in log-log scale.}
+
+\item{df}{smooth.spline parameter (degrees of freedom)}
 
 \item{permut}{permute time points before computing noise types}
 
@@ -22,10 +31,13 @@ identifyNoisetypes(x, epsilon = 0.2, pval.threshold = 0.05,
 S3 noisetypes object
 }
 \description{
-Identify noise types in a matrix row-wise.
+Identify noise types in a matrix row-wise. The noise type is the slope of the frequency versus the spectral density in log-log scale.
 }
 \details{
-Row sums need to be above the given abundance threshold and the spectral density needs to scale significantly with the frequency (p-value below 0.05) in log-log scale. The periodogram is computed with \code{\link{spectrum}} from the \pkg{stats} package. The function returns a noisetypes object, which groups matrix row indices by noise type.
+Row sums need to be above the given abundance threshold and the spectral density needs to scale significantly with the frequency (p-value below 0.05) in log-log scale.
+The periodogram is computed with \code{\link{spectrum}} from the \pkg{stats} package.
+The function returns a noisetypes object, which groups matrix row indices by noise type.
+Note that not all rows may be assigned a noise type.
 }
 \examples{
 N <- 10

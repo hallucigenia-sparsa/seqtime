@@ -235,11 +235,11 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
             subfolder=paste(expId,"ts_N_60_skip_1_tmax_600",sep="_")
           }
         }else{
-          if((expId >= 25 && expId <= 30) || (expId >= 44 && expId <= 50)){
+          if((expId >= 25 && expId <= 30) || (expId >= 44 && expId <= 50 && fit.type!="first")){
             subfolder=paste(expId,"ts_full_N60_skip1_tmax",sep="_")
             # special settings for second LIMITs round on slices
             if(limits.round==2){
-              if(expId==25 || expId==28 || expId>=44){
+              if(expId==25 || expId==28){
                 subfolder=paste(expId,"ts_N60_skip1_tmax100",sep="_")
               }else if(expId==26){
                 subfolder=paste(expId,"ts_full_N60_skip1_tmax73",sep="_")

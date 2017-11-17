@@ -4,13 +4,16 @@
 \alias{rad}
 \title{Rank abundance distribution curve}
 \usage{
-rad(x, remove.zeros = TRUE, fit.rad = FALSE, fit.distrib = FALSE,
-  fit.N = nrow(x), sample.index = NA, plot = TRUE, header = "")
+rad(x, remove.zeros = TRUE, fit.neutral = FALSE, fit.rad = FALSE,
+  fit.distrib = FALSE, fit.N = nrow(x), sample.index = NA, plot = TRUE,
+  header = "")
 }
 \arguments{
 \item{x}{community matrix with species as rows, samples as columns and non-negative integers as entries}
 
 \item{remove.zeros}{if true, zeros in the species abundance distribution curve are discarded}
+
+\item{fit.neutral}{assess the fit of the neutral model with function theta.prob from the untb R package}
 
 \item{fit.rad}{(optional) fit different RAD models using vegan's radfit function. If selected, fit.distrib is ignored and if plot is true, vegan's plot function for RAD curves is used.}
 
@@ -25,13 +28,14 @@ rad(x, remove.zeros = TRUE, fit.rad = FALSE, fit.distrib = FALSE,
 \item{header}{add the header to the title of the plot}
 }
 \value{
-the RAD is returned, if fit.rad or fit.distrib is true, the results of distribution fitting are also returned (distrib, score [log-likelihood for fit.distrib and AIC for fit.rad], params and fitted.rad)
+the RAD parameters are returned, if fit.neutral is true, the probability of the biodiversity parameter theta is returned, if fit.rad or fit.distrib is true, the results of distribution fitting are also returned (distrib, score [log-likelihood for fit.distrib and AIC for fit.rad], params and fitted.rad)
 }
 \description{
 Given a community abundance matrix, compute the species abundance distribution as rank abundance curve.
 }
 \details{
 Please provide species abundances as counts (scale and round if necessary). Note that for fit.rad, Null is the broken stick distribution.
+A vector of species abundances can be provided as well.
 }
 \examples{
 ts.ricker=ricker(10,generateA(10),K=rep(0.01,10))

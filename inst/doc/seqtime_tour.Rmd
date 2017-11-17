@@ -65,7 +65,7 @@ ricker.taylor=seqtime::taylor(out.ricker, pseudo=0.0001, col="green", type="tayl
 Now we look at the noise types of the species simulated with the noise-free Ricker model. The only noise type identified is black noise.
 
 ```{r, fig.height = 6, fig.width = 6}
-ricker.noise=identifyNoisetypes(out.ricker, abund.threshold = 0)
+ricker.noise=identifyNoisetypes(out.ricker, smooth=TRUE)
 plotNoisetypes(ricker.noise)
 ```
 
@@ -85,7 +85,7 @@ soi.taylor=seqtime::taylor(out.soi, pseudo=0.0001, col="blue", type="taylor")
 When we compute noise types in the community time series generated with SOI, we find that pink noise dominates.
 
 ```{r, fig.height = 6, fig.width = 6}
-soi.noise=identifyNoisetypes(out.soi,abund.threshold=0)
+soi.noise=identifyNoisetypes(out.soi,smooth=TRUE)
 plotNoisetypes(soi.noise)
 ```
 
@@ -105,7 +105,7 @@ hubbell.taylor=seqtime::taylor(out.hubbell, pseudo=0.0001, col="blue", type="tay
 The Hubbell time series is dominated by brown noise:
 
 ```{r, fig.height = 6, fig.width = 6}
-hubbell.noise=identifyNoisetypes(out.hubbell,abund.threshold=0)
+hubbell.noise=identifyNoisetypes(out.hubbell,smooth=TRUE)
 plotNoisetypes(hubbell.noise)
 ```
 
@@ -125,7 +125,7 @@ dm.uneven.taylor=seqtime::taylor(dm.uneven, pseudo=0.0001, col="orange", type="t
 As expected, samples generated with the Dirichlet-Multinomial distribution do not display pink, brown or black noise. 
 
 ```{r, fig.height = 6, fig.width = 6}
-dm.uneven.noise=identifyNoisetypes(dm.uneven,abund.threshold=0)
+dm.uneven.noise=identifyNoisetypes(dm.uneven,smooth=TRUE)
 plotNoisetypes(dm.uneven.noise)
 ```
 

@@ -57,7 +57,7 @@
       <h1>Tour through seqtime - Properties of time series generated with different ecological models</h1>
                         <h4 class="author">Karoline Faust</h4>
             
-            <h4 class="date">2017-06-25</h4>
+            <h4 class="date">2017-11-17</h4>
           </div>
 
     
@@ -77,8 +77,8 @@ A=<span class="kw"><a href="../reference/generateA.html">generateA</a></span>(N,
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">A=<span class="kw"><a href="../reference/modifyA.html">modifyA</a></span>(A,<span class="dt">perc=</span><span class="dv">70</span>,<span class="dt">strength=</span><span class="st">"uniform"</span>,<span class="dt">mode=</span><span class="st">"negpercent"</span>)</code></pre></div>
 <pre><code>## [1] "Initial edge number 295"
 ## [1] "Initial connectance 0.1"
-## [1] "Number of negative edges already present: 165"
-## [1] "Converting 42 edges into negative edges"
+## [1] "Number of negative edges already present: 183"
+## [1] "Converting 24 edges into negative edges"
 ## [1] "Final connectance: 0.1"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Generate a matrix using the algorithm by Klemm and Eguiluz to simulate a species network with a more realistic modular and scale-free structure. This takes a couple of minutes to complete.</span>
 <span class="co">#A=generateA(N, type="klemm", c=0.1)</span></code></pre></div>
@@ -95,10 +95,10 @@ out.ricker=<span class="kw"><a href="../reference/ricker.html">ricker</a></span>
 <p>We can then analyse the community time series. First, we plot for each species the mean against the variance. If a straight line fits well in log scale, the Taylor law applies.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the pseudo-count allows to take the logarithm of species hat went extinct</span>
 ricker.taylor=seqtime::<span class="kw"><a href="../reference/taylor.html">taylor</a></span>(out.ricker, <span class="dt">pseudo=</span><span class="fl">0.0001</span>, <span class="dt">col=</span><span class="st">"green"</span>, <span class="dt">type=</span><span class="st">"taylor"</span>)</code></pre></div>
-<pre><code>## [1] "Adjusted R2: 0.13148889628961"</code></pre>
+<pre><code>## [1] "Adjusted R2: 0.0984939481987556"</code></pre>
 <p><img src="figure_seqtime_tour/unnamed-chunk-5-1.png" width="576"></p>
 <p>Now we look at the noise types of the species simulated with the noise-free Ricker model. The only noise type identified is black noise.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ricker.noise=<span class="kw"><a href="../reference/identifyNoisetypes.html">identifyNoisetypes</a></span>(out.ricker, <span class="dt">abund.threshold =</span> <span class="dv">0</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ricker.noise=<span class="kw"><a href="../reference/identifyNoisetypes.html">identifyNoisetypes</a></span>(out.ricker, <span class="dt">smooth=</span><span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## [1] "Number of taxa below the abundance threshold:  1"
 ## [1] "Number of taxa with non-significant power spectrum laws:  0"
 ## [1] "Number of taxa with non-classified power spectrum:  0"
@@ -114,16 +114,16 @@ ricker.taylor=seqtime::<span class="kw"><a href="../reference/taylor.html">taylo
 <p><img src="figure_seqtime_tour/unnamed-chunk-7-1.png" width="576"></p>
 <p>The Taylor law fits far better to time series generated with the SOI than with the Ricker model according to the adjusted R2.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">soi.taylor=seqtime::<span class="kw"><a href="../reference/taylor.html">taylor</a></span>(out.soi, <span class="dt">pseudo=</span><span class="fl">0.0001</span>, <span class="dt">col=</span><span class="st">"blue"</span>, <span class="dt">type=</span><span class="st">"taylor"</span>)</code></pre></div>
-<pre><code>## [1] "Adjusted R2: 0.965008309313391"</code></pre>
+<pre><code>## [1] "Adjusted R2: 0.973592742788075"</code></pre>
 <p><img src="figure_seqtime_tour/unnamed-chunk-8-1.png" width="576"></p>
 <p>When we compute noise types in the community time series generated with SOI, we find that pink noise dominates.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">soi.noise=<span class="kw"><a href="../reference/identifyNoisetypes.html">identifyNoisetypes</a></span>(out.soi,<span class="dt">abund.threshold=</span><span class="dv">0</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">soi.noise=<span class="kw"><a href="../reference/identifyNoisetypes.html">identifyNoisetypes</a></span>(out.soi,<span class="dt">smooth=</span><span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## [1] "Number of taxa below the abundance threshold:  1"
-## [1] "Number of taxa with non-significant power spectrum laws:  14"
-## [1] "Number of taxa with non-classified power spectrum:  20"
+## [1] "Number of taxa with non-significant power spectrum laws:  0"
+## [1] "Number of taxa with non-classified power spectrum:  0"
 ## [1] "Number of taxa with white noise:  0"
-## [1] "Number of taxa with pink noise:  14"
-## [1] "Number of taxa with brown noise:  1"
+## [1] "Number of taxa with pink noise:  15"
+## [1] "Number of taxa with brown noise:  2"
 ## [1] "Number of taxa with black noise:  0"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotNoisetypes.html">plotNoisetypes</a></span>(soi.noise)</code></pre></div>
 <p><img src="figure_seqtime_tour/unnamed-chunk-9-1.png" width="576"></p>
@@ -133,16 +133,16 @@ ricker.taylor=seqtime::<span class="kw"><a href="../reference/taylor.html">taylo
 <p><img src="figure_seqtime_tour/unnamed-chunk-10-1.png" width="576"></p>
 <p>The neutral dynamics fits the Taylor law well:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hubbell.taylor=seqtime::<span class="kw"><a href="../reference/taylor.html">taylor</a></span>(out.hubbell, <span class="dt">pseudo=</span><span class="fl">0.0001</span>, <span class="dt">col=</span><span class="st">"blue"</span>, <span class="dt">type=</span><span class="st">"taylor"</span>)</code></pre></div>
-<pre><code>## [1] "Adjusted R2: 0.915455753530328"</code></pre>
+<pre><code>## [1] "Adjusted R2: 0.866977706639328"</code></pre>
 <p><img src="figure_seqtime_tour/unnamed-chunk-11-1.png" width="576"></p>
 <p>The Hubbell time series is dominated by brown noise:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hubbell.noise=<span class="kw"><a href="../reference/identifyNoisetypes.html">identifyNoisetypes</a></span>(out.hubbell,<span class="dt">abund.threshold=</span><span class="dv">0</span>)</code></pre></div>
-<pre><code>## [1] "Number of taxa below the abundance threshold:  1"
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hubbell.noise=<span class="kw"><a href="../reference/identifyNoisetypes.html">identifyNoisetypes</a></span>(out.hubbell,<span class="dt">smooth=</span><span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## [1] "Number of taxa below the abundance threshold:  0"
 ## [1] "Number of taxa with non-significant power spectrum laws:  0"
-## [1] "Number of taxa with non-classified power spectrum:  25"
+## [1] "Number of taxa with non-classified power spectrum:  0"
 ## [1] "Number of taxa with white noise:  0"
 ## [1] "Number of taxa with pink noise:  0"
-## [1] "Number of taxa with brown noise:  24"
+## [1] "Number of taxa with brown noise:  44"
 ## [1] "Number of taxa with black noise:  0"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotNoisetypes.html">plotNoisetypes</a></span>(hubbell.noise)</code></pre></div>
 <p><img src="figure_seqtime_tour/unnamed-chunk-12-1.png" width="576"></p>
@@ -152,14 +152,14 @@ ricker.taylor=seqtime::<span class="kw"><a href="../reference/taylor.html">taylo
 <p><img src="figure_seqtime_tour/unnamed-chunk-13-1.png" width="576"></p>
 <p>We plot its Taylor law.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dm.uneven.taylor=seqtime::<span class="kw"><a href="../reference/taylor.html">taylor</a></span>(dm.uneven, <span class="dt">pseudo=</span><span class="fl">0.0001</span>, <span class="dt">col=</span><span class="st">"orange"</span>, <span class="dt">type=</span><span class="st">"taylor"</span>, <span class="dt">header=</span><span class="st">"Dirichlet-Multinomial"</span>)</code></pre></div>
-<pre><code>## [1] "Adjusted R2: 0.969412750363228"</code></pre>
+<pre><code>## [1] "Adjusted R2: 0.983587265267657"</code></pre>
 <p><img src="figure_seqtime_tour/unnamed-chunk-14-1.png" width="576"></p>
 <p>As expected, samples generated with the Dirichlet-Multinomial distribution do not display pink, brown or black noise.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dm.uneven.noise=<span class="kw"><a href="../reference/identifyNoisetypes.html">identifyNoisetypes</a></span>(dm.uneven,<span class="dt">abund.threshold=</span><span class="dv">0</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dm.uneven.noise=<span class="kw"><a href="../reference/identifyNoisetypes.html">identifyNoisetypes</a></span>(dm.uneven,<span class="dt">smooth=</span><span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## [1] "Number of taxa below the abundance threshold:  0"
-## [1] "Number of taxa with non-significant power spectrum laws:  48"
-## [1] "Number of taxa with non-classified power spectrum:  2"
-## [1] "Number of taxa with white noise:  0"
+## [1] "Number of taxa with non-significant power spectrum laws:  0"
+## [1] "Number of taxa with non-classified power spectrum:  0"
+## [1] "Number of taxa with white noise:  28"
 ## [1] "Number of taxa with pink noise:  0"
 ## [1] "Number of taxa with brown noise:  0"
 ## [1] "Number of taxa with black noise:  0"</code></pre>
@@ -168,7 +168,7 @@ ricker.taylor=seqtime::<span class="kw"><a href="../reference/taylor.html">taylo
 <p>The evenness of the species proportion vector given to the Dirichlet-Multinomial distribution influences the slope of the Taylor law:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dm.even=<span class="kw"><a href="../reference/simCountMat.html">simCountMat</a></span>(N,<span class="dt">samples=</span><span class="dv">100</span>,<span class="dt">mode=</span><span class="dv">1</span>)
 dm.even.taylor=seqtime::<span class="kw"><a href="../reference/taylor.html">taylor</a></span>(dm.even, <span class="dt">pseudo=</span><span class="fl">0.0001</span>, <span class="dt">col=</span><span class="st">"orange"</span>, <span class="dt">type=</span><span class="st">"taylor"</span>, <span class="dt">header=</span><span class="st">"Even Dirichlet-Multinomial"</span>)</code></pre></div>
-<pre><code>## [1] "Adjusted R2: 0.215587576380351"</code></pre>
+<pre><code>## [1] "Adjusted R2: 0.235960792071207"</code></pre>
 <p><img src="figure_seqtime_tour/unnamed-chunk-16-1.png" width="576"></p>
 <div id="noise-simulation" class="section level2">
 <h2 class="hasAnchor">

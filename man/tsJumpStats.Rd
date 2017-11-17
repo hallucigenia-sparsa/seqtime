@@ -4,24 +4,30 @@
 \alias{tsJumpStats}
 \title{Compute statistics on jumps through community space}
 \usage{
-tsJumpStats(x, ordinate = TRUE, distance = "bray",
-  ordinate.distance = "bray", dimensions = c(1, 2), plot = FALSE,
-  header = "", perturb = NULL)
+tsJumpStats(x, time.given = FALSE, time.unit = "days", ordinate = TRUE,
+  distance = "bray", dimensions = c(1, 2), plot = FALSE,
+  plot.type = "jumps", header = "", subsample = FALSE, perturb = NULL)
 }
 \arguments{
 \item{x}{a community time series matrix, with rows as taxa and columns as time points}
 
+\item{time.given}{sample names provide time steps, only needed for plotting and plot.type jumps}
+
+\item{time.unit}{unit of time, only needed for plotting and plot.type jumps}
+
 \item{ordinate}{if TRUE, compute jumps in ordination plot}
 
-\item{distance}{if ordinate is FALSE, the distance used to compute jumps}
-
-\item{ordinate.distance}{the distance used for ordination}
+\item{distance}{the distance (or dissimilarity) used to compute jumps directly or to compute the ordination}
 
 \item{dimensions}{if ordinate is TRUE, the principal components considered}
 
 \item{plot}{if TRUE, a plot of the jumps is made}
 
-\item{header}{text attached to plot title}
+\item{plot.type}{jumps: plot jumps as bars in the order of occurrence, hist: a histogram of jump lengths for perturbed and non-perturbed sample pairs (only if perturbation object is provided)}
+
+\item{header}{text to be used as plot title instead of default text}
+
+\item{subsample}{for plot.type hist: subsample larger jump vector randomly down to smaller one, so that there are as many perturbed as non-perturbed jumps}
 
 \item{perturb}{a perturbation object, if provided, the plot is colored accordingly}
 }
@@ -29,6 +35,9 @@ tsJumpStats(x, ordinate = TRUE, distance = "bray",
 Consecutive samples representing time points in an ordination plot can be interpreted
 as vectors, which have a length and an angle. If ordinate is true, these lengths and angles
 are computed. If ordinate is false, dissimilarities between consecutive time points are computed.
+If a perturbation object is provided and plot.type hist is true, the histogram of jump lengths is
+plotted and the significance of the difference between perturbed and non-perturbed jump lengths is
+assessed with a Wilcoxon test.
 }
 \examples{
 \dontrun{

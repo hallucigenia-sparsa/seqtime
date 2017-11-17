@@ -28,7 +28,7 @@ tsplot(out.ricker,header="Ricker")
 ricker.taylor=seqtime::taylor(out.ricker, pseudo=0.0001, col="green", type="taylor")
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
-ricker.noise=identifyNoisetypes(out.ricker, abund.threshold = 0)
+ricker.noise=identifyNoisetypes(out.ricker, smooth=TRUE)
 plotNoisetypes(ricker.noise)
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
@@ -39,7 +39,7 @@ tsplot(out.soi,header="SOI")
 soi.taylor=seqtime::taylor(out.soi, pseudo=0.0001, col="blue", type="taylor")
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
-soi.noise=identifyNoisetypes(out.soi,abund.threshold=0)
+soi.noise=identifyNoisetypes(out.soi,smooth=TRUE)
 plotNoisetypes(soi.noise)
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
@@ -50,7 +50,7 @@ tsplot(out.hubbell,header="Hubbell")
 hubbell.taylor=seqtime::taylor(out.hubbell, pseudo=0.0001, col="blue", type="taylor")
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
-hubbell.noise=identifyNoisetypes(out.hubbell,abund.threshold=0)
+hubbell.noise=identifyNoisetypes(out.hubbell,smooth=TRUE)
 plotNoisetypes(hubbell.noise)
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
@@ -61,7 +61,7 @@ tsplot(dm.uneven,header="Dirichlet-Multinomial")
 dm.uneven.taylor=seqtime::taylor(dm.uneven, pseudo=0.0001, col="orange", type="taylor", header="Dirichlet-Multinomial")
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
-dm.uneven.noise=identifyNoisetypes(dm.uneven,abund.threshold=0)
+dm.uneven.noise=identifyNoisetypes(dm.uneven,smooth=TRUE)
 plotNoisetypes(dm.uneven.noise)
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------

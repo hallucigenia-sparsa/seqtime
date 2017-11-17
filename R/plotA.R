@@ -98,6 +98,8 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
     p1<-ggplot2::ggplot(reshape2::melt(A), ggplot2::aes(Var1,Var2, fill=value)) + ggplot2::geom_raster()+ ggplot2::scale_fill_gradient2(low = "red", mid = "white", high = "green",limits=c(-scale.plot, scale.plot)) + ggplot2::ggtitle(header) + ggplot2::labs(x = "",y="")
     plot(p1)
   }else if(method=="network"){
+    # set missing values to zero
+    A[is.na(A)]=0
     taxonnames=c()
     if((nrow(A)+1)==ncol(A)){
       print("The interaction matrix contains a taxon column. Orphan removal not supported.")

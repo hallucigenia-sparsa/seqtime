@@ -26,6 +26,7 @@ Suggests:
     ggplot2,
     knitr,
     infotheo,
+    WrightFisher,
     sde,
     reshape2,
     pracma,

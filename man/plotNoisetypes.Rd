@@ -4,10 +4,19 @@
 \alias{plotNoisetypes}
 \title{Do a barplot of the noise types}
 \usage{
-plotNoisetypes(noisetypes)
+plotNoisetypes(noisetypes, percentage = TRUE, total = NA, stacked = FALSE,
+  sample.id = "")
 }
 \arguments{
 \item{noisetypes}{the noisetypes object}
+
+\item{percentage}{plot the percentage instead of the number}
+
+\item{total}{total number of items (in case not all items have a noise type assigned, needed to compute percentages with reference to all items)}
+
+\item{stacked}{plot a stacked barplot}
+
+\item{sample.id}{the sample identifier (optional)}
 }
 \description{
 Plot the count for each noise type in a barplot.

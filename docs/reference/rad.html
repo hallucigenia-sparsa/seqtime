@@ -83,8 +83,9 @@
     <p>Given a community abundance matrix, compute the species abundance distribution as rank abundance curve.</p>
     
 
-    <pre class="usage"><span class='fu'>rad</span>(<span class='no'>x</span>, <span class='kw'>remove.zeros</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>fit.rad</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>fit.distrib</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>fit.N</span> <span class='kw'>=</span> <span class='fu'>nrow</span>(<span class='no'>x</span>), <span class='kw'>sample.index</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>header</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
+    <pre class="usage"><span class='fu'>rad</span>(<span class='no'>x</span>, <span class='kw'>remove.zeros</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>fit.neutral</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>fit.rad</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>fit.distrib</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>fit.N</span> <span class='kw'>=</span> <span class='fu'>nrow</span>(<span class='no'>x</span>), <span class='kw'>sample.index</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>header</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -96,6 +97,10 @@
     <tr>
       <th>remove.zeros</th>
       <td><p>if true, zeros in the species abundance distribution curve are discarded</p></td>
+    </tr>
+    <tr>
+      <th>fit.neutral</th>
+      <td><p>assess the fit of the neutral model with function theta.prob from the untb R package</p></td>
     </tr>
     <tr>
       <th>fit.rad</th>
@@ -125,11 +130,12 @@
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the RAD is returned, if fit.rad or fit.distrib is true, the results of distribution fitting are also returned (distrib, score [log-likelihood for fit.distrib and AIC for fit.rad], params and fitted.rad)</p>
+    <p>the RAD parameters are returned, if fit.neutral is true, the probability of the biodiversity parameter theta is returned, if fit.rad or fit.distrib is true, the results of distribution fitting are also returned (distrib, score [log-likelihood for fit.distrib and AIC for fit.rad], params and fitted.rad)</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Please provide species abundances as counts (scale and round if necessary). Note that for fit.rad, Null is the broken stick distribution.</p>
+    <p>Please provide species abundances as counts (scale and round if necessary). Note that for fit.rad, Null is the broken stick distribution.
+A vector of species abundances can be provided as well.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>

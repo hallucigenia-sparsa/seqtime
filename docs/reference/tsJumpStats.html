@@ -82,12 +82,15 @@
     
     <p>Consecutive samples representing time points in an ordination plot can be interpreted
 as vectors, which have a length and an angle. If ordinate is true, these lengths and angles
-are computed. If ordinate is false, dissimilarities between consecutive time points are computed.</p>
+are computed. If ordinate is false, dissimilarities between consecutive time points are computed.
+If a perturbation object is provided and plot.type hist is true, the histogram of jump lengths is
+plotted and the significance of the difference between perturbed and non-perturbed jump lengths is
+assessed with a Wilcoxon test.</p>
     
 
-    <pre class="usage"><span class='fu'>tsJumpStats</span>(<span class='no'>x</span>, <span class='kw'>ordinate</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>distance</span> <span class='kw'>=</span> <span class='st'>"bray"</span>,
-  <span class='kw'>ordinate.distance</span> <span class='kw'>=</span> <span class='st'>"bray"</span>, <span class='kw'>dimensions</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>header</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>perturb</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>tsJumpStats</span>(<span class='no'>x</span>, <span class='kw'>time.given</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>time.unit</span> <span class='kw'>=</span> <span class='st'>"days"</span>, <span class='kw'>ordinate</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>distance</span> <span class='kw'>=</span> <span class='st'>"bray"</span>, <span class='kw'>dimensions</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>plot.type</span> <span class='kw'>=</span> <span class='st'>"jumps"</span>, <span class='kw'>header</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>subsample</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>perturb</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -97,16 +100,20 @@ are computed. If ordinate is false, dissimilarities between consecutive time poi
       <td><p>a community time series matrix, with rows as taxa and columns as time points</p></td>
     </tr>
     <tr>
+      <th>time.given</th>
+      <td><p>sample names provide time steps, only needed for plotting and plot.type jumps</p></td>
+    </tr>
+    <tr>
+      <th>time.unit</th>
+      <td><p>unit of time, only needed for plotting and plot.type jumps</p></td>
+    </tr>
+    <tr>
       <th>ordinate</th>
       <td><p>if TRUE, compute jumps in ordination plot</p></td>
     </tr>
     <tr>
       <th>distance</th>
-      <td><p>if ordinate is FALSE, the distance used to compute jumps</p></td>
-    </tr>
-    <tr>
-      <th>ordinate.distance</th>
-      <td><p>the distance used for ordination</p></td>
+      <td><p>the distance (or dissimilarity) used to compute jumps directly or to compute the ordination</p></td>
     </tr>
     <tr>
       <th>dimensions</th>
@@ -117,8 +124,16 @@ are computed. If ordinate is false, dissimilarities between consecutive time poi
       <td><p>if TRUE, a plot of the jumps is made</p></td>
     </tr>
     <tr>
+      <th>plot.type</th>
+      <td><p>jumps: plot jumps as bars in the order of occurrence, hist: a histogram of jump lengths for perturbed and non-perturbed sample pairs (only if perturbation object is provided)</p></td>
+    </tr>
+    <tr>
       <th>header</th>
-      <td><p>text attached to plot title</p></td>
+      <td><p>text to be used as plot title instead of default text</p></td>
+    </tr>
+    <tr>
+      <th>subsample</th>
+      <td><p>for plot.type hist: subsample larger jump vector randomly down to smaller one, so that there are as many perturbed as non-perturbed jumps</p></td>
     </tr>
     <tr>
       <th>perturb</th>

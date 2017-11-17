@@ -14,6 +14,7 @@
 # when timeseries are provided, the method returns the correlations or differences between initial and final taxon proportions for each experiment
 #
 # Examples:
+# analyseTSComparison(table,algorithm="ricker",property1 = "taylorslope",property2="sigma",method="spearman")
 # analyseTSComparison(table,algorithm="dm",property1 = "taylorslope",property2="initabundmode",method="wilcoxon")
 # differences=analyseTSComparison(table, timeseries, method="diff")
 

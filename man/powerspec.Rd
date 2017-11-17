@@ -4,12 +4,19 @@
 \alias{powerspec}
 \title{Report slope of periodogram in log scale}
 \usage{
-powerspec(v, plot = FALSE, header = "", col = "blue")
+powerspec(v, plot = FALSE, detrend = TRUE, smooth = FALSE, df = max(2,
+  log10(ncol(v))), header = "", col = "blue")
 }
 \arguments{
 \item{v}{time series vector}
 
 \item{plot}{plot the periodogram with the power law in log-scale}
+
+\item{detrend}{remove a linear trend prior to the computation of the periodogram}
+
+\item{smooth}{fit a cubic spline with smooth.spline and report the slope as the minimum of the derivative; in this case, the goodness of fit of a line to the frequency versus spectral density power law is not reported}
+
+\item{df}{smooth.spline parameter (degrees of freedom)}
 
 \item{header}{header string}
 

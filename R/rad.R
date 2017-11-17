@@ -1,16 +1,17 @@
 #' @title Rank abundance distribution curve
 #' @description Given a community abundance matrix, compute the species abundance distribution as rank abundance curve.
 #' @details Please provide species abundances as counts (scale and round if necessary). Note that for fit.rad, Null is the broken stick distribution.
-#'
+#' A vector of species abundances can be provided as well.
 #' @param x community matrix with species as rows, samples as columns and non-negative integers as entries
 #' @param remove.zeros if true, zeros in the species abundance distribution curve are discarded
+#' @param fit.neutral assess the fit of the neutral model with function theta.prob from the untb R package
 #' @param fit.rad (optional) fit different RAD models using vegan's radfit function. If selected, fit.distrib is ignored and if plot is true, vegan's plot function for RAD curves is used.
 #' @param fit.distrib (optional) select the best-fitting distribution for the RAD by comparing normal, lognormal, gamma, negative binomial and Poisson distribution using MASS function fitdistr
 #' @param fit.N (optional) number of samples drawn from the distribution to be fitted (defaults to the number of species in x after filtering of zeros)
 #' @param sample.index (optional) the sample index for which species abundance distribution is computed, if not provided, the mean across samples is taken
 #' @param plot plot the RAD curve
 #' @param header add the header to the title of the plot
-#' @return the RAD is returned, if fit.rad or fit.distrib is true, the results of distribution fitting are also returned (distrib, score [log-likelihood for fit.distrib and AIC for fit.rad], params and fitted.rad)
+#' @return the RAD parameters are returned, if fit.neutral is true, the probability of the biodiversity parameter theta is returned, if fit.rad or fit.distrib is true, the results of distribution fitting are also returned (distrib, score [log-likelihood for fit.distrib and AIC for fit.rad], params and fitted.rad)
 #' @examples
 #' ts.ricker=ricker(10,generateA(10),K=rep(0.01,10))
 #' ts.ricker=round(ts.ricker*1000) # scale to integers
@@ -19,22 +20,31 @@
 #' rad.out.hubbell=rad.fit.hubbell=rad(ts.hubbell, fit.distrib = TRUE, header="neutral model")
 #' @export
 
-rad<-function(x,remove.zeros=TRUE, fit.rad=FALSE, fit.distrib=FALSE,fit.N=nrow(x), sample.index=NA, plot=TRUE, header=""){
+rad<-function(x,remove.zeros=TRUE, fit.neutral=FALSE, fit.rad=FALSE, fit.distrib=FALSE,fit.N=nrow(x), sample.index=NA, plot=TRUE, header=""){
   # identify inflection points: library(bcp)
   # chps=bcp(sad.out$sad)
   # which(chps$posterior.prob==max(chps$posterior.prob,na.rm=TRUE))
+  if(!is.matrix(x)){
+    x=matrix(x,nrow=length(x),ncol=1)
+  }
   distrib=""
   score=NA
+  thetaprob=NA
   params=c()
   fitted.sad=c()
   rad.out=NULL
+  if(fit.neutral==TRUE && (fit.rad==TRUE || fit.distrib==TRUE)){
+    stop("Fitting neutral model excludes fit.rad and fit.distrib.")
+  }
   if(!is.whole.matrix(x)){
     stop("The matrix should consist of integers! Please scale.")
   }
   if(!is.na(sample.index)){
     vec=x[,sample.index]
-  }else{
+  }else if(ncol(x)>1){
     vec=round(apply(x,1,mean))
+  }else{
+    vec=x[,1]
   }
   if(fit.rad==TRUE && fit.distrib==TRUE){
     warning("Can either do fit.rad or fit.distrib. Continuing with fit.rad.")
@@ -51,6 +61,7 @@ rad<-function(x,remove.zeros=TRUE, fit.rad=FALSE, fit.distrib=FALSE,fit.N=nrow(x
       }
     }
   }
+  vec=sort(vec,decreasing = TRUE)
   if(fit.distrib==TRUE){
     fit.res=identifyDistrib(vec, N=fit.N)
     distrib=fit.res$distrib
@@ -69,6 +80,8 @@ rad<-function(x,remove.zeros=TRUE, fit.rad=FALSE, fit.distrib=FALSE,fit.N=nrow(x
     score=akaikes[winner.index]
     params=rad.out$models[[distrib]]$coefficients
     fitted.sad=rad.out$models[[distrib]]$fitted.values
+  }else if(fit.neutral==TRUE){
+    thetaprob=untb::theta.prob(theta=untb::optimal.theta(vec),x=vec,give.log=FALSE)
   }
   if(fit.rad==TRUE || fit.distrib==TRUE){
     print(paste("Selected distribution: ",distrib))
@@ -76,7 +89,7 @@ rad<-function(x,remove.zeros=TRUE, fit.rad=FALSE, fit.distrib=FALSE,fit.N=nrow(x
     print("Fitting parameters:")
     print(params)
   }
-  vec=sort(vec,decreasing = TRUE)
+  # TODO: generate neutral data with untb and plot together with RAD
   if(plot==TRUE){
     if(fit.rad==TRUE){
       plot(rad.out)
@@ -107,6 +120,8 @@ rad<-function(x,remove.zeros=TRUE, fit.rad=FALSE, fit.distrib=FALSE,fit.N=nrow(x
     res[["score"]]=score
     res[["params"]]=params
     res[["fitted.rad"]]=fitted.sad
+  }else if(fit.neutral==TRUE){
+    res[["thetaprob"]]=thetaprob
   }
   return(res)
 }

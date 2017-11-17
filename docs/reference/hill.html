@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Do a barplot of the noise types — plotNoisetypes • seqtime</title>
+<title>Hill numbers — hill • seqtime</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -76,48 +76,64 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Do a barplot of the noise types</h1>
+    <h1>Hill numbers</h1>
     </div>
 
     
-    <p>Plot the count for each noise type in a barplot.</p>
+    <p>The Hill numbers quantify biodiversity. The importance of the abundance distribution increases with increasing Hill order.
+For q=0, the Hill number is the richness, for q=1, it is the (exponential) Shannon entropy and for q=2, it is the inverse Simpson index.
+Note that the Hill order can also be a fraction, e.g. 0.5.</p>
     
 
-    <pre class="usage"><span class='fu'>plotNoisetypes</span>(<span class='no'>noisetypes</span>, <span class='kw'>percentage</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>total</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>stacked</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>sample.id</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
+    <pre class="usage"><span class='fu'>hill</span>(<span class='kw'>p</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fl'>1</span>/<span class='fl'>10</span>, <span class='fl'>10</span>), <span class='kw'>q</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>noisetypes</th>
-      <td><p>the noisetypes object</p></td>
+      <th>p</th>
+      <td><p>relative abundance vector, should sum to one</p></td>
     </tr>
     <tr>
-      <th>percentage</th>
-      <td><p>plot the percentage instead of the number</p></td>
-    </tr>
-    <tr>
-      <th>total</th>
-      <td><p>total number of items (in case not all items have a noise type assigned, needed to compute percentages with reference to all items)</p></td>
-    </tr>
-    <tr>
-      <th>stacked</th>
-      <td><p>plot a stacked barplot</p></td>
-    </tr>
-    <tr>
-      <th>sample.id</th>
-      <td><p>the sample identifier (optional)</p></td>
+      <th>q</th>
+      <td><p>the Hill order</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>the Hill number</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The Hill number is defined as D=(SUM p_i^q)^1/(1-q), for i from 1 to S, where S is the species number,
+p_i is the proportion of species i and q is the Hill order.
+Since the Hill number involves a division by zero for q=1, please choose a sufficiently close q, such as 0.99999, when computing the
+Hill number for 1.</p>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Hill (1973) "Diversity and evenness: a unifying notation and its consequences", Ecology 54: 427-432.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># even species distribution</span>
+<span class='fu'>hill</span>(<span class='fu'><a href='generateAbundances.html'>generateAbundances</a></span>(<span class='kw'>N</span><span class='kw'>=</span><span class='fl'>1000</span>,<span class='kw'>mode</span><span class='kw'>=</span><span class='fl'>6</span>,<span class='kw'>k</span><span class='kw'>=</span><span class='fl'>0.001</span>,<span class='kw'>probabs</span><span class='kw'>=</span><span class='fl'>TRUE</span>),<span class='kw'>q</span><span class='kw'>=</span><span class='fl'>2</span>)</div><div class='output co'>#&gt; [1] 924.1654</div><div class='input'><span class='co'># uneven species distribution</span>
+<span class='fu'>hill</span>(<span class='fu'><a href='generateAbundances.html'>generateAbundances</a></span>(<span class='kw'>N</span><span class='kw'>=</span><span class='fl'>1000</span>,<span class='kw'>mode</span><span class='kw'>=</span><span class='fl'>6</span>,<span class='kw'>k</span><span class='kw'>=</span><span class='fl'>0.2</span>,<span class='kw'>probabs</span><span class='kw'>=</span><span class='fl'>TRUE</span>),<span class='kw'>q</span><span class='kw'>=</span><span class='fl'>2</span>)</div><div class='output co'>#&gt; [1] 9</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+
+      <li><a href="#references">References</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
