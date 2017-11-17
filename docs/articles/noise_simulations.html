@@ -85,22 +85,22 @@ p &lt;-<span class="st"> </span>tuneR::<span class="kw">noise</span>(<span class
 <p>Estimating Hurst exponent for the noises</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(pracma)
 Hwhite &lt;-<span class="st"> </span><span class="kw">hurstexp</span>(w@left, <span class="dt">d =</span> <span class="dv">128</span>)</code></pre></div>
-<pre><code>## Simple R/S Hurst estimation:         0.5055964 
-## Corrected R over S Hurst exponent:   0.5140167 
-## Empirical Hurst exponent:            0.4995266 
-## Corrected empirical Hurst exponent:  0.4842234 
+<pre><code>## Simple R/S Hurst estimation:         0.5570175 
+## Corrected R over S Hurst exponent:   0.5666206 
+## Empirical Hurst exponent:            0.5324427 
+## Corrected empirical Hurst exponent:  0.5169636 
 ## Theoretical Hurst exponent:          0.5155387</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Hbrown &lt;-<span class="st"> </span><span class="kw">hurstexp</span>(b, <span class="dt">d =</span> <span class="dv">128</span>)</code></pre></div>
-<pre><code>## Simple R/S Hurst estimation:         0.910229 
-## Corrected R over S Hurst exponent:   1.004324 
-## Empirical Hurst exponent:            0.9926916 
-## Corrected empirical Hurst exponent:  0.988605 
+<pre><code>## Simple R/S Hurst estimation:         0.9105231 
+## Corrected R over S Hurst exponent:   1.008104 
+## Empirical Hurst exponent:            1.008534 
+## Corrected empirical Hurst exponent:  1.004452 
 ## Theoretical Hurst exponent:          0.5155387</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Hpink &lt;-<span class="st"> </span><span class="kw">hurstexp</span>(p@left, <span class="dt">d =</span> <span class="dv">128</span>)</code></pre></div>
-<pre><code>## Simple R/S Hurst estimation:         0.845144 
-## Corrected R over S Hurst exponent:   0.9165262 
-## Empirical Hurst exponent:            0.9026893 
-## Corrected empirical Hurst exponent:  0.8964622 
+<pre><code>## Simple R/S Hurst estimation:         0.8732483 
+## Corrected R over S Hurst exponent:   0.9500707 
+## Empirical Hurst exponent:            0.9281414 
+## Corrected empirical Hurst exponent:  0.9219708 
 ## Theoretical Hurst exponent:          0.5155387</code></pre>
 </div>
   </div>
