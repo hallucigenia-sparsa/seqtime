@@ -2,6 +2,8 @@
 
 language: R
 cache: packages
+r_github_packages:
+  - reptalex/WrightFisher
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libgmp3-dev
