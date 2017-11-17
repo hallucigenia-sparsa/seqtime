@@ -81,7 +81,9 @@
 
     
     <p>Generate time series with the self-organized instable (SOI) model
-implementing model B by Sole et al. 2002.</p>
+implementing model B by Sole et al. 2002.
+The model implements a K-leap method for accelerating stochastic simulation according to
+Cai et al. 2007</p>
     
 
     <pre class="usage"><span class='fu'>soi</span>(<span class='no'>N</span>, <span class='no'>I</span>, <span class='no'>A</span>, <span class='kw'>m.vector</span> <span class='kw'>=</span> <span class='fu'>runif</span>(<span class='no'>N</span>), <span class='kw'>e.vector</span> <span class='kw'>=</span> <span class='fu'>runif</span>(<span class='no'>N</span>), <span class='no'>tend</span>, <span class='kw'>K</span> <span class='kw'>=</span> <span class='fl'>5</span>,
@@ -116,7 +118,12 @@ implementing model B by Sole et al. 2002.</p>
     </tr>
     <tr>
       <th>K</th>
-      <td><p>TODO</p></td>
+      <td><p>The parameter K gives the number of simulation events occurring during one leap.
+Cai et al. 2007 propose rules for the selection of K. However, as those rules
+may be considered conservative, K is a user-supplied parameter with a default of 5.
+A higher K gives a faster simulation, but is less accurate.
+Large values of K may also lead to errors caused by population abundances becoming negative,
+particularly if the extinction and immigration rates are high.</p></td>
     </tr>
     <tr>
       <th>perturb</th>
@@ -130,7 +137,8 @@ implementing model B by Sole et al. 2002.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Sole et al. Philos Trans R Soc Lond B Biol. Sci. "Self-organized instability in complex ecosystems" 357:667-671 (2002)</p>
+    <p>Sole et al. Philos Trans R Soc Lond B Biol. Sci. "Self-organized instability in complex ecosystems" 357:667-671 (2002)
+Cai et al. The Journal of Chemical Physics "K-leap method for accelerating stochastic simulation of coupled chemical reactions" 126 (2007)</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
