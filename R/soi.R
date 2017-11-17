@@ -11,16 +11,12 @@
 #' @param m.vector species-specific immigration probabilities (these also determine initial abundances)
 #' @param e.vector species-specific extinction probabilities
 #' @param tend number of time points (i.e. the number of generations)
-<<<<<<< HEAD
-#' @param K TODO
-=======
 #' @param K The parameter K gives the number of simulation events occurring during one leap.
 #' Cai et al. 2007 propose rules for the selection of K. However, as those rules
 #' may be considered conservative, K is a user-supplied parameter with a default of 5.
 #' A higher K gives a faster simulation, but is less accurate.
-#' Large values of K may also lead to errors caused by population abundances becoming negative, 
+#' Large values of K may also lead to errors caused by population abundances becoming negative,
 #' particularly if the extinction and immigration rates are high.
->>>>>>> 7c59a87661d47666bb0fc54c982d35bff270ccfd
 #' @param perturb a perturbation object
 #' @return a matrix with species abundances as rows and time points as columns
 #' @seealso \code{\link{ricker}} for the Ricker model
@@ -39,11 +35,7 @@
 soi<-function(N, I, A, m.vector=runif(N), e.vector=runif(N), tend, K=5, perturb=NULL){
 
   results<-generate.parameters(N, I, A, m.vector, e.vector)
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> 7c59a87661d47666bb0fc54c982d35bff270ccfd
   TS<-tend
   omega <-results$A
   speciesNr <-results$N
@@ -54,6 +46,7 @@ soi<-function(N, I, A, m.vector=runif(N), e.vector=runif(N), tend, K=5, perturb=
   for (i in 1:speciesNr){
     B <-B+x0[[i]]
   }
+
   # species speciesNr+1 corresponds to empty slots
   S <-speciesNr+1
   x0 <-c(x0, I-B)
@@ -223,55 +216,17 @@ run.SOI<-function(time_steps,x0,nu,parms,K,perturb){
   ######
   x<-x0
   index<-1
-  
+
   perturbCounter=1
   durationCounter=1
   perturbationOn=FALSE
   ori.e.vector=parms[[4]]
   prev.abundances=c()
-  
-  
+
+
   #############
   while(index<=time_steps){
-<<<<<<< HEAD
-=======
-    
-    if(!is.null(perturb)){
-      prev.abundances=x
-      applied=applyPerturbation(perturb,t=i,perturbCounter=perturbCounter, durationCounter=durationCounter, perturbationOn=perturbationOn, ori.growthrates=parms[[3]], abundances=x)
-      durationCounter=applied$durationCounter
-      perturbCounter=applied$perturbCounter
-      perturbationOn=applied$perturbationOn
-      parms[[3]]=applied$growthrates
-      # randomly select a species and remove a count
-      while(sum(applied$abundances)>I){
-        species.index=sample(length(applied$abundances))[1]
-        applied$abundances[species.index]=applied$abundances[species.index]-1
-      }
-      x=applied$abundances
-      if(perturbationOn==TRUE && !is.na(perturb$deathrate)){
-        if(length(perturb$deathrate)!=length(parms[[4]])){
-          warning("Perturbation death rate should have as many entries as the extinction vector! It is not applied.")
-        }else{
-          parms[[4]]=perturb$deathrate
-        }
-      }else{
-        parms[[4]]=ori.e.vector
-      }
-      if(perturbationOn && durationCounter==2){
-        #print(results$immigration_prob)
-        #print("immigration probabs during perturbation:")
-        #print(results$immigration_prob)
-        #print("Abundances after change:")
-        #print(results$abundances)
-        #print("Abundances just before change:")
-        #print(prev.abundances)
-      }else if(i==1){
-        #print("immigration probabs:")
-        #print(results$immigration_prob)
-      }
-    }
->>>>>>> 7c59a87661d47666bb0fc54c982d35bff270ccfd
+
     propensity<-rateFunc(x,parms,t)
     a0<-sum(propensity)
     theta=propensity/a0

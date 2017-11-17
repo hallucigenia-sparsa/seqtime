@@ -20,7 +20,12 @@ soi(N, I, A, m.vector = runif(N), e.vector = runif(N), tend, K = 5,
 
 \item{tend}{number of time points (i.e. the number of generations)}
 
-\item{K}{TODO}
+\item{K}{The parameter K gives the number of simulation events occurring during one leap.
+Cai et al. 2007 propose rules for the selection of K. However, as those rules
+may be considered conservative, K is a user-supplied parameter with a default of 5.
+A higher K gives a faster simulation, but is less accurate.
+Large values of K may also lead to errors caused by population abundances becoming negative,
+particularly if the extinction and immigration rates are high.}
 
 \item{perturb}{a perturbation object}
 }
@@ -30,6 +35,8 @@ a matrix with species abundances as rows and time points as columns
 \description{
 Generate time series with the self-organized instable (SOI) model
 implementing model B by Sole et al. 2002.
+The model implements a K-leap method for accelerating stochastic simulation according to
+Cai et al. 2007
 }
 \examples{
 \dontrun{
@@ -40,6 +47,7 @@ tsplot(soi(N=N,I=1000,A=A,tend=100), header="SOI")
 }
 \references{
 Sole et al. Philos Trans R Soc Lond B Biol. Sci. "Self-organized instability in complex ecosystems" 357:667-671 (2002)
+Cai et al. The Journal of Chemical Physics "K-leap method for accelerating stochastic simulation of coupled chemical reactions" 126 (2007)
 }
 \seealso{
 \code{\link{ricker}} for the Ricker model
