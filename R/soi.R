@@ -11,8 +11,12 @@
 #' @param m.vector species-specific immigration probabilities (these also determine initial abundances)
 #' @param e.vector species-specific extinction probabilities
 #' @param tend number of time points (i.e. the number of generations)
-#' @param K The parameter K gives the number of simulation reactions occurring during one leap.
+#' @param K The parameter K gives the number of simulation events occurring during one leap.
+#' Cai et al. 2007 propose rules for the selection of K. However, as those rules
+#' may be considered conservative, K is a user-supplied parameter with a default of 5.
 #' A higher K gives a faster simulation, but is less accurate.
+#' Large values of K may also lead to errors caused by population abundances becoming negative, 
+#' particularly if the extinction and immigration rates are high.
 #' @param perturb a perturbation object
 #' @return a matrix with species abundances as rows and time points as columns
 #' @seealso \code{\link{ricker}} for the Ricker model
