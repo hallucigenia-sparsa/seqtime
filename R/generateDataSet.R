@@ -8,13 +8,10 @@
 #' @param matrix Interaction matrix (generated from generateA.R)
 #' @param env.matrix Growth rate changes induced by environment; 1 column per environmental condition.
 #' @param perturb.count Number of samples per environmental condition. Sum should be equal to total number of samples.
+#' @param perturb Perturbation object. At the moment, only changes in growth rates are supported.
 #' @param count Total number of individuals in dataset
 #' @param mode Mode for generateAbundances; default value samples counts from Poisson distribution with lambda count/N
 #' @return The abundance dataset
-#' @examples
-#' klemm = generateA(N=10, type="klemm", c=0.5)
-#' env = envGrowthChanges(species = 100, env.factors=2, conditions=3, strength=0.5)
-#' dataset = generateDataSet(100, klemm, env.matrix = env, perturb.count = c(50, 50))
 #' @export
 
 generateDataSet = function(samples, matrix, env.matrix=NULL, perturb.count=NULL, perturb=NULL, count=1000, mode=4){

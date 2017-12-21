@@ -7,9 +7,8 @@
 #' @param species Number of species
 #' @param env.factors Number of environmental factors
 #' @param conditions Number of environmental conditions
+#' @param strength Strength of environmental factors
 #' @return Matrix of growth changes, 1 column per condition.
-#' @examples
-#' env = envGrowthChanges(species = 100, env.factors=2, conditions=3, strength=0.5)
 #' @export
 
 envGrowthChanges = function(species, env.factors=2, conditions=2, strength){
