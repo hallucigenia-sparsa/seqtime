@@ -91,6 +91,8 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
     descript="LIMITS mean cross-correlation"
   }else if(property=="neutralfull" || property=="neutralslice" || property=="neutral"){
     descript="p-value"
+  }else if(property=="acc"){
+    descript="accuracy"
   }else if(property=="maxcorr"){
     # for the sub-set of species giving the maximum cross-correlation
     descript="maximum mean cross-correlation between predicted and observed time series"
@@ -155,7 +157,9 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
     }
     ymin=min(data[property],na.rm=TRUE)
     ymax=max(data[property],na.rm=TRUE)
-    ggplotObj <- ggplot2::ggplot(data, ggplot2::aes(factor(algorithm),data[property])) + ggplot2::geom_boxplot() + ggplot2::geom_jitter(ggplot2::aes(colour=factor(unlist(data[colorBy]))), width=jitter.width, size=dot.size) + ggplot2::coord_cartesian(ylim=c(ymin,ymax)) + ggplot2::ggtitle(title) + ggplot2::xlab("Data/Model") + ggplot2::ylab(firstup(descript)) + ggplot2::theme(legend.title=ggplot2::element_blank(), axis.text.x = ggplot2::element_text(angle=90,size=11))
+    #print(customizeGeneratorNames(as.character(data$algorithm)))
+    data$algorithm=as.factor(customizeGeneratorNames(as.character(data$algorithm)))
+    ggplotObj <- ggplot2::ggplot(data, ggplot2::aes(factor(algorithm),data[property])) + ggplot2::geom_boxplot() + ggplot2::geom_jitter(ggplot2::aes(colour=factor(unlist(data[colorBy]))), width=jitter.width, size=dot.size) + ggplot2::coord_cartesian(ylim=c(ymin,ymax)) + ggplot2::ggtitle(title) + ggplot2::xlab("") + ggplot2::ylab(firstup(descript)) + ggplot2::theme(legend.title=ggplot2::element_blank(), axis.text.x = ggplot2::element_text(angle=90,size=11))
     # remove legend title: theme(legend.title=element_blank())
   }else if(type=="summary"){
     # bar plot with OTU percentages in each category
@@ -269,16 +273,17 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
         composition=cbind(composition,rep(NA,nrow(composition)))
       }
       par(las=2, srt=90, mar = c(5, 5, 4, 4))
+      names=customizeGeneratorNames(generator.names=names)
       midpoints=barplot(composition,col=colors, ylab=ylab,main=main)
       mtext(names,col=labelcolors,side=1, cex=0.8, line=0.5, at=midpoints)
 
       # set default par
-      par(las = 1, srt=0, cex=1, mar = c(4, 5, 4, 2))
+      par(las = 1, srt=0, cex=1, mar = c(4, 5, 4, 4))
       if(summary.legend==TRUE){
         # hard-coded legend text and colors
         legend.names=c("Sigma 0.1","Sigma 0.05", "Sigma 0.01","Interval 5","Interval 10","Death rate 100","Death rate 1000")
         labelcolors=c("brown","darkgoldenrod","orange","green","blue","deeppink","red")
-        legend("topright",legend=legend.names,cex=0.9, y.intersp=0.6, bg = "white", text.col=labelcolors) # box.col="white"
+        legend("topright",legend=legend.names,cex=0.9, bty="n",inset=c(-0.02), y.intersp=0.6, xpd=TRUE,text.col=labelcolors) # box.col="white"
       }
 
     }
@@ -430,6 +435,30 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
   }
   ggplotObj
 }
+
+# assign more beautiful abbreviations to generators
+# to be used prior to plotting
+# as many entries expected as experiments done
+customizeGeneratorNames<-function(generator.names=NULL){
+    soi.indices=which(generator.names=="soi")
+    ricker.indices=which(generator.names=="ricker")
+    glv.indices=which(generator.names=="glv")
+    dm.indices=which(generator.names=="dm")
+    stoola.indices=which(generator.names=="davida")
+    stoolb.indices=which(generator.names=="davidb")
+    hubbell.indices=which(generator.names=="hubbell")
+    custom.generator.names=generator.names
+    ### customization
+    custom.generator.names[soi.indices]="SOI"
+    custom.generator.names[hubbell.indices]="Hubbell"
+    custom.generator.names[stoola.indices]="Stool A"
+    custom.generator.names[stoolb.indices]="Stool B"
+    custom.generator.names[dm.indices]="DM"
+    custom.generator.names[glv.indices]="gLV"
+    custom.generator.names[ricker.indices]="Ricker"
+    return(custom.generator.names)
+}
+
 
 # filter out intervals > 1 and/or death rate > 100
 # returns the filtered data frame containing only the data necessary for the selected plot

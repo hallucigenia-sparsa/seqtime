@@ -35,7 +35,7 @@ taylor<-function(x, type="taylor", pseudo=0, col="black", header="", plot=TRUE){
       slope=linreg$coefficients[2]
       sum=summary(linreg)
       adjR2=sum$adj.r.squared
-      print(paste("Adjusted R2:",sum$adj.r.squared))
+      #print(paste("Adjusted R2:",sum$adj.r.squared))
       pval=1-pf(sum$fstatistic[1], sum$fstatistic[2], sum$fstatistic[3])
       # print(paste("P-value:",pval))
       if(plot == TRUE){

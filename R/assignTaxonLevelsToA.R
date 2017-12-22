@@ -9,10 +9,7 @@
 #' in the interaction matrix.
 #'
 #' @param A an interaction matrix
-#' @param data (optional) a matrix with taxon abundances, rows are taxa and columns are samples (only needed if type is non-empty)
-#' @param metadata (optional) a matrix with metadata, samples match samples in OTU table (only needed if type is non-empty)
 #' @param lineages a matrix with lineages, for the format please see data david_stool_lineages
-#' @param type if non-empty, process data exactly as in method generateTS, supported: stoola and stoolb
 #' @param taxon.level the taxon level to be assigned as row and column names, supported: otu, species, genus, family, order, class, phylum
 #' @param pos.only merge only positive entries such that final interaction matrix only contains positive entries (not carried out if uniqueNames is TRUE)
 #' @param neg.only merge only negative entries such that final interaction matrix only contains negative entries (not carried out if uniqueNames is TRUE)
@@ -32,31 +29,13 @@
 #' classnetwork=plotA(Aclass,method="network")
 #' @export
 
-assignTaxonLevelsToA <- function(A, data=NULL, metadata=NULL, lineages, type="", taxon.level="genus", pos.only=FALSE, neg.only=FALSE, uniqueNames=FALSE, higherLevelNames=TRUE, no.merge=FALSE){
+assignTaxonLevelsToA <- function(A, lineages, taxon.level="genus", pos.only=FALSE, neg.only=FALSE, uniqueNames=FALSE, higherLevelNames=TRUE, no.merge=FALSE){
 
-  # constants, only needed if type is non-empty
-  david.minsamplesum=10000
-  interpolation.method="stineman"
+  otus=c()
   N=nrow(A)
 
-  if(type=="stoolb"){
-    # omit the last sample in David data stool B, because there is a huge sampling gap of 66 days
-    data=data[,1:(ncol(data)-1)]
-    metadata=metadata[,1:(ncol(metadata)-1)]
-  }
-  if(type=="stoola" || type=="stoolb"){
-    rarefyRes=rarefyFilter(data,min=david.minsamplesum)
-    data=rarefyRes$rar
+  otus=rownames(A)
 
-    # discard days with read count below minsamplesum
-    days=metadata[1,rarefyRes$colindices]
-    # make data equidistant
-    stool.interp=interpolate(data,time.vector=days,interval=1,method=interpolation.method)
-    sorted=sort(apply(stool.interp,1,sum),decreasing=TRUE,index.return=TRUE)
-    otus=rownames(data)[sorted$ix[1:N]]
-  }else{
-    otus=rownames(A)
-  }
   # match OTUs to entries in lineage table
   taxa=c()
   counter=1
@@ -125,4 +104,56 @@ assignTaxonLevelsToA <- function(A, data=NULL, metadata=NULL, lineages, type="",
     }
   }
   return(A)
+}
+
+# N: number of top OTUs
+# type: stoola or stoolb
+# data: David stool data
+# metadata: David metadata
+# Returns a list with indices and otus
+# Example:
+# data("david_stoolA_otus")
+# data("david_stoolA_metadata")
+# res=getIndicesOfTopNOTUsInProcessedDavidData(N=60,type="stoola",data=david_stoolA_otus, metadata=david_stoolA_metadata)
+getIndicesOfTopNOTUsInProcessedDavidData<-function(N, type, data, metadata){
+
+  indices=c()
+  otus=c()
+
+  processedData=getProcessedDavidData(type=type, data=data, metadata=metadata)
+  sorted=sort(apply(processedData,1,sum),decreasing=TRUE,index.return=TRUE)
+  indices=sorted$ix[1:N]
+  otus=rownames(processedData)[indices]
+
+  res=list(indices,otus)
+  names(res)=c("indices","otus")
+  return(res)
+}
+
+# type: stoola or stoolb
+# data: David stool data
+# metadata: David metadata
+# Returns processed David data
+getProcessedDavidData<-function(type, data, metadata){
+  # constants, only needed if type is non-empty
+  david.minsamplesum=10000
+  interpolation.method="stineman"
+
+  if(type=="stoolb"){
+    # omit the last sample in David data stool B, because there is a huge sampling gap of 66 days
+    data=data[,1:(ncol(data)-1)]
+    metadata=metadata[,1:(ncol(metadata)-1)]
+  }
+  if(type=="stoola" || type=="stoolb"){
+    rarefyRes=rarefyFilter(data,min=david.minsamplesum)
+    data=rarefyRes$rar
+    # discard days with read count below minsamplesum
+    days=metadata[1,rarefyRes$colindices]
+    # make data equidistant
+    stool.interp=interpolate(data,time.vector=days,interval=1,method=interpolation.method)
+    rownames(stool.interp)=rownames(data)
+    return(stool.interp)
+  }else{
+    stop("Type should be stoola or stoolb.")
+  }
 }

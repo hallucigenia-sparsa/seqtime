@@ -18,7 +18,7 @@
 #' @param m.vector the immigration rates for soi (optional, if not provided set to the proportions in the first sample)
 #' @param e.vector the extinction rates for soi (optional, if not provided sampled from the uniform distribution)
 #' @param spec.subset either a vector of species indices to keep or a number to indicate how many top-abundant (sum across samples) species should be kept, applied to the matrices and time series
-#' @param norm normalize the original time series by dividing each sample by its sum (carried out before filtering species)
+#' @param norm normalize the original and predicted time series by dividing each sample by its sum (carried out before filtering species for the original time series)
 #' @param plot plot the number of species versus the mean correlation of predicted and observed time series and the mean auto-correlation
 #' @param predict.stepwise if TRUE, the predicted time series is computed step by step, else computed with a call to Ricker
 #' @param sim similarity measure to compare predicted and observed time series, either Pearson (r, default) or Kullback-Leibler dissimilarity (kld)
@@ -113,9 +113,9 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", m.vector=c(), e
       Amodifsub=Amodif[indicesOK,indicesOK]
       # compute cross-correlation of original and step-wise predicted time series
       if(predict.stepwise == TRUE && type=="ricker"){
-        crossres=getCrossCorOriPredStepwise(subTS,A=Amodifsub,sim=sim,sigma=sigma,explosion.bound = explosion.bound, ignoreExplosion=ignoreExplosion)
+        crossres=getCrossCorOriPredStepwise(subTS, norm=norm,A=Amodifsub,sim=sim,sigma=sigma,explosion.bound = explosion.bound, ignoreExplosion=ignoreExplosion)
       }else{
-        crossres=getCrossOriPredFull(subTS,A=Amodifsub,sim=sim,sigma=sigma,explosion.bound = explosion.bound, type=type, m.vector=m.vector, e.vector=e.vector)
+        crossres=getCrossOriPredFull(subTS,A=Amodifsub,norm=norm,sim=sim,sigma=sigma,explosion.bound = explosion.bound, type=type, m.vector=m.vector, e.vector=e.vector)
       }
       crosscorVec=c(crosscorVec,crossres)
       # compute auto-correlations for lag 1 to 5
@@ -199,7 +199,7 @@ limitsQuality<-function(oriTS, A, A.ori=matrix(), type="ricker", m.vector=c(), e
 # e.vector: the vector of extinction probabilities for SOC (optional)
 #
 # returns the mean cross-correlation of the predicted time series
-getCrossOriPredFull<-function(oriTS, A, sim="r", sigma=-1, explosion.bound=10^8, type="ricker", m.vector=c(), e.vector=c()){
+getCrossOriPredFull<-function(oriTS, norm=FALSE, A, sim="r", sigma=-1, explosion.bound=10^8, type="ricker", m.vector=c(), e.vector=c()){
   y=oriTS[,1]
   tend=ncol(oriTS)
   N=nrow(oriTS)
@@ -223,6 +223,9 @@ getCrossOriPredFull<-function(oriTS, A, sim="r", sigma=-1, explosion.bound=10^8,
     }
     predTS=soi(N, I, A, m.vector=m.vector, e.vector=e.vector, tend)
   }
+  if(norm){
+    predTS=seqtime::normalize(predTS)
+  }
   if(sim=="kld"){
     crossCor<-getMeanKLD(oriTS[,2:tend],predTS[,2:tend],lag=0)
   }else if(sim=="r"){
@@ -243,7 +246,7 @@ getCrossOriPredFull<-function(oriTS, A, sim="r", sigma=-1, explosion.bound=10^8,
 # explosion.bound the explosion boundary of Ricker
 #
 # returns the mean cross-correlation of the predicted time series
-getCrossCorOriPredStepwise<-function(oriTS, A, sim="r", lag=1,sigma=-1, explosion.bound=10^8, ignoreExplosion=FALSE){
+getCrossCorOriPredStepwise<-function(oriTS, A, norm=FALSE, sim="r", lag=1,sigma=-1, explosion.bound=10^8, ignoreExplosion=FALSE){
   tend=ncol(oriTS)
   N=nrow(oriTS)
   # estimate carrying capacity as the mean of the time series
@@ -268,6 +271,9 @@ getCrossCorOriPredStepwise<-function(oriTS, A, sim="r", lag=1,sigma=-1, explosio
       }
     }
     predTS[,t]=y
+  }
+  if(norm){
+    predTS=seqtime::normalize(predTS)
   }
   if(sim=="kld"){
     crossCor<-getMeanKLD(oriTS[,2:tend],predTS[,2:tend],lag=0)
