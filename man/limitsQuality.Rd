@@ -24,7 +24,7 @@ limitsQuality(oriTS, A, A.ori = matrix(), type = "ricker", m.vector = c(),
 
 \item{spec.subset}{either a vector of species indices to keep or a number to indicate how many top-abundant (sum across samples) species should be kept, applied to the matrices and time series}
 
-\item{norm}{normalize the original time series by dividing each sample by its sum (carried out before filtering species)}
+\item{norm}{normalize the original and predicted time series by dividing each sample by its sum (carried out before filtering species for the original time series)}
 
 \item{plot}{plot the number of species versus the mean correlation of predicted and observed time series and the mean auto-correlation}
 

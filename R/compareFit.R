@@ -531,6 +531,7 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
 # the random matrix preserves the connectance
 # of the original
 generateRandA<-function(A){
+  N=nrow(A)
   totalEdgeNum=nrow(A)*nrow(A)
   onePercEdgeNum=totalEdgeNum/100
   oriAC=(round(getConnectance(A),2)*100)

@@ -4,20 +4,14 @@
 \alias{assignTaxonLevelsToA}
 \title{Assign Taxon Levels}
 \usage{
-assignTaxonLevelsToA(A, data = NULL, metadata = NULL, lineages, type = "",
-  taxon.level = "genus", pos.only = FALSE, neg.only = FALSE,
-  uniqueNames = FALSE, higherLevelNames = TRUE, no.merge = FALSE)
+assignTaxonLevelsToA(A, lineages, taxon.level = "genus", pos.only = FALSE,
+  neg.only = FALSE, uniqueNames = FALSE, higherLevelNames = TRUE,
+  no.merge = FALSE)
 }
 \arguments{
 \item{A}{an interaction matrix}
 
-\item{data}{(optional) a matrix with taxon abundances, rows are taxa and columns are samples (only needed if type is non-empty)}
-
-\item{metadata}{(optional) a matrix with metadata, samples match samples in OTU table (only needed if type is non-empty)}
-
 \item{lineages}{a matrix with lineages, for the format please see data david_stool_lineages}
-
-\item{type}{if non-empty, process data exactly as in method generateTS, supported: stoola and stoolb}
 
 \item{taxon.level}{the taxon level to be assigned as row and column names, supported: otu, species, genus, family, order, class, phylum}
 
