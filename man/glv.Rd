@@ -5,7 +5,7 @@
 \title{Simulate time series with the generalized Lotka-Volterra model}
 \usage{
 glv(N = 4, A, b = runif(N), y = runif(N), tstart = 0, tend = 100,
-  tstep = 0.1)
+  tstep = 0.1, perturb = NULL)
 }
 \arguments{
 \item{N}{species number}
@@ -21,6 +21,8 @@ glv(N = 4, A, b = runif(N), y = runif(N), tstart = 0, tend = 100,
 \item{tend}{final time point}
 
 \item{tstep}{time step}
+
+\item{perturb}{perturbation object describing growth changes}
 }
 \value{
 a matrix with species abundances as rows and time points as columns, column names give time points
