@@ -29,10 +29,34 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/dataset_generation.html">Generating synthetic datasets with seqtime and generalized Lotka-Volterra</a>
+    </li>
+    <li>
+      <a href="../articles/network_inference.html">Network inference with LIMITS</a>
+    </li>
+    <li>
+      <a href="../articles/noise_simulations.html">Noise simulation examples</a>
+    </li>
+    <li>
+      <a href="../articles/seqtime_tour.html">Tour through seqtime - Properties of time series generated with different ecological models</a>
+    </li>
+  </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -56,7 +80,7 @@
     <div class="page-header toc-ignore">
       <h1>Noise simulation examples</h1>
             
-            <h4 class="date">2017-11-17</h4>
+            <h4 class="date">2018-01-09</h4>
           </div>
 
     
@@ -66,15 +90,15 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tuneR)
 
 <span class="co"># White noise</span>
-w &lt;-<span class="st"> </span>tuneR::<span class="kw">noise</span>(<span class="dt">kind =</span> <span class="kw">c</span>(<span class="st">"white"</span>))
+w &lt;-<span class="st"> </span>tuneR<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/tuneR/topics/Waveforms">noise</a></span>(<span class="dt">kind =</span> <span class="kw">c</span>(<span class="st">"white"</span>))
 
 <span class="co"># Brown noise is integrated white noise</span>
 <span class="co"># (ie. random walk)</span>
 <span class="co"># Use same time series length as in the other series</span>
-b &lt;-<span class="st"> </span><span class="kw">cumsum</span>(<span class="kw">rnorm</span>(<span class="kw">length</span>(w@left)))
+b &lt;-<span class="st"> </span><span class="kw">cumsum</span>(<span class="kw">rnorm</span>(<span class="kw">length</span>(w<span class="op">@</span>left)))
 
 <span class="co"># Pink noise</span>
-p &lt;-<span class="st"> </span>tuneR::<span class="kw">noise</span>(<span class="dt">kind =</span> <span class="kw">c</span>(<span class="st">"pink"</span>))
+p &lt;-<span class="st"> </span>tuneR<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/tuneR/topics/Waveforms">noise</a></span>(<span class="dt">kind =</span> <span class="kw">c</span>(<span class="st">"pink"</span>))
 
 <span class="co"># Visualize</span>
 <span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">1</span>))
@@ -84,23 +108,23 @@ p &lt;-<span class="st"> </span>tuneR::<span class="kw">noise</span>(<span class
 <p><img src="figure_noise_simulations/noise_simu-1.png" width="576"></p>
 <p>Estimating Hurst exponent for the noises</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(pracma)
-Hwhite &lt;-<span class="st"> </span><span class="kw">hurstexp</span>(w@left, <span class="dt">d =</span> <span class="dv">128</span>)</code></pre></div>
-<pre><code>## Simple R/S Hurst estimation:         0.5570175 
-## Corrected R over S Hurst exponent:   0.5666206 
-## Empirical Hurst exponent:            0.5324427 
-## Corrected empirical Hurst exponent:  0.5169636 
+Hwhite &lt;-<span class="st"> </span><span class="kw">hurstexp</span>(w<span class="op">@</span>left, <span class="dt">d =</span> <span class="dv">128</span>)</code></pre></div>
+<pre><code>## Simple R/S Hurst estimation:         0.5285411 
+## Corrected R over S Hurst exponent:   0.5445374 
+## Empirical Hurst exponent:            0.5542951 
+## Corrected empirical Hurst exponent:  0.5380235 
 ## Theoretical Hurst exponent:          0.5155387</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Hbrown &lt;-<span class="st"> </span><span class="kw">hurstexp</span>(b, <span class="dt">d =</span> <span class="dv">128</span>)</code></pre></div>
-<pre><code>## Simple R/S Hurst estimation:         0.9105231 
-## Corrected R over S Hurst exponent:   1.008104 
-## Empirical Hurst exponent:            1.008534 
-## Corrected empirical Hurst exponent:  1.004452 
+<pre><code>## Simple R/S Hurst estimation:         0.9226868 
+## Corrected R over S Hurst exponent:   1.012134 
+## Empirical Hurst exponent:            0.9991767 
+## Corrected empirical Hurst exponent:  0.9950933 
 ## Theoretical Hurst exponent:          0.5155387</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Hpink &lt;-<span class="st"> </span><span class="kw">hurstexp</span>(p@left, <span class="dt">d =</span> <span class="dv">128</span>)</code></pre></div>
-<pre><code>## Simple R/S Hurst estimation:         0.8732483 
-## Corrected R over S Hurst exponent:   0.9500707 
-## Empirical Hurst exponent:            0.9281414 
-## Corrected empirical Hurst exponent:  0.9219708 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Hpink &lt;-<span class="st"> </span><span class="kw">hurstexp</span>(p<span class="op">@</span>left, <span class="dt">d =</span> <span class="dv">128</span>)</code></pre></div>
+<pre><code>## Simple R/S Hurst estimation:         0.7937374 
+## Corrected R over S Hurst exponent:   0.8929718 
+## Empirical Hurst exponent:            0.9245189 
+## Corrected empirical Hurst exponent:  0.918401 
 ## Theoretical Hurst exponent:          0.5155387</code></pre>
 </div>
   </div>

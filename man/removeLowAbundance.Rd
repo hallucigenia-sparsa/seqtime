@@ -18,3 +18,8 @@ Dataset without N lowest abundance species
 Removes a number of lowest total abundace species from a dataset generated with generateDataSet.
 Note that the function uses the normalized dataset to decide which species to remove, but returns the absolute dataset.
 }
+\examples{
+klemm = generateA(N=10, type="klemm", c=0.5)
+dataset = generateDataSet(100, klemm)
+dataset = removeLowAbundance(dataset, 10)
+}

@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -51,10 +52,34 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/dataset_generation.html">Generating synthetic datasets with seqtime and generalized Lotka-Volterra</a>
+    </li>
+    <li>
+      <a href="../articles/network_inference.html">Network inference with LIMITS</a>
+    </li>
+    <li>
+      <a href="../articles/noise_simulations.html">Noise simulation examples</a>
+    </li>
+    <li>
+      <a href="../articles/seqtime_tour.html">Tour through seqtime - Properties of time series generated with different ecological models</a>
+    </li>
+  </ul>
 </li>
       </ul>
       
@@ -196,6 +221,12 @@
         </tr><tr>
           <!--  -->
           <td>
+            <p><code><a href="envGrowthChanges.html">envGrowthChanges</a></code> </p>
+          </td>
+          <td><p>Generate growth changes induced by environment</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
             <p><code><a href="filterTaxonMatrix.html">filterTaxonMatrix</a></code> </p>
           </td>
           <td><p>Filter taxa in an abundance matrix</p></td>
@@ -211,6 +242,12 @@
             <p><code><a href="generateAbundances.html">generateAbundances</a></code> </p>
           </td>
           <td><p>Generate Abundance Vector</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="generateDataSet.html">generateDataSet</a></code> </p>
+          </td>
+          <td><p>Generate a dataset</p></td>
         </tr><tr>
           <!--  -->
           <td>
@@ -343,6 +380,12 @@
             <p><code><a href="rarefyFilter.html">rarefyFilter</a></code> </p>
           </td>
           <td><p>Rarefaction combined with sample filtering</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="removeLowAbundance.html">removeLowAbundance</a></code> </p>
+          </td>
+          <td><p>Remove lowest abundance species</p></td>
         </tr><tr>
           <!--  -->
           <td>

@@ -5,18 +5,16 @@
 \title{Generate a dataset}
 \usage{
 generateDataSet(samples, matrix, env.matrix = NULL, perturb.count = NULL,
-  perturb = NULL, count = 1000, mode = 4)
+  count = 1000, mode = 4)
 }
 \arguments{
 \item{samples}{Number of samples}
 
 \item{matrix}{Interaction matrix (generated from generateA.R)}
 
-\item{env.matrix}{Growth rate changes induced by environment; 1 column per environmental condition.}
+\item{env.matrix}{Growth rate changes induced by environment; 1 column per environmental condition. Generate this matrix with envGrowthChanges.R}
 
 \item{perturb.count}{Number of samples per environmental condition. Sum should be equal to total number of samples.}
-
-\item{perturb}{Perturbation object. At the moment, only changes in growth rates are supported.}
 
 \item{count}{Total number of individuals in dataset}
 
@@ -26,7 +24,11 @@ generateDataSet(samples, matrix, env.matrix = NULL, perturb.count = NULL,
 The abundance dataset
 }
 \description{
-Generate an abundance dataset, with or without environmental perturbance, by using generalized Lotka-Volterra.
-For each sample, a time series is generated with Lotka-Volterra and sampled at t=1000.
-The environmental perturbances can be generated with envGrowthChanges
+Generate an abundance dataset,
+with or without environmental perturbance, by using generalized Lotka-Volterra
+}
+\examples{
+klemm = generateA(N=10, type="klemm", c=0.5)
+env = envGrowthChanges(species = 10, env.factors=2, conditions=2, strength=0.5)
+dataset = generateDataSet(100, klemm, env.matrix = env, perturb.count = c(50, 50))
 }

@@ -9,6 +9,10 @@
 #' @param conditions Number of environmental conditions
 #' @param strength Strength of environmental factors
 #' @return Matrix of growth changes, 1 column per condition.
+#' @examples
+#' klemm = generateA(N=10, type="klemm", c=0.5)
+#' env = envGrowthChanges(species = 10, env.factors=2, conditions=2, strength=0.5)
+#' dataset = generateDataSet(100, klemm, env.matrix = env, perturb.count = c(50, 50))
 #' @export
 
 envGrowthChanges = function(species, env.factors=2, conditions=2, strength){
