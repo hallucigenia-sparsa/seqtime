@@ -68,6 +68,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/dataset_generation.html">Generating synthetic datasets with seqtime and generalized Lotka-Volterra</a>
+    </li>
+    <li>
       <a href="../articles/network_inference.html">Network inference with LIMITS</a>
     </li>
     <li>
@@ -102,13 +105,12 @@
     </div>
 
     
-    <p>Generate an abundance dataset, with or without environmental perturbance, by using generalized Lotka-Volterra.
-For each sample, a time series is generated with Lotka-Volterra and sampled at t=1000.
-The environmental perturbances can be generated with envGrowthChanges</p>
+    <p>Generate an abundance dataset,
+with or without environmental perturbance, by using generalized Lotka-Volterra</p>
     
 
     <pre class="usage"><span class='fu'>generateDataSet</span>(<span class='no'>samples</span>, <span class='no'>matrix</span>, <span class='kw'>env.matrix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>perturb.count</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>perturb</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>count</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fl'>4</span>)</pre>
+  <span class='kw'>count</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fl'>4</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -123,15 +125,11 @@ The environmental perturbances can be generated with envGrowthChanges</p>
     </tr>
     <tr>
       <th>env.matrix</th>
-      <td><p>Growth rate changes induced by environment; 1 column per environmental condition.</p></td>
+      <td><p>Growth rate changes induced by environment; 1 column per environmental condition. Generate this matrix with envGrowthChanges.R</p></td>
     </tr>
     <tr>
       <th>perturb.count</th>
       <td><p>Number of samples per environmental condition. Sum should be equal to total number of samples.</p></td>
-    </tr>
-    <tr>
-      <th>perturb</th>
-      <td><p>Perturbation object. At the moment, only changes in growth rates are supported.</p></td>
     </tr>
     <tr>
       <th>count</th>
@@ -148,6 +146,22 @@ The environmental perturbances can be generated with envGrowthChanges</p>
     <p>The abundance dataset</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>klemm</span> <span class='kw'>=</span> <span class='fu'><a href='generateA.html'>generateA</a></span>(<span class='kw'>N</span><span class='kw'>=</span><span class='fl'>10</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"klemm"</span>, <span class='kw'>c</span><span class='kw'>=</span><span class='fl'>0.5</span>)</div><div class='output co'>#&gt; [1] "Adjusting connectance to 0.5"
+#&gt; [1] "Initial edge number 80"
+#&gt; [1] "Initial connectance 0.777777777777778"
+#&gt; [1] "Number of edges removed 25"
+#&gt; [1] "Final connectance 0.5"
+#&gt; [1] "Final connectance: 0.5"
+#&gt; [1] "Initial edge number 55"
+#&gt; [1] "Initial connectance 0.5"
+#&gt; [1] "Number of negative edges already present: 10"
+#&gt; [1] "Converting 18 edges into negative edges"
+#&gt; [1] "Final connectance: 0.5"
+#&gt; [1] "Final arc number (excluding self-arcs) 45"
+#&gt; [1] "Final negative arc number (excluding self-arcs) 18"
+#&gt; [1] "PEP: 60"</div><div class='input'><span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='envGrowthChanges.html'>envGrowthChanges</a></span>(<span class='kw'>species</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>env.factors</span><span class='kw'>=</span><span class='fl'>2</span>, <span class='kw'>conditions</span><span class='kw'>=</span><span class='fl'>3</span>, <span class='kw'>strength</span><span class='kw'>=</span><span class='fl'>0.5</span>)
+<span class='no'>dataset</span> <span class='kw'>=</span> <span class='fu'>generateDataSet</span>(<span class='fl'>100</span>, <span class='no'>klemm</span>, <span class='kw'>env.matrix</span> <span class='kw'>=</span> <span class='no'>env</span>, <span class='kw'>perturb.count</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>50</span>, <span class='fl'>50</span>))</div><div class='output co'>#&gt; <span class='error'>Error in generateDataSet(100, klemm, env.matrix = env, perturb.count = c(50,     50)): Please add sample count per environmental condition</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -155,7 +169,9 @@ The environmental perturbances can be generated with envGrowthChanges</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

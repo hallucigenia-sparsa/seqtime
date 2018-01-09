@@ -23,3 +23,8 @@ Generate a matrix of growth changes for
 different environmental conditions. This vector can be supplied to generateDataSet to introduce environmental perturbation in the dataset.
 Note that the effect of environmental parameters is already summed, so only one growth change is provided per species per condition.
 }
+\examples{
+klemm = generateA(N=10, type="klemm", c=0.5)
+env = envGrowthChanges(species = 10, env.factors=2, conditions=2, strength=0.5)
+dataset = generateDataSet(100, klemm, env.matrix = env, perturb.count = c(50, 50))
+}

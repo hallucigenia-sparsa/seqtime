@@ -6,6 +6,10 @@
 #' @param dataset Abundance dataset
 #' @param removeN Number of species to remove
 #' @return Dataset without N lowest abundance species
+#' @examples
+#' klemm = generateA(N=10, type="klemm", c=0.5)
+#' dataset = generateDataSet(100, klemm)
+#' dataset = removeLowAbundance(dataset, 10)
 #' @export
 
 # Takes generated dataset and removes (lowest abundance) species

@@ -1,22 +1,23 @@
 #' @title Generate a dataset
 #'
-#' @description Generate an abundance dataset, with or without environmental perturbance, by using generalized Lotka-Volterra.
-#' For each sample, a time series is generated with Lotka-Volterra and sampled at t=1000.
-#' The environmental perturbances can be generated with envGrowthChanges
+#' @description Generate an abundance dataset,
+#' with or without environmental perturbance, by using generalized Lotka-Volterra
 #'
 #' @param samples Number of samples
 #' @param matrix Interaction matrix (generated from generateA.R)
-#' @param env.matrix Growth rate changes induced by environment; 1 column per environmental condition.
+#' @param env.matrix Growth rate changes induced by environment; 1 column per environmental condition. Generate this matrix with envGrowthChanges.R
 #' @param perturb.count Number of samples per environmental condition. Sum should be equal to total number of samples.
-#' @param perturb Perturbation object. At the moment, only changes in growth rates are supported.
 #' @param count Total number of individuals in dataset
 #' @param mode Mode for generateAbundances; default value samples counts from Poisson distribution with lambda count/N
 #' @return The abundance dataset
+#' @examples
+#' klemm = generateA(N=10, type="klemm", c=0.5)
+#' env = envGrowthChanges(species = 10, env.factors=2, conditions=2, strength=0.5)
+#' dataset = generateDataSet(100, klemm, env.matrix = env, perturb.count = c(50, 50))
 #' @export
-
-generateDataSet = function(samples, matrix, env.matrix=NULL, perturb.count=NULL, perturb=NULL, count=1000, mode=4){
+generateDataSet = function(samples, matrix, env.matrix=NULL, perturb.count=NULL, count=1000, mode=4){
   if (is.null(env.matrix)){
-    dataset = generateSubset(samples, matrix, count = count, perturb = perturb, mode=mode)
+    dataset = generateSubset(samples, matrix, count = count, perturb = NULL, mode=mode)
   }
   else {
     if (length(env.matrix[1,]) != length(perturb.count)){
@@ -51,16 +52,16 @@ generateSubset = function(samples, matrix, perturb=NULL, count, mode){
   dataset = matrix(nrow = N, ncol = samples)
   if (is.null(perturb) == TRUE){
     for (i in 1:samples){
-      series = glv(N, matrix, perturb=NULL)
+      series = glv(N, y=y, matrix)
       dataset[,i] = series[,1001]
     }
   }
   else {
     for (i in 1:samples){
-      series = glv(N, matrix, perturb = perturb)
+      series = glv(N, matrix, y=y, perturb = perturb)
       dataset[,i] = series[,1001]
     }
   }
-  dataset[dataset < 0] = 0.00000001 # glv produces very small negative values, these are set to a value above 0
+  dataset[dataset < 0] = 0.00000001 # glv produces very small negative values, these are set to a pseudocount value
   return(dataset)
 }
