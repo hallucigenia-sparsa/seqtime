@@ -33,6 +33,7 @@
 #' @importFrom stats rlnorm
 #' @importFrom stats complete.cases
 #' @importFrom stats sd
+#' @importFrom stats na.omit
 #' @importFrom stats rmultinom
 #' @importFrom stats rnbinom
 #' @importFrom stats rnorm

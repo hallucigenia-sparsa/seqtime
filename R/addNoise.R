@@ -68,12 +68,7 @@ addNoise<-function(x, input.folder="", output.folder="", expIds=c(), add=FALSE, 
       }
 
       if(scaling.factor>1){
-        maxVal=max(ts)
-        meanVal=mean(ts)
-        print(paste("Maximum value in the matrix:",maxVal))
-        print(paste("Mean value in the matrix:",meanVal))
         ts=round(ts*scaling.factor)
-        #print(ts[1:10,1:10])
       }
 
       noisyTS=addNoiseToCommMatrix(ts,noise.type = noise.type, add=add, param1=param1, param2=param2, scale.noise=scale.noise)
@@ -92,6 +87,9 @@ addNoise<-function(x, input.folder="", output.folder="", expIds=c(), add=FALSE, 
     } # end loop expIds
 
   }else{
+    if(scaling.factor>1){
+      x=round(x*scaling.factor)
+    }
     noisyTS=addNoiseToCommMatrix(x, noise.type = noise.type, add=add, param1=param1, param2=param2, scale.noise=scale.noise)
     if(output.folder==""){
       return(noisyTS)

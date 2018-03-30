@@ -23,20 +23,23 @@ tsJumpStats(x, time.given = FALSE, time.unit = "days", ordinate = TRUE,
 
 \item{plot}{if TRUE, a plot of the jumps is made}
 
-\item{plot.type}{jumps: plot jumps as bars in the order of occurrence, hist: a histogram of jump lengths for perturbed and non-perturbed sample pairs (only if perturbation object is provided)}
+\item{plot.type}{jumps: plot jumps as bars in the order of occurrence; box: a box plot of jump lengths in non-perturbed vs perturbed communities. This is effectively a visualization of beta-diversity, which is however not computed between all pair-wise but only between consecutive samples; hist: a histogram of jump lengths for perturbed and non-perturbed sample pairs (box and hist only possible if perturbation object is provided)}
 
 \item{header}{text to be used as plot title instead of default text}
 
-\item{subsample}{for plot.type hist: subsample larger jump vector randomly down to smaller one, so that there are as many perturbed as non-perturbed jumps}
+\item{subsample}{for plot.type hist or box: subsample larger jump vector randomly down to smaller one, so that there are as many perturbed as non-perturbed jumps}
 
 \item{perturb}{a perturbation object, if provided, the plot is colored accordingly}
+}
+\value{
+jump lengths (i.e. dissimilarities of community composition at consecutive time points) and, in case ordinate is true, angles are returned
 }
 \description{
 Consecutive samples representing time points in an ordination plot can be interpreted
 as vectors, which have a length and an angle. If ordinate is true, these lengths and angles
 are computed. If ordinate is false, dissimilarities between consecutive time points are computed.
-If a perturbation object is provided and plot.type hist is true, the histogram of jump lengths is
-plotted and the significance of the difference between perturbed and non-perturbed jump lengths is
+If a perturbation object is provided and plot.type hist or box is true, the histogram or box plot of jump
+lengths is plotted and the significance of the difference between perturbed and non-perturbed jump lengths is
 assessed with a Wilcoxon test.
 }
 \examples{

@@ -5,7 +5,7 @@
 \title{Report slope of periodogram in log scale}
 \usage{
 powerspec(v, plot = FALSE, detrend = TRUE, smooth = FALSE, df = max(2,
-  log10(ncol(v))), header = "", col = "blue")
+  log10(length(v))), header = "", col = "blue")
 }
 \arguments{
 \item{v}{time series vector}

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Generate an interaction matrix � generateA • seqtime</title>
+<title>Generate an interaction matrix — generateA • seqtime</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -23,8 +23,7 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -52,34 +51,10 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/dataset_generation.html">Generating synthetic datasets with seqtime and generalized Lotka-Volterra</a>
-    </li>
-    <li>
-      <a href="../articles/network_inference.html">Network inference with LIMITS</a>
-    </li>
-    <li>
-      <a href="../articles/noise_simulations.html">Noise simulation examples</a>
-    </li>
-    <li>
-      <a href="../articles/seqtime_tour.html">Tour through seqtime - Properties of time series generated with different ecological models</a>
-    </li>
-  </ul>
+<li>
+  <a href="../articles/index.html">Articles</a>
 </li>
       </ul>
       
@@ -111,7 +86,8 @@ using Klemm-Eguiluz algorithm to generate a modular and scale-free interaction m
 
     <pre class="usage"><span class='fu'>generateA</span>(<span class='kw'>N</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"random"</span>, <span class='kw'>pep</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>d</span> <span class='kw'>=</span> -<span class='fl'>0.5</span>,
   <span class='kw'>min.strength</span> <span class='kw'>=</span> -<span class='fl'>0.5</span>, <span class='kw'>max.strength</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>c</span> <span class='kw'>=</span> <span class='fl'>0.02</span>, <span class='kw'>ignore.c</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>negedge.symm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>clique.size</span> <span class='kw'>=</span> <span class='fl'>5</span>)</pre>
+  <span class='kw'>negedge.symm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>clique.size</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>groups</span> <span class='kw'>=</span> <span class='fu'>c</span>(),
+  <span class='kw'>intra.group.strength</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>inter.group.strength</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -146,7 +122,7 @@ using Klemm-Eguiluz algorithm to generate a modular and scale-free interaction m
     </tr>
     <tr>
       <th>ignore.c</th>
-      <td><p>do not adjust connectance (only for klemm)</p></td>
+      <td><p>do not adjust connectance</p></td>
     </tr>
     <tr>
       <th>negedge.symm</th>
@@ -156,6 +132,18 @@ using Klemm-Eguiluz algorithm to generate a modular and scale-free interaction m
       <th>clique.size</th>
       <td><p>modularity parameter (only for klemm)</p></td>
     </tr>
+    <tr>
+      <th>groups</th>
+      <td><p>vector of group memberships for each species, assign NA if species does not belong to any group (only for random)</p></td>
+    </tr>
+    <tr>
+      <th>intra.group.strength</th>
+      <td><p>interaction strength between members of the same group</p></td>
+    </tr>
+    <tr>
+      <th>inter.group.strength</th>
+      <td><p>interaction strength between members of different groups (if not defined, will be assigned randomly)</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -164,7 +152,7 @@ using Klemm-Eguiluz algorithm to generate a modular and scale-free interaction m
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Klemm &amp; Eguiluz, Growing Scale-Free Networks with Small World Behavior <a href='http://arxiv.org/pdf/cond-mat/0107607v1.pdf'>http://arxiv.org/pdf/cond-mat/0107607v1.pdf</a></p>
+    <p>Klemm &amp; Eguiluz, Growing Scale-Free Networks with Small World Behavior <a href = 'http://arxiv.org/pdf/cond-mat/0107607v1.pdf'>http://arxiv.org/pdf/cond-mat/0107607v1.pdf</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -181,7 +169,13 @@ using Klemm-Eguiluz algorithm to generate a modular and scale-free interaction m
 #&gt; [1] "Final connectance: 0.5"
 #&gt; [1] "Final arc number (excluding self-arcs) 45"
 #&gt; [1] "Final negative arc number (excluding self-arcs) 18"
-#&gt; [1] "PEP: 60"</div></pre>
+#&gt; [1] "PEP: 60"</div><div class='input'><span class='no'>groups</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fu'>rep</span>(<span class='fl'>NA</span>,<span class='fl'>5</span>),<span class='fu'>rep</span>(<span class='fl'>1</span>,<span class='fl'>10</span>),<span class='fu'>rep</span>(<span class='fl'>2</span>,<span class='fl'>5</span>),<span class='fu'>rep</span>(<span class='fl'>3</span>,<span class='fl'>10</span>),<span class='fu'>rep</span>(<span class='fl'>4</span>,<span class='fl'>10</span>))
+<span class='no'>Agroup</span><span class='kw'>=</span><span class='fu'>generateA</span>(<span class='kw'>N</span><span class='kw'>=</span><span class='fl'>40</span>,<span class='kw'>groups</span><span class='kw'>=</span><span class='no'>groups</span>,<span class='kw'>c</span><span class='kw'>=</span><span class='fl'>0.5</span>,<span class='kw'>intra.group.strength</span><span class='kw'>=</span><span class='fl'>0.1</span>,<span class='kw'>inter.group.strength</span><span class='kw'>=</span>-<span class='fl'>0.5</span>, <span class='kw'>d</span><span class='kw'>=</span>-<span class='fl'>1</span>)</div><div class='output co'>#&gt; [1] "Adjusting connectance to 0.5"
+#&gt; [1] "Initial edge number 1600"
+#&gt; [1] "Initial connectance 1"
+#&gt; [1] "Number of edges removed 780"
+#&gt; [1] "Final connectance 0.5"
+#&gt; [1] "Final connectance: 0.5"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

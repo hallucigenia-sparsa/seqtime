@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Generate growth changes induced by environment � envGrowthChanges • seqtime</title>
+<title>Generate growth changes induced by environment — envGrowthChanges • seqtime</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -23,8 +23,7 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -52,34 +51,10 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/dataset_generation.html">Generating synthetic datasets with seqtime and generalized Lotka-Volterra</a>
-    </li>
-    <li>
-      <a href="../articles/network_inference.html">Network inference with LIMITS</a>
-    </li>
-    <li>
-      <a href="../articles/noise_simulations.html">Noise simulation examples</a>
-    </li>
-    <li>
-      <a href="../articles/seqtime_tour.html">Tour through seqtime - Properties of time series generated with different ecological models</a>
-    </li>
-  </ul>
+<li>
+  <a href="../articles/index.html">Articles</a>
 </li>
       </ul>
       
@@ -152,8 +127,67 @@ Note that the effect of environmental parameters is already summed, so only one 
 #&gt; [1] "Final connectance: 0.5"
 #&gt; [1] "Final arc number (excluding self-arcs) 45"
 #&gt; [1] "Final negative arc number (excluding self-arcs) 18"
-#&gt; [1] "PEP: 60"</div><div class='input'><span class='no'>env</span> <span class='kw'>=</span> <span class='fu'>envGrowthChanges</span>(<span class='kw'>species</span><span class='kw'>=</span><span class='fl'>100</span>, <span class='kw'>env.factors</span><span class='kw'>=</span><span class='fl'>2</span>, <span class='kw'>conditions</span><span class='kw'>=</span><span class='fl'>2</span>, <span class='kw'>strength</span><span class='kw'>=</span><span class='fl'>0.5</span>)
-<span class='no'>dataset</span> <span class='kw'>=</span> <span class='fu'><a href='generateDataSet.html'>generateDataSet</a></span>(<span class='kw'>samples</span><span class='kw'>=</span><span class='fl'>80</span>, <span class='no'>klemm</span>, <span class='kw'>env.matrix</span><span class='kw'>=</span><span class='no'>env</span>, <span class='kw'>perturb.count</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>40</span>,<span class='fl'>40</span>), <span class='kw'>count</span><span class='kw'>=</span><span class='fl'>1000</span>, <span class='kw'>mode</span><span class='kw'>=</span><span class='fl'>4</span>)</div><div class='output co'>#&gt; <span class='error'>Error in glv(N, matrix, y = y, perturb = perturb): Please provide as many growth changes as species!</span></div></pre>
+#&gt; [1] "PEP: 60"</div><div class='input'><span class='no'>env</span> <span class='kw'>=</span> <span class='fu'>envGrowthChanges</span>(<span class='kw'>species</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>env.factors</span><span class='kw'>=</span><span class='fl'>2</span>, <span class='kw'>conditions</span><span class='kw'>=</span><span class='fl'>2</span>, <span class='kw'>strength</span><span class='kw'>=</span><span class='fl'>0.5</span>)
+<span class='no'>dataset</span> <span class='kw'>=</span> <span class='fu'><a href='generateDataSet.html'>generateDataSet</a></span>(<span class='fl'>100</span>, <span class='no'>klemm</span>, <span class='kw'>env.matrix</span> <span class='kw'>=</span> <span class='no'>env</span>, <span class='kw'>perturb.count</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>50</span>, <span class='fl'>50</span>))</div><div class='output co'>#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#&gt;       such that in the machine, T + H = T on the next step  
+#&gt;      (H = step size). Solver will continue anyway.
+#&gt; In above message, R1 = 0.072687, R2 = 5.75929e-18
+#&gt;  
+#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#&gt;       such that in the machine, T + H = T on the next step  
+#&gt;      (H = step size). Solver will continue anyway.
+#&gt; In above message, R1 = 0.072687, R2 = 5.75929e-18
+#&gt;  
+#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#&gt;       such that in the machine, T + H = T on the next step  
+#&gt;      (H = step size). Solver will continue anyway.
+#&gt; In above message, R1 = 0.072687, R2 = 5.75929e-18
+#&gt;  
+#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#&gt;       such that in the machine, T + H = T on the next step  
+#&gt;      (H = step size). Solver will continue anyway.
+#&gt; In above message, R1 = 0.072687, R2 = 4.71331e-18
+#&gt;  
+#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#&gt;       such that in the machine, T + H = T on the next step  
+#&gt;      (H = step size). Solver will continue anyway.
+#&gt; In above message, R1 = 0.072687, R2 = 4.71331e-18
+#&gt;  
+#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#&gt;       such that in the machine, T + H = T on the next step  
+#&gt;      (H = step size). Solver will continue anyway.
+#&gt; In above message, R1 = 0.072687, R2 = 4.71331e-18
+#&gt;  
+#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#&gt;       such that in the machine, T + H = T on the next step  
+#&gt;      (H = step size). Solver will continue anyway.
+#&gt; In above message, R1 = 0.072687, R2 = 3.8573e-18
+#&gt;  
+#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#&gt;       such that in the machine, T + H = T on the next step  
+#&gt;      (H = step size). Solver will continue anyway.
+#&gt; In above message, R1 = 0.072687, R2 = 3.8573e-18
+#&gt;  
+#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#&gt;       such that in the machine, T + H = T on the next step  
+#&gt;      (H = step size). Solver will continue anyway.
+#&gt; In above message, R1 = 0.072687, R2 = 3.8573e-18
+#&gt;  
+#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#&gt;       such that in the machine, T + H = T on the next step  
+#&gt;      (H = step size). Solver will continue anyway.
+#&gt; In above message, R1 = 0.072687, R2 = 3.15675e-18
+#&gt;  
+#&gt; DLSODA-  Above warning has been issued I1 times.  
+#&gt;      It will not be issued again for this problem.
+#&gt; In above message, I1 = 10
+#&gt;  
+#&gt; DLSODA-  At current T (=R1), MXSTEP (=I1) steps   
+#&gt;       taken on this call before reaching TOUT     
+#&gt; In above message, I1 = 5000
+#&gt;  
+#&gt; In above message, R1 = 0.072687
+#&gt;  </div><div class='output co'>#&gt; <span class='warning'>Warning: an excessive amount of work (&gt; maxsteps ) was done, but integration was not successful - increase maxsteps</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Returning early. Results are accurate, as far as they go</span></div><div class='output co'>#&gt; <span class='error'>Error in series[, 1001]: subscript out of bounds</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

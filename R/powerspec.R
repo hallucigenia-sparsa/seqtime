@@ -23,7 +23,7 @@
 #' out.spec=powerspec(brownNoise, header="brown noise", plot=TRUE)
 #' @export
 
-powerspec<-function(v, plot=FALSE, detrend=TRUE, smooth=FALSE, df=max(2,log10(ncol(v))), header="", col="blue"){
+powerspec<-function(v, plot=FALSE, detrend=TRUE, smooth=FALSE, df=max(2,log10(length(v))), header="", col="blue"){
   # generates periodogram
   out=stats::spectrum(v, plot=FALSE, detrend=detrend)
   # check for zeros and negative values

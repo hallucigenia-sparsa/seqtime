@@ -29,34 +29,10 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/dataset_generation.html">Generating synthetic datasets with seqtime and generalized Lotka-Volterra</a>
-    </li>
-    <li>
-      <a href="../articles/network_inference.html">Network inference with LIMITS</a>
-    </li>
-    <li>
-      <a href="../articles/noise_simulations.html">Noise simulation examples</a>
-    </li>
-    <li>
-      <a href="../articles/seqtime_tour.html">Tour through seqtime - Properties of time series generated with different ecological models</a>
-    </li>
-  </ul>
+  <a href="../articles/index.html">Articles</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -110,7 +86,7 @@ A =<span class="st"> </span><span class="kw"><a href="../reference/generateA.htm
 ## [1] "Final negative arc number (excluding self-arcs) 105"
 ## [1] "PEP: 13.9344262295082"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotA.html">plotA</a></span>(A, <span class="dt">header=</span><span class="st">"Klemm-Eguiluz interaction matrix"</span>)</code></pre></div>
-<pre><code>## [1] "Largest value: 0.498802830893104"
+<pre><code>## [1] "Largest value: 0.494678020748235"
 ## [1] "Smallest value: -0.5"</code></pre>
 <p><img src="dataset_generation_files/figure-html/unnamed-chunk-2-1.png" width="672"></p>
 <p>Normally, we would need to generate initial abundances so we could perform the gLV calculations. The dataset generation function takes care of that, but if you want to have different initial abundances than those generated from the Poisson distribution, you can change the mode parameter.</p>
@@ -118,7 +94,7 @@ A =<span class="st"> </span><span class="kw"><a href="../reference/generateA.htm
 dataset =<span class="st"> </span><span class="kw"><a href="../reference/normalize.html">normalize</a></span>(dataset)
 dataset =<span class="st"> </span><span class="kw">melt</span>(dataset)
 <span class="kw">colnames</span>(dataset) =<span class="st"> </span><span class="kw">c</span>(<span class="st">"Species"</span>, <span class="st">"Sample"</span>, <span class="st">"Abundance"</span>)
-<span class="kw">ggplot</span>(<span class="dt">data=</span>dataset, <span class="kw">aes</span>(<span class="dt">x=</span>dataset<span class="op">$</span>Sample, <span class="dt">y=</span>dataset<span class="op">$</span>Abundance, <span class="dt">width=</span><span class="dv">1</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">y =</span> dataset<span class="op">$</span>Abundance, <span class="dt">x=</span> dataset<span class="op">$</span>Sample, <span class="dt">fill=</span>dataset<span class="op">$</span>Species), <span class="dt">data=</span>dataset, <span class="dt">stat=</span><span class="st">"identity"</span>, <span class="dt">show.legend=</span>F) <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">aspect.ratio=</span>.<span class="dv">4</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme_classic</span>()<span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">"Relative abundance"</span>) <span class="op">+</span><span class="st"> </span><span class="kw">xlab</span>(<span class="st">"Sample"</span>)</code></pre></div>
+<span class="kw">ggplot</span>(<span class="dt">data=</span>dataset, <span class="kw">aes</span>(<span class="dt">x=</span>dataset$Sample, <span class="dt">y=</span>dataset$Abundance, <span class="dt">width=</span><span class="dv">1</span>)) +<span class="st"> </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">y =</span> dataset$Abundance, <span class="dt">x=</span> dataset$Sample, <span class="dt">fill=</span>dataset$Species), <span class="dt">data=</span>dataset, <span class="dt">stat=</span><span class="st">"identity"</span>, <span class="dt">show.legend=</span>F) +<span class="st"> </span><span class="kw">theme</span>(<span class="dt">aspect.ratio=</span>.<span class="dv">4</span>) +<span class="st"> </span><span class="kw">theme_classic</span>()+<span class="st"> </span><span class="kw">ylab</span>(<span class="st">"Relative abundance"</span>) +<span class="st"> </span><span class="kw">xlab</span>(<span class="st">"Sample"</span>)</code></pre></div>
 <p><img src="dataset_generation_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
 <p>We can also generate the dataset with environmental perturbations. For that, we first generate a suitable environmental matrix. We also tell the dataset function how many samples receive which perturbation. The abundance profile shifts as a result.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/envGrowthChanges.html">envGrowthChanges</a></span>(N, <span class="dt">strength=</span><span class="fl">0.8</span>)
@@ -126,7 +102,7 @@ dataset =<span class="st"> </span><span class="kw"><a href="../reference/generat
 dataset =<span class="st"> </span><span class="kw"><a href="../reference/normalize.html">normalize</a></span>(dataset)
 dataset =<span class="st"> </span><span class="kw">melt</span>(dataset)
 <span class="kw">colnames</span>(dataset) =<span class="st"> </span><span class="kw">c</span>(<span class="st">"Species"</span>, <span class="st">"Sample"</span>, <span class="st">"Abundance"</span>)
-<span class="kw">ggplot</span>(<span class="dt">data=</span>dataset, <span class="kw">aes</span>(<span class="dt">x=</span>dataset<span class="op">$</span>Sample, <span class="dt">y=</span>dataset<span class="op">$</span>Abundance, <span class="dt">width=</span><span class="dv">1</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">y =</span> dataset<span class="op">$</span>Abundance, <span class="dt">x=</span> dataset<span class="op">$</span>Sample, <span class="dt">fill=</span>dataset<span class="op">$</span>Species), <span class="dt">data=</span>dataset, <span class="dt">stat=</span><span class="st">"identity"</span>, <span class="dt">show.legend=</span>F) <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">aspect.ratio=</span>.<span class="dv">4</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme_classic</span>()<span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">"Relative abundance"</span>) <span class="op">+</span><span class="st"> </span><span class="kw">xlab</span>(<span class="st">"Sample"</span>)</code></pre></div>
+<span class="kw">ggplot</span>(<span class="dt">data=</span>dataset, <span class="kw">aes</span>(<span class="dt">x=</span>dataset$Sample, <span class="dt">y=</span>dataset$Abundance, <span class="dt">width=</span><span class="dv">1</span>)) +<span class="st"> </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">y =</span> dataset$Abundance, <span class="dt">x=</span> dataset$Sample, <span class="dt">fill=</span>dataset$Species), <span class="dt">data=</span>dataset, <span class="dt">stat=</span><span class="st">"identity"</span>, <span class="dt">show.legend=</span>F) +<span class="st"> </span><span class="kw">theme</span>(<span class="dt">aspect.ratio=</span>.<span class="dv">4</span>) +<span class="st"> </span><span class="kw">theme_classic</span>()+<span class="st"> </span><span class="kw">ylab</span>(<span class="st">"Relative abundance"</span>) +<span class="st"> </span><span class="kw">xlab</span>(<span class="st">"Sample"</span>)</code></pre></div>
 <p><img src="dataset_generation_files/figure-html/unnamed-chunk-4-1.png" width="672"></p>
 </div>
   </div>

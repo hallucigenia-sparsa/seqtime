@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Time Series Plot � tsplot • seqtime</title>
+<title>Time Series Plot — tsplot • seqtime</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -23,8 +23,7 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -52,34 +51,10 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/dataset_generation.html">Generating synthetic datasets with seqtime and generalized Lotka-Volterra</a>
-    </li>
-    <li>
-      <a href="../articles/network_inference.html">Network inference with LIMITS</a>
-    </li>
-    <li>
-      <a href="../articles/noise_simulations.html">Noise simulation examples</a>
-    </li>
-    <li>
-      <a href="../articles/seqtime_tour.html">Tour through seqtime - Properties of time series generated with different ecological models</a>
-    </li>
-  </ul>
+<li>
+  <a href="../articles/index.html">Articles</a>
 </li>
       </ul>
       
@@ -109,9 +84,10 @@
     
 
     <pre class="usage"><span class='fu'>tsplot</span>(<span class='no'>x</span>, <span class='kw'>time.given</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>num</span> <span class='kw'>=</span> <span class='fu'>nrow</span>(<span class='no'>x</span>), <span class='kw'>sample.points</span> <span class='kw'>=</span> <span class='fu'>c</span>(),
-  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"lines"</span>, <span class='kw'>dist</span> <span class='kw'>=</span> <span class='st'>"bray"</span>, <span class='kw'>identifyPoints</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>topN</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>groups</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>hideGroups</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>header</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>noLabels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>perturb</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"lines"</span>, <span class='kw'>dist</span> <span class='kw'>=</span> <span class='st'>"bray"</span>, <span class='kw'>my.color.map</span> <span class='kw'>=</span> <span class='fu'>list</span>(),
+  <span class='kw'>identifyPoints</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>topN</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>groups</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>hideGroups</span> <span class='kw'>=</span> <span class='fu'>c</span>(),
+  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>header</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'>c</span>(), <span class='kw'>noLabels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>perturb</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -130,7 +106,7 @@
     </tr>
     <tr>
       <th>sample.points</th>
-      <td><p>sample.points</p></td>
+      <td><p>indicate sample points (only for lines)</p></td>
     </tr>
     <tr>
       <th>mode</th>
@@ -139,6 +115,10 @@
     <tr>
       <th>dist</th>
       <td><p>the distance to use for the PCoA plot</p></td>
+    </tr>
+    <tr>
+      <th>my.color.map</th>
+      <td><p>map of taxon-specific colors, should match row names (only for bars)</p></td>
     </tr>
     <tr>
       <th>identifyPoints</th>
@@ -150,7 +130,7 @@
     </tr>
     <tr>
       <th>groups</th>
-      <td><p>group membership vector with as many entries as samples, only supported for mode bars and pcoa</p></td>
+      <td><p>group membership vector; for mode bars and pcoa refers to samples; for mode lines refers to taxa; there are as many entries in the group membership vector as samples or taxa</p></td>
     </tr>
     <tr>
       <th>hideGroups</th>
@@ -193,10 +173,10 @@
 #&gt; [1] "Final connectance: 0.1"
 #&gt; [1] "Initial edge number 295"
 #&gt; [1] "Initial connectance 0.1"
-#&gt; [1] "Number of negative edges already present: 173"
-#&gt; [1] "Converting 34 edges into negative edges"
+#&gt; [1] "Number of negative edges already present: 168"
+#&gt; [1] "Converting 38 edges into negative edges"
 #&gt; [1] "Final connectance: 0.1"</div><div class='input'><span class='no'>out.ricker</span><span class='kw'>=</span><span class='fu'><a href='ricker.html'>ricker</a></span>(<span class='no'>N</span>,<span class='kw'>A</span><span class='kw'>=</span><span class='no'>A</span>,<span class='kw'>y</span><span class='kw'>=</span><span class='fu'><a href='generateAbundances.html'>generateAbundances</a></span>(<span class='no'>N</span>,<span class='kw'>mode</span><span class='kw'>=</span><span class='fl'>5</span>,<span class='kw'>prob</span><span class='kw'>=</span><span class='fl'>TRUE</span>),<span class='kw'>K</span><span class='kw'>=</span><span class='fu'>rep</span>(<span class='fl'>0.1</span>,<span class='no'>N</span>), <span class='kw'>sigma</span><span class='kw'>=</span>-<span class='fl'>1</span>,<span class='kw'>tend</span><span class='kw'>=</span><span class='fl'>500</span>)
-<span class='fu'>tsplot</span>(<span class='no'>out.ricker</span>)</div><div class='img'><img src='tsplot-4.png' alt='' width='700' height='432.632880098887' /></div><div class='input'><span class='fu'>tsplot</span>(<span class='no'>out.ricker</span>[,<span class='fl'>1</span>:<span class='fl'>20</span>],<span class='kw'>mode</span><span class='kw'>=</span><span class='st'>"bars"</span>,<span class='kw'>legend</span><span class='kw'>=</span><span class='fl'>TRUE</span>)</div><div class='img'><img src='tsplot-5.png' alt='' width='700' height='432.632880098887' /></div><div class='input'><span class='fu'>tsplot</span>(<span class='no'>out.ricker</span>[,<span class='fl'>1</span>:<span class='fl'>50</span>],<span class='kw'>mode</span><span class='kw'>=</span><span class='st'>"pcoa"</span>)</div><div class='img'><img src='tsplot-6.png' alt='' width='700' height='432.632880098887' /></div></pre>
+<span class='fu'>tsplot</span>(<span class='no'>out.ricker</span>)</div><img src='tsplot-4.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>tsplot</span>(<span class='no'>out.ricker</span>[,<span class='fl'>1</span>:<span class='fl'>20</span>],<span class='kw'>mode</span><span class='kw'>=</span><span class='st'>"bars"</span>,<span class='kw'>legend</span><span class='kw'>=</span><span class='fl'>TRUE</span>)</div><img src='tsplot-6.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>tsplot</span>(<span class='no'>out.ricker</span>[,<span class='fl'>1</span>:<span class='fl'>50</span>],<span class='kw'>mode</span><span class='kw'>=</span><span class='st'>"pcoa"</span>)</div><img src='tsplot-8.png' alt='' width='540' height='400' /></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
