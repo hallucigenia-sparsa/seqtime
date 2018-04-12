@@ -119,6 +119,15 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
   limitsqualPPV=c()
   limitsqualSens=c()
 
+  Acorr=NA
+  oriACon=NA
+  oriAPep=NA
+  Arand=NA
+  Arandperc=NA
+  acc=NA
+  sens=NA
+  ppv=NA
+
   oriConn=c()
   oriPep=c()
 
@@ -269,6 +278,8 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
           if(expId==57){
             subfolder=paste(expId,"ts_N_60_skip_1_tmax_600",sep="_")
           }
+        }else if(fit.type=="last"){
+          # nothing
         }else{
           if((expId >= 25 && expId <= 30) || (expId >= 44 && expId <= 50 && fit.type!="first")){
             subfolder=paste(expId,"ts_full_N60_skip1_tmax",sep="_")
@@ -307,10 +318,11 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
         m.vector=c()
         e.vector=c()
         expId.subfolder.selectedSpecFile=paste(expId.subfolder,paste(expId,"timeseries_name_species_kept.txt", sep="_"),sep="/")
-        if(fit.type=="noise"){
+        if(fit.type=="noise" || fit.type=="last"){
           expId.subfolder.selectedSpecFile=paste(expId.subfolder,paste("my_results_name_species_kept.txt"),sep="/")
           expId.subfolder.corrfile=paste(expId.subfolder, paste("my_results_corr.txt"), sep="/")
         }
+        print(expId.subfolder.selectedSpecFile)
         selectedSpec=as.matrix(read.table(file=expId.subfolder.selectedSpecFile,header=FALSE))
         if(recomputeQual==FALSE && file.exists(expId.subfolder.corrfile)){
           # format corrfile:
@@ -346,7 +358,7 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
           print(paste("Reading original time series from file:",ori.timeseries.path))
         }
         expId.subfolder.Aestfile=paste(expId.subfolder, paste(expId, "timeseries_Best.txt", sep="_"), sep="/")
-        if(fit.type=="noise"){
+        if(fit.type=="noise" || fit.type=="last"){
           expId.subfolder.Aestfile=paste(expId.subfolder, paste("my_results_Best.txt"), sep="/")
         }
         print(paste("Reading predicted interaction matrix from:",expId.subfolder.Aestfile))
@@ -505,6 +517,7 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
       limitsqualmaxcorr=c(limitsqualmaxcorr,NA)
       limitsqualslope=c(limitsqualslope,NA)
       limitsqualdeltaAest=c(limitsqualdeltaAest,NA)
+      limitsqualPep=c(limitsqualPep,NA)
       limitsqualAcorr=c(limitsqualAcorr,NA)
       limitsqualautocorslope=c(limitsqualautocorslope,NA)
       limitsqualConn=c(limitsqualConn, NA)
@@ -516,6 +529,7 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
       limitsqualSens=c(limitsqualSens,NA)
       limitsqualPPV=c(limitsqualPPV,NA)
       oriConn=c(oriConn,NA)
+      oriPep=c(oriPep,NA)
     }
   }
 

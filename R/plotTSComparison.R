@@ -174,19 +174,19 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
         composition[1,i]=as.numeric(data$pink[i])
         composition[2,i]=as.numeric(data$brown[i])
         composition[3,i]=as.numeric(data$black[i])
-        composition[4,i]=1-sum(composition[1:3,i]) # either all white ones when smooth and predef is true or a mixture of white, non-classified and non-significant ones represented in gray
+        composition[4,i]=100-sum(composition[1:3,i]) # either all white ones when smooth and predef is true or a mixture of white, non-classified and non-significant ones represented in gray
       }else if(summary.type=="autocor"){
         composition[1,i]=as.numeric(data$maxautocorbin1[i])
         composition[2,i]=as.numeric(data$maxautocorbin2[i])
         composition[3,i]=as.numeric(data$maxautocorbin3[i])
         composition[4,i]=as.numeric(data$maxautocorbin4[i])
-        composition[5,i]=1-sum(composition[1:4,i])
+        composition[5,i]=100-sum(composition[1:4,i])
       }else if(summary.type=="hurst"){
         composition[1,i]=as.numeric(data$lowhurst[i])
         composition[2,i]=as.numeric(data$middlehurst[i])
         composition[3,i]=as.numeric(data$highhurst[i])
         composition[4,i]=as.numeric(data$veryhighhurst[i])
-        composition[5,i]=1-sum(composition[1:4,i])
+        composition[5,i]=100-sum(composition[1:4,i])
       }
       labelcolor="black"
       if(data$interval[i]==5){
@@ -248,8 +248,6 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
       main="Hurst exponent bin composition"
       colors=c("white","orange","red","darkred","gray")
     }
-    # convert relative abundances in percentages
-    composition=composition*100
     if(custom.header != ""){
       main=custom.header
     }

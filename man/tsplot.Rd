@@ -23,13 +23,13 @@ tsplot(x, time.given = FALSE, num = nrow(x), sample.points = c(),
 
 \item{dist}{the distance to use for the PCoA plot}
 
-\item{my.color.map}{map of taxon-specific colors, should match row names (only for bars)}
+\item{my.color.map}{map of taxon-specific colors, should match row names (only for bars) or group names (only for lines)}
 
 \item{identifyPoints}{click at points in the PCoA plot to identify them (using function identify), not active when noLabels is TRUE}
 
 \item{topN}{number of top taxa to be plotted for mode bars}
 
-\item{groups}{group membership vector; for mode bars and pcoa refers to samples; for mode lines refers to taxa; there are as many entries in the group membership vector as samples or taxa}
+\item{groups}{group membership vector; for mode bars and pcoa refers to samples; for mode lines refers to taxa; there are as many entries in the group membership vector as samples or taxa; taxa/samples are assumed to be ordered by groups}
 
 \item{hideGroups}{compute PCoA with all data, but do not show members of selected groups; expects one integer per group and consistency with groups parameter, only supported for mode pcoa}
 

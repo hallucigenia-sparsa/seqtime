@@ -6,10 +6,10 @@
 #' @param sample.points indicate sample points (only for lines)
 #' @param mode lines (default), pcoa (a PCoA plot with arrows showing the community trajectory) or bars (a stacked barplot for each sample)
 #' @param dist the distance to use for the PCoA plot
-#' @param my.color.map map of taxon-specific colors, should match row names (only for bars)
+#' @param my.color.map map of taxon-specific colors, should match row names (only for bars) or group names (only for lines)
 #' @param identifyPoints click at points in the PCoA plot to identify them (using function identify), not active when noLabels is TRUE
 #' @param topN number of top taxa to be plotted for mode bars
-#' @param groups group membership vector; for mode bars and pcoa refers to samples; for mode lines refers to taxa; there are as many entries in the group membership vector as samples or taxa
+#' @param groups group membership vector; for mode bars and pcoa refers to samples; for mode lines refers to taxa; there are as many entries in the group membership vector as samples or taxa; taxa/samples are assumed to be ordered by groups
 #' @param hideGroups compute PCoA with all data, but do not show members of selected groups; expects one integer per group and consistency with groups parameter, only supported for mode pcoa
 #' @param legend add a legend
 #' @param header string added to the plot title
@@ -27,7 +27,8 @@
 #' @export
 tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="lines", dist="bray", my.color.map=list(), identifyPoints=FALSE, topN=10, groups=c(), hideGroups=c(), legend=FALSE, header="", labels=c(), noLabels=FALSE, perturb=NULL, ...){
   if(length(groups)>0){
-    my.colors=assignColorsToGroups(groups = groups)
+    my.colors=assignColorsToGroups(groups = groups, my.color.map = my.color.map)
+    #print(paste("colors:",length(my.colors)))
   }else{
     col.vec = seq(0,1,1/nrow(x))
     my.colors = hsv(col.vec)
@@ -269,7 +270,7 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
 # expects group membership vector as input and returns a color vector
 # assign the same color to members of the same group
 # color vector is as long as group membership vector
-assignColorsToGroups<-function(groups){
+assignColorsToGroups<-function(groups, my.color.map = list()){
   groups.nafree=na.omit(groups)
   groupNum=length(unique(groups.nafree))+length(which(is.na(groups)))
   #print(paste("group number: ",groupNum))
@@ -277,14 +278,22 @@ assignColorsToGroups<-function(groups){
   hues = hsv(col.vec)
   hueCounter=1
   prevGroup=groups[1]
-  colors=c()
+  if(length(my.color.map)>0){
+    colors=my.color.map[[groups[1]]]
+  }else{
+    colors=c(hues[hueCounter])
+  }
   for(group.index in 2:length(groups)){
-    #print(paste(groups[group.index]," gets color: ",hues[hueCounter]))
-    colors=c(colors,hues[hueCounter])
-    if(is.na(groups[group.index]) || is.na(prevGroup) || prevGroup!=groups[group.index]){
-      hueCounter=hueCounter+1
+    if(length(my.color.map)>0){
+      colors=c(colors,my.color.map[[groups[group.index]]])
+    }else{
+      #print(paste(groups[group.index]," gets color: ",hues[hueCounter]))
+      colors=c(colors,hues[hueCounter])
+      if(is.na(groups[group.index]) || is.na(prevGroup) || prevGroup!=groups[group.index]){
+        hueCounter=hueCounter+1
+      }
+      prevGroup=groups[group.index]
     }
-    prevGroup=groups[group.index]
   }
   return(colors)
 }

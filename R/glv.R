@@ -84,7 +84,7 @@ glvsolve<-function(t, y, parms){
       tend = times[i] + durations[i]
       if ((t>tstart) & (t<tend)){
         b = b + c
-        print(b)
+        #print(b)
       }
     }
   }

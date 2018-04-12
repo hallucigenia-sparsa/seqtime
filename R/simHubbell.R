@@ -4,7 +4,7 @@
 #' @param N species number in the local community
 #' @param M species number in the metacommunity
 #' @param I number of individuals
-#' @param y initial species proportions, should sum to one
+#' @param y initial species proportions in the local community, should sum to one
 #' @param m.vector species proportions in the metacommunity, should sum to one
 #' @param m immigration rate (probability that a dead individuum is replaced by an individuum from the metacommunity)
 #' @param d number of deaths at each time step

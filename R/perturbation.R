@@ -17,7 +17,7 @@
 #' @param durations a vector of the same length as times that specifies the duration of each perturbation
 #' @param growthchanges (optional) a vector of the same length as species in the (meta-)community that describes by what amount each species growth rate is decreased or increased (zero: no change, minus: decrease, else increase)
 #' @param deathrate (optional) a constant (neutral model) or a vector (SOI model) with altered death rates
-#' @param numberchanges (optional) a vector of the same length as species in the (meta-)community that describes by what amount the abundance of each species is decreased or increased (zero: no change, minus: decrease, else increase, NA: remove a species from the community)
+#' @param numberchanges (optional) a vector of the same length as species in the (meta-)community that describes by what amount the abundance of each species is decreased or increased (zero: no change, minus: decrease, else increase, NA: remove a species from the community); species that have reached zero will not be altered
 #' @param capacityConstant determines whether the total abundance is allowed to change or not (if capacityConstant is TRUE, the abundance of all non-increasing species will be decreased by an equal amount to keep the total abundance constant)
 #' @return a perturbation object
 #' @examples
@@ -57,6 +57,8 @@ applyPerturbation<-function(perturb, t=NA, perturbCounter=1, durationCounter=1, 
   #print(paste("perturbation status",perturbationOn))
   #print(paste("perturb counter",perturbCounter))
   #print(paste("Length current duration: ",perturb$durations[perturbCounter]))
+  #print(paste("perturb time: ",perturb$times[perturbCounter]))
+  #print(paste("time: ",t))
   if(perturbCounter<=length(perturb$times)){
     if(perturb$times[perturbCounter]==t){
       perturbationOn=TRUE
@@ -79,6 +81,8 @@ applyPerturbation<-function(perturb, t=NA, perturbCounter=1, durationCounter=1, 
         if(length(perturb$numberchanges)>0){
           if(perturb$capacityConstant==TRUE){
             posChange.indices=which(perturb$numberchanges>0)
+            # only take non-zero indices into account to avoid resurrection of species
+            posChange.indices=setdiff(which(abundances>0),posChange.indices)
             totalPosChange=sum(perturb$numberchanges[posChange.indices])
             # to keep total abundance constant, positive change is accompanied by equal
             # negative change in all non-positively changing species
@@ -98,7 +102,9 @@ applyPerturbation<-function(perturb, t=NA, perturbCounter=1, durationCounter=1, 
               }
             }
           }else{
-            abundances=abundances+perturb$numberchanges
+            # only change non-zero abundances to avoid species resurrection
+            nonzero.indices=which(abundances>0)
+            abundances[nonzero.indices]=abundances[nonzero.indices]+perturb$numberchanges[nonzero.indices]
           }
           #print(abundances)
         }

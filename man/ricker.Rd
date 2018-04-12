@@ -4,19 +4,21 @@
 \alias{ricker}
 \title{Generate time series with the Ricker model}
 \usage{
-ricker(N, A, K = rep(0.1, N), y = runif(N), sigma = 0.05, tend = 100,
-  tskip = 0, explosion.bound = 10^8, perturb = NULL)
+ricker(N, A, K = rep(0.1, N), y = runif(N), sigma = 0.05, K.trend = NA,
+  tend = 100, tskip = 0, explosion.bound = 10^8, perturb = NULL)
 }
 \arguments{
 \item{N}{number of species}
 
 \item{A}{interaction matrix}
 
-\item{K}{carrying capacity}
+\item{K}{a vector of carrying capacities}
 
 \item{y}{initial abundances}
 
 \item{sigma}{noise level, if set to a non-positive value, no noise is added}
+
+\item{K.trend}{a vector of positive or negative carrying capacity percentages specified between 0 and 1}
 
 \item{tend}{number of time points}
 
@@ -37,7 +39,9 @@ is implemented here as proposed by Fisher and Mehta in PLoS ONE 2014.
 If an explosion occurs, -1 is returned. An explosion
 is reported if any species crosses the explosion bound. To avoid explosions, decrease the number of
 interactions in the interaction matrix and/or increase the number of negative interactions in the
-interaction matrix.
+interaction matrix. K.trend contains carrying capacity percentages (from the original carrying capacity) that are added
+to each species' current carrying capacity in each time step. K.trend allows to simulate an environmental trend.
+Negative carrying capacities are set to zero. If both a perturbation and K.trend are specified, the perturbation is carried out first.
 }
 \examples{
 tsplot(ricker(10,generateA(10),K=rep(0.01,10)),header="ricker")

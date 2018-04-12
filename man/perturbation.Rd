@@ -14,7 +14,7 @@ perturbation(times = c(), durations = c(), growthchanges = c(),
 
 \item{growthchanges}{(optional) a vector of the same length as species in the (meta-)community that describes by what amount each species growth rate is decreased or increased (zero: no change, minus: decrease, else increase)}
 
-\item{numberchanges}{(optional) a vector of the same length as species in the (meta-)community that describes by what amount the abundance of each species is decreased or increased (zero: no change, minus: decrease, else increase, NA: remove a species from the community)}
+\item{numberchanges}{(optional) a vector of the same length as species in the (meta-)community that describes by what amount the abundance of each species is decreased or increased (zero: no change, minus: decrease, else increase, NA: remove a species from the community); species that have reached zero will not be altered}
 
 \item{deathrate}{(optional) a constant (neutral model) or a vector (SOI model) with altered death rates}
 

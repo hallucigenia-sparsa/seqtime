@@ -5,8 +5,9 @@
 \title{Add Noise}
 \usage{
 addNoise(x, input.folder = "", output.folder = "", expIds = c(),
-  add = FALSE, scaling.factor = 1, noise.type = "pois", param1 = 1,
-  param2 = 1, scale.noise = 1)
+  add = FALSE, seqdepths = c(), vary.seqdepth = FALSE,
+  scaling.factor = 1, noise.distrib = "pois", param1 = 1, param2 = 1,
+  scale.noise = 1)
 }
 \arguments{
 \item{x}{matrix with taxa as rows and time points as columns (optional, can be set to NULL if an input.folder is provided)}
@@ -17,11 +18,15 @@ addNoise(x, input.folder = "", output.folder = "", expIds = c(),
 
 \item{expIds}{set of experiment identifiers to process (only needed if input.folder is provided)}
 
-\item{add}{whether to sample the abundance value from the noise distribution (the default) or whether to add noise, where the noise value is sampled from the noise distribution with user-specified parameters}
+\item{add}{whether to sample the abundance value from the noise distribution (the default) or whether to add noise, where the noise value is sampled from the noise distribution with user-specified parameters (add is not possible for noise.distrib = multi)}
 
-\item{scaling.factor}{if unequal to one: scale observed values with the given scaling factor and round (rounding will convert non-count data into counts)}
+\item{seqdepths}{specify a vector of sequencing depths with as many entries as x has columns or a single value if sequencing depth should be constant (only needed for noise.distrib = multi)}
 
-\item{noise.type}{which noise distribution to use (pois = Poisson, the default, nb = negative binomial, norm = Gaussian)}
+\item{vary.seqdepth}{if a constant sequencing depth is provided: vary sequencing depth by adding a value randomly selected from the uniform distribution between 0 and seqdepths/2 (only applicable for noise.distrib = multi)}
+
+\item{scaling.factor}{if unequal to one: scale observed values with the given scaling factor and round (rounding will convert non-count data into counts, recommended for Poisson and negative binomial distribution)}
+
+\item{noise.distrib}{which noise distribution to use (pois = Poisson, the default, nb = negative binomial, norm = Gaussian, multi = multinomial)}
 
 \item{param1}{first parameter for noise distribution (when add is false: standard deviation for Gaussian distribution, success probability for negative binomial, when add is true: mean for Gaussian distribution, lambda for Poisson, size for negative binomial)}
 
