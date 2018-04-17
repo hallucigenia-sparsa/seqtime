@@ -4,17 +4,19 @@
 \alias{limits}
 \title{LIMITS}
 \usage{
-limits(x, bagging.iter = 100, verbose = FALSE)
+limits(x, indices.perturb = NA, bagging.iter = 100, verbose = FALSE)
 }
 \arguments{
 \item{x}{time series with taxa as rows and time points as columns}
+
+\item{indices.perturb}{indices of species considered as environmental parameters}
 
 \item{bagging.iter}{the number of iterations used for bagging}
 
 \item{verbose}{print which taxon LIMITS is processing}
 }
 \value{
-the estimated interaction matrix
+a list with the estimated interaction matrix as Aest and the estimation error as error
 }
 \description{
 LIMITS is an algorithm developed by Fisher & Mehta to estimate the interaction matrix from time series data
@@ -25,7 +27,7 @@ assuming a Ricker model.
 N=20
 A=generateA(N,c=0.1)
 ts=ricker(N=N,A=A)
-Aest=limits(ts,verbose=TRUE)
+Aest=limits(ts,verbose=TRUE)$Aest
 par(mfrow=c(2,1))
 plotA(A,header="original")
 plotA(Aest,header="estimated")

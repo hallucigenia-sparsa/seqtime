@@ -57,7 +57,7 @@
       <h1>Tour through seqtime - Properties of time series generated with different ecological models</h1>
                         <h4 class="author">Karoline Faust</h4>
             
-            <h4 class="date">2018-03-30</h4>
+            <h4 class="date">2018-04-17</h4>
           </div>
 
     
@@ -77,8 +77,8 @@ A=<span class="kw"><a href="../reference/generateA.html">generateA</a></span>(N,
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">A=<span class="kw"><a href="../reference/modifyA.html">modifyA</a></span>(A,<span class="dt">perc=</span><span class="dv">70</span>,<span class="dt">strength=</span><span class="st">"uniform"</span>,<span class="dt">mode=</span><span class="st">"negpercent"</span>)</code></pre></div>
 <pre><code>## [1] "Initial edge number 295"
 ## [1] "Initial connectance 0.1"
-## [1] "Number of negative edges already present: 184"
-## [1] "Converting 22 edges into negative edges"
+## [1] "Number of negative edges already present: 170"
+## [1] "Converting 36 edges into negative edges"
 ## [1] "Final connectance: 0.1"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Generate a matrix using the algorithm by Klemm and Eguiluz to simulate a species network with a more realistic modular and scale-free structure. This takes a couple of minutes to complete.</span>
 <span class="co">#A=generateA(N, type="klemm", c=0.1)</span></code></pre></div>
@@ -120,8 +120,8 @@ ricker.taylor=seqtime::<span class="kw"><a href="../reference/taylor.html">taylo
 ## [1] "Number of taxa with non-significant power spectrum laws:  0"
 ## [1] "Number of taxa with non-classified power spectrum:  0"
 ## [1] "Number of taxa with white noise:  1"
-## [1] "Number of taxa with pink noise:  15"
-## [1] "Number of taxa with brown noise:  1"
+## [1] "Number of taxa with pink noise:  19"
+## [1] "Number of taxa with brown noise:  2"
 ## [1] "Number of taxa with black noise:  0"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotNoisetypes.html">plotNoisetypes</a></span>(soi.noise)</code></pre></div>
 <p><img src="figure_seqtime_tour/unnamed-chunk-9-1.png" width="576"></p>
@@ -134,12 +134,12 @@ ricker.taylor=seqtime::<span class="kw"><a href="../reference/taylor.html">taylo
 <p><img src="figure_seqtime_tour/unnamed-chunk-11-1.png" width="576"></p>
 <p>The Hubbell time series is dominated by brown noise:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hubbell.noise=<span class="kw"><a href="../reference/identifyNoisetypes.html">identifyNoisetypes</a></span>(out.hubbell,<span class="dt">smooth=</span><span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## [1] "Number of taxa below the abundance threshold:  0"
+<pre><code>## [1] "Number of taxa below the abundance threshold:  1"
 ## [1] "Number of taxa with non-significant power spectrum laws:  0"
 ## [1] "Number of taxa with non-classified power spectrum:  0"
 ## [1] "Number of taxa with white noise:  0"
 ## [1] "Number of taxa with pink noise:  0"
-## [1] "Number of taxa with brown noise:  39"
+## [1] "Number of taxa with brown noise:  42"
 ## [1] "Number of taxa with black noise:  0"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotNoisetypes.html">plotNoisetypes</a></span>(hubbell.noise)</code></pre></div>
 <p><img src="figure_seqtime_tour/unnamed-chunk-12-1.png" width="576"></p>
@@ -155,7 +155,7 @@ ricker.taylor=seqtime::<span class="kw"><a href="../reference/taylor.html">taylo
 <pre><code>## [1] "Number of taxa below the abundance threshold:  0"
 ## [1] "Number of taxa with non-significant power spectrum laws:  0"
 ## [1] "Number of taxa with non-classified power spectrum:  0"
-## [1] "Number of taxa with white noise:  33"
+## [1] "Number of taxa with white noise:  28"
 ## [1] "Number of taxa with pink noise:  0"
 ## [1] "Number of taxa with brown noise:  0"
 ## [1] "Number of taxa with black noise:  0"</code></pre>

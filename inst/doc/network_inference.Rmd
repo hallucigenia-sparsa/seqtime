@@ -58,7 +58,7 @@ Now, we run LIMITS to test how well it can infer the known interaction matrix fr
 LIMITS needs a minute to run and then returns the estimated interaction matrix.
 
 ```{r}
-Aest=limits(out.ricker)
+Aest=limits(out.ricker)$Aest
 ```
 
 To compare the known and inferred interaction matrix, we can plot them next to each other:
@@ -93,7 +93,7 @@ tsplot(out.hubbell,header="Hubbell")
 We infer an interaction matrix from the neutral time series:
 
 ```{r}
-Aesth=limits(out.hubbell)
+Aesth=limits(out.hubbell)$Aest
 ```
 
 The quality plot shows that the inferred interaction matrix leads to a high cross-correlation between predicted and original time series, even though the model underlying the original time series does not feature an interaction matrix. Thus, a high correlation between predicted and original time series can be misleading as an indicator for the quality of the inferred interaction matrix.

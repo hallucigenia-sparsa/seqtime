@@ -1,7 +1,7 @@
 ---
 title: "Network inference with LIMITS"
 author: "Karoline Faust"
-date: "2017-04-22"
+date: "2018-04-17"
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -51,7 +51,7 @@ plotA(A, header="Known interaction matrix")
 ```
 
 ```
-## [1] "Largest value: 0.484457682352513"
+## [1] "Largest value: 0.483182296855375"
 ## [1] "Smallest value: -0.5"
 ```
 
@@ -66,7 +66,7 @@ network=plotA(A,method="network")
 ```
 
 ```
-## [1] "Largest value: 0.484457682352513"
+## [1] "Largest value: 0.483182296855375"
 ## [1] "Smallest value: -0.5"
 ## [1] "Initial edge number 58"
 ## [1] "Initial connectance 0.1"
@@ -84,7 +84,7 @@ Given our interaction matrix, we can now simulate a test time series with the Ri
 
 ```r
 out.ricker=ricker(N,A=A)
-tsplot(out.ricker,type="l",header="Ricker")
+tsplot(out.ricker,header="Ricker")
 ```
 
 ![plot of chunk unnamed-chunk-5](figure_network_inference/unnamed-chunk-5-1.png)
@@ -94,7 +94,7 @@ LIMITS needs a minute to run and then returns the estimated interaction matrix.
 
 
 ```r
-Aest=limits(out.ricker)
+Aest=limits(out.ricker)$Aest
 ```
 
 ```
@@ -110,7 +110,7 @@ plotA(A,header="known")
 ```
 
 ```
-## [1] "Largest value: 0.484457682352513"
+## [1] "Largest value: 0.483182296855375"
 ## [1] "Smallest value: -0.5"
 ```
 
@@ -119,8 +119,8 @@ plotA(Aest,header="inferred")
 ```
 
 ```
-## [1] "Largest value: 1.60394573617015"
-## [1] "Smallest value: -3.08883746532602"
+## [1] "Largest value: 1.04220517474408"
+## [1] "Smallest value: -2.77051578231332"
 ```
 
 ![plot of chunk unnamed-chunk-7](figure_network_inference/unnamed-chunk-7-1.png)
@@ -138,7 +138,7 @@ mean(diag(crossCor), na.rm=TRUE)
 ```
 
 ```
-## [1] 0.7666941
+## [1] 0.7377678
 ```
 
 Finally, we can plot a few quality estimators for the interaction matrix inference. The quality plot displays the correlation between current and future time points one to five steps ahead (autocor) and the correlation between the original time series and a time series generated from the inferred interaction matrix step by step (cor). We can see that the predicted time series barely outperforms lag-one auto-correlation.
@@ -150,9 +150,9 @@ limitsqual=limitsQuality(out.ricker,A=Aest,plot=TRUE)
 
 ```
 ## [1] "Applying Schur decomposition"
-## [1] "Initial edge number 61"
-## [1] "Initial connectance 0.107894736842105"
-## [1] "Final connectance: 0.705263157894737"
+## [1] "Initial edge number 49"
+## [1] "Initial connectance 0.0763157894736842"
+## [1] "Final connectance: 0.434210526315789"
 ```
 
 ![plot of chunk unnamed-chunk-9](figure_network_inference/unnamed-chunk-9-1.png)
@@ -162,7 +162,7 @@ For comparison, we now generate a neutral time series with the Hubbell model. Th
 
 ```r
 out.hubbell=simHubbell(N=N, M=N,I=1500,d=N, m=0.1, tskip=500, tend=1000)
-tsplot(out.hubbell,type="l",header="Hubbell")
+tsplot(out.hubbell,header="Hubbell")
 ```
 
 ![plot of chunk unnamed-chunk-10](figure_network_inference/unnamed-chunk-10-1.png)
@@ -171,7 +171,7 @@ We infer an interaction matrix from the neutral time series:
 
 
 ```r
-Aesth=limits(out.hubbell)
+Aesth=limits(out.hubbell)$Aest
 ```
 
 ```
@@ -189,7 +189,7 @@ limitsqualh=limitsQuality(out.hubbell,A=Aesth, plot=TRUE)
 ## [1] "Applying Schur decomposition"
 ## [1] "Initial edge number 51"
 ## [1] "Initial connectance 0.0815789473684211"
-## [1] "Final connectance: 0.85"
+## [1] "Final connectance: 0.555263157894737"
 ```
 
 ![plot of chunk unnamed-chunk-12](figure_network_inference/unnamed-chunk-12-1.png)

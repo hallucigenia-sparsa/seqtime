@@ -24,7 +24,7 @@ out.ricker=ricker(N,A=A)
 tsplot(out.ricker,header="Ricker")
 
 ## ------------------------------------------------------------------------
-Aest=limits(out.ricker)
+Aest=limits(out.ricker)$Aest
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
 par(mfrow=c(1,2))
@@ -44,7 +44,7 @@ out.hubbell=simHubbell(N=N, M=N,I=1500,d=N, m=0.1, tskip=500, tend=1000)
 tsplot(out.hubbell,header="Hubbell")
 
 ## ------------------------------------------------------------------------
-Aesth=limits(out.hubbell)
+Aesth=limits(out.hubbell)$Aest
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
 limitsqualh=limitsQuality(out.hubbell,A=Aesth, plot=TRUE)

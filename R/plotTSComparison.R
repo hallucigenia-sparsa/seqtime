@@ -19,6 +19,7 @@
 # nt.smooth: when noise types were computed using predef and smoothing, all non-black,non-brown and non-pink taxa can be interpreted as white (so color is white and white is added in biplot), otherwise this assumption cannot be made (so color is grey and white is omitted from biplot)
 # jitter.width: jitter control (boxplot)
 # dot.size: dot size control (boxplot)
+# sig: for p-values: display significance (boxplot)
 # pcs: principal components (pca)
 # useGgplot: use ggplot2 to create the summary plot (summary), requires ggplot2 and reshape2
 # skipIntervals: only plot time series with interval 1, supported for box plot, pca and summary plot
@@ -31,6 +32,7 @@
 # pch: which point character to use for the plot (rankabund)
 # maxautocorBins: the bins used for the maximal autocorrelation, needed to set labels correctly (boxplot)
 # hurstBins: the bins used for the Hurst exponent, needed to set labels correctly (boxplot)
+# no.xlabels: suppress x labels (summary)
 # makeggplot: plot the ggplot2 object (only if ggplot2 plot was made)
 #
 # Returns: a ggplot2 object if ggplot2 plot was carried out
@@ -43,13 +45,14 @@
 #
 # Note: ggbiplot is outcommented so as not to disturb the seqtime build (avoid ggbiplot package dependency)
 
-plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", property="pink", custom.header="", summary.type="noise", summary.legend=TRUE, nt.smooth=FALSE, jitter.width=0.1, dot.size=3, pcs=c(1,2), useGgplot=FALSE, skipIntervals=FALSE, skipHighDeathrate=FALSE, skipGenerators=c(), addInitAbund=FALSE, norm=FALSE, taxonNum=NA, generator="all", pch="", maxautocorBins=c(0.3,0.5,0.8), hurstBins=c(0.5,0.7,0.9), makeggplot=TRUE){
+plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", property="pink", custom.header="", summary.type="noise", summary.legend=TRUE, nt.smooth=FALSE, jitter.width=0.1, dot.size=3, sig=FALSE, pcs=c(1,2), useGgplot=FALSE, skipIntervals=FALSE, skipHighDeathrate=FALSE, skipGenerators=c(), addInitAbund=FALSE, norm=FALSE, taxonNum=NA, generator="all", pch="", maxautocorBins=c(0.3,0.5,0.8), hurstBins=c(0.5,0.7,0.9), no.xlabels=FALSE, makeggplot=TRUE){
   if(!is.data.frame(data)){
     data=as.data.frame(data)
   }
   if(type=="rankabund" && !is.data.frame(distribs)){
     distribs=as.data.frame(distribs)
   }
+  ylim=c(NA,NA)
   ggplotObj=NULL
   data["expId"]=c(1:length(data$algorithm))
   # set negative sigma to zero
@@ -60,37 +63,51 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
   colorByDescript=colorBy
   if(property=="pink"){
     descript="percentage of pink OTUs"
+    ylim=c(0,100)
   }else if(property=="brown"){
     descript="percentage of brown OTUs"
+    ylim=c(0,100)
   }else if(property=="black"){
     descript="percentage of black OTUs"
+    ylim=c(0,100)
   }else if(property == "maxautocorbin4"){
     descript=paste("percentage of OTUs in maximum auto-correlation bin [",maxautocorBins[3],",1]",sep="")
   }else if(property == "maxautocorbin3"){
+    ylim=c(0,100)
     descript=paste("percentage of OTUs in maximum auto-correlation bin [",maxautocorBins[2],",",maxautocorBins[3],")",sep="")
   }else if(property == "maxautocorbin2"){
+    ylim=c(0,100)
     descript=paste("percentage of OTUs in maximum auto-correlation bin [",maxautocorBins[1],",",maxautocorBins[2],")",sep="")
   }else if(property == "maxautocorbin1"){
+    ylim=c(0,100)
     descript=paste("percentage of OTUs in maximum auto-correlation bin [0,",maxautocorBins[1],"]",sep="")
   }else if(property=="lowhurst"){
+    ylim=c(0,100)
     descript=paste("percentage of OTUs in Hurst exponent bin [0,",hurstBins[1],"]",sep="")
   }else if(property=="middlehurst"){
-      descript=paste("percentage of OTUs in Hurst exponent bin [",hurstBins[1],",",hurstBins[2],")",sep="")
+    ylim=c(0,100)
+    descript=paste("percentage of OTUs in Hurst exponent bin [",hurstBins[1],",",hurstBins[2],")",sep="")
   }else if(property=="highhurst"){
+    ylim=c(0,100)
     descript=paste("percentage of OTUs in Hurst exponent bin [",hurstBins[2],",",hurstBins[3],")",sep="")
   }else if(property=="veryhighhurst"){
+    ylim=c(0,100)
     descript=paste("percentage of OTUs in Hurst exponent bin [",hurstBins[3],",1]",sep="")
   }else if(property=="varevolslope"){
     descript="slope of the variance over time"
   }else if(property=="varevolr2"){
     descript="R2 of variance over time"
+    ylim=c(0,1)
   }else if(property == "Acorr"){
+    ylim=c(0,1)
     descript="LIMITS interaction matrix correlation"
   }else if(property=="corrAll"){
+    ylim=c(-0.1,1)
     # for all species considered for fit
     descript="LIMITS mean cross-correlation"
   }else if(property=="neutralfull" || property=="neutralslice" || property=="neutral"){
     descript="p-value"
+    ylim=c(0,1)
   }else if(property=="acc"){
     descript="accuracy"
   }else if(property=="maxcorr"){
@@ -155,11 +172,35 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
     }else{
       title=paste(generatorDescr," versus ",descript, " colored by ",colorByDescript,sep="")
     }
-    ymin=min(data[property],na.rm=TRUE)
-    ymax=max(data[property],na.rm=TRUE)
+    if(is.na(ylim[1])){
+      ymin=min(data[property],na.rm=TRUE)
+      ymax=max(data[property],na.rm=TRUE)
+      ylim=c(ymin,ymax)
+    }
     #print(customizeGeneratorNames(as.character(data$algorithm)))
     data$algorithm=as.factor(customizeGeneratorNames(as.character(data$algorithm)))
-    ggplotObj <- ggplot2::ggplot(data, ggplot2::aes(factor(algorithm),data[property])) + ggplot2::geom_boxplot() + ggplot2::geom_jitter(ggplot2::aes(colour=factor(unlist(data[colorBy]))), width=jitter.width, size=dot.size) + ggplot2::coord_cartesian(ylim=c(ymin,ymax)) + ggplot2::ggtitle(title) + ggplot2::xlab("") + ggplot2::ylab(firstup(descript)) + ggplot2::theme(legend.title=ggplot2::element_blank(), axis.text.x = ggplot2::element_text(angle=90,size=11))
+    if(sig==TRUE){
+      #print(data[property][[1]][1:5])
+      # treat zeros
+      zero.indices=which(data[property]==0)
+      non.zero.indices=which(data[property]>0)
+      min.pval=min(data[property][[1]][non.zero.indices])
+      # pseudocount
+      pseudocount=min.pval-(min.pval/2)
+      print(paste("Pseudo-count:",pseudocount))
+      data[property][[1]][zero.indices]=pseudocount
+      # compute significance
+      data[property]=-1*log10(data[property])
+      print("Transforming p-values")
+      ymin=min(data[property],na.rm=TRUE)
+      ymax=max(data[property],na.rm=TRUE)
+      ylim=c(ymin,ymax)
+      descript="-log10(p-value)"
+      y.intercept=1.3 # sig corresponding to p-value 0.05
+      ggplotObj <- ggplot2::ggplot(data, ggplot2::aes(factor(algorithm),data[property])) + ggplot2::geom_boxplot() + ggplot2::geom_jitter(ggplot2::aes(colour=factor(unlist(data[colorBy]))), width=jitter.width, size=dot.size) + ggplot2::coord_cartesian(ylim=ylim) + ggplot2::geom_hline(yintercept = y.intercept, stat = 'hline', linetype="dotted") + ggplot2::ggtitle(title) + ggplot2::xlab("") + ggplot2::ylab(firstup(descript)) + ggplot2::theme(legend.title=ggplot2::element_blank(), axis.text.x = ggplot2::element_text(angle=90,size=11))
+    }else{
+      ggplotObj <- ggplot2::ggplot(data, ggplot2::aes(factor(algorithm),data[property])) + ggplot2::geom_boxplot() + ggplot2::geom_jitter(ggplot2::aes(colour=factor(unlist(data[colorBy]))), width=jitter.width, size=dot.size) + ggplot2::coord_cartesian(ylim=ylim) + ggplot2::ggtitle(title) + ggplot2::xlab("") + ggplot2::ylab(firstup(descript)) + ggplot2::theme(legend.title=ggplot2::element_blank(), axis.text.x = ggplot2::element_text(angle=90,size=11))
+    }
     # remove legend title: theme(legend.title=element_blank())
   }else if(type=="summary"){
     # bar plot with OTU percentages in each category
@@ -273,8 +314,9 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
       par(las=2, srt=90, mar = c(5, 5, 4, 4))
       names=customizeGeneratorNames(generator.names=names)
       midpoints=barplot(composition,col=colors, ylab=ylab,main=main)
-      mtext(names,col=labelcolors,side=1, cex=0.8, line=0.5, at=midpoints)
-
+      if(no.xlabels==FALSE){
+        mtext(names,col=labelcolors,side=1, cex=0.8, line=0.5, at=midpoints)
+      }
       # set default par
       par(las = 1, srt=0, cex=1, mar = c(4, 5, 4, 4))
       if(summary.legend==TRUE){

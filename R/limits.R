@@ -4,16 +4,17 @@
 #' assuming a Ricker model.
 #'
 #' @param x time series with taxa as rows and time points as columns
+#' @param indices.perturb indices of species considered as environmental parameters
 #' @param bagging.iter the number of iterations used for bagging
 #' @param verbose print which taxon LIMITS is processing
-#' @return the estimated interaction matrix
+#' @return a list with the estimated interaction matrix as Aest and the estimation error as error
 #' @references Fisher & Mehta (2014). Identifying Keystone Species in the Human Gut Microbiome from Metagenomic Timeseries using Sparse Linear Regression. PLoS One 9:e102451
 #' @examples
 #' \dontrun{
 #' N=20
 #' A=generateA(N,c=0.1)
 #' ts=ricker(N=N,A=A)
-#' Aest=limits(ts,verbose=TRUE)
+#' Aest=limits(ts,verbose=TRUE)$Aest
 #' par(mfrow=c(2,1))
 #' plotA(A,header="original")
 #' plotA(Aest,header="estimated")
@@ -21,21 +22,31 @@
 #' }
 #' @export
 
-limits<-function(x, bagging.iter=100, verbose=FALSE){
+limits<-function(x, indices.perturb = NA, bagging.iter=100, verbose=FALSE){
   x=t(x)
   print(paste("Time series has",ncol(x),"taxa"))
   if(verbose==TRUE){
     print("Processing first taxon.")
   }
-  Aest<-t(limitscolumnwise(x, 1, r=bagging.iter))
+  results<-limitscolumnwise(x, 1, indices.perturb, r=bagging.iter)
+  Aest<-t(results[[1]])
+  error<-results[[2]]
   # loop taxa
   for(i in 2:ncol(x)){
     if(verbose==TRUE){
       print(paste("Processing taxon",i))
     }
-    Aest<-cbind(Aest,t(limitscolumnwise(x, i, r=bagging.iter)))
+    results<-limitscolumnwise(x, i, indices.perturb, r=bagging.iter)
+    Aest.temp<-results[[1]]
+    error.temp<-results[[2]]
+    Aest<-cbind(Aest,t(Aest.temp))
+    error<-append(error,error.temp)
   }
-  return(t(Aest))
+
+  res=list(t(Aest),error)
+  names(res)=c("Aest","error")
+
+  return(res)
 }
 
 #### R is a time series with the columns corresponding to the species N, and
@@ -50,7 +61,7 @@ limits<-function(x, bagging.iter=100, verbose=FALSE){
 #### errorF : idem as error but without the normalization by the variance.
 
 # by Sophie de Buyl, translated from a Mathematica code provided by Charles Fisher and Pankaj Mehta.
-limitscolumnwise <- function(R,i, r=100){
+limitscolumnwise <- function(R,i,indices.perturb, r=100){
 
   listnumbkeysp<-c(); #list of number species kept. NOT MANDATORY
 
@@ -59,22 +70,28 @@ limitscolumnwise <- function(R,i, r=100){
 
   # manipulating R to put the data in the appropriated form to apply limits:
 
-  R[R == 0] <- 2.22507e-308  # we will have to take the log, so let's remove zero's.
+  R[R <= 0] <- 2.22507e-308  # we will have to take the log, so let's remove zero's.
   sd<-dim(R)
   N<-sd[2] #number of species
   Ntp<-sd[1]-1 #number of time points
 
   # comput medians column-wise
   colMedians=apply(R,2,median)
+  # the median should not be substracted for the perturbations
+  if(all(is.na(indices.perturb)) == FALSE){
+    colMedians[indices.perturb]=rep(0,length(indices.perturb))
+  }
   # formulation with dependency on matrixStats
   #data<- R-t(kronecker(matrix(1,1,sd[1]),t(t(colMedians(R)))));#first N column of data matrix needed for limits
   data<- R-t(kronecker(matrix(1,1,sd[1]),colMedians))
   data<-data[1:(sd[1]-1),]
   data<-cbind(data,(log(R[2:sd[1],i])-log(R[1:(sd[1]-1),i])))
-
+  if(sum(is.na(log(R)))>0){
+    print(which(is.na(log(R)),arr.ind = T))
+  }
   # variable initiation
   res<-array(0,c(N,1)) # array for storing results
-
+  errorlist<-c()
   listspecies<-seq(1,N) # to construct the choices of excluded/includes species
 
   for(k in 1:r){ # we do r times the same thing to get r estimations the interaction matrix B
@@ -144,7 +161,8 @@ limitscolumnwise <- function(R,i, r=100){
       # if improvement over the current best model by thresh, include new species, otherwise exit loop
       if(is.na(errorEt)==FALSE && errorEt!=0 && (100.0*(errorEtemp - errorEt)/errorEt< -thresh)){ #we keep adding species
         errorEt <- errorEtemp# we update the error to be compared with.
-        B1t <- B1temp
+        B1t <- B1temp #useless
+        errorEtempt <- errorEtemp #useless
         testt <- test
       } else{ # we stop adding species
         xxx<-0
@@ -157,26 +175,28 @@ limitscolumnwise <- function(R,i, r=100){
     B[test]<-t(B1temp)
 
     res<-cbind(res, B)
+    errorlist<-c(errorlist,errorEtemp)
 
   } #end or r loop
 
   # Bagging step: output median of res
 
   res<-res[,-1]
+
   # compute medians row-wise
   rowMedians=apply(res,1,median)
   Beval<-t(as.matrix(rowMedians))
-
+  error.median<-median(errorlist)
   #listnumbkeysp
 
-  return(Beval)
+  return(list(Beval,error.median))
 }
 
 ##############################################################
 # restrictedleastsquare
 # function need for limits.r
 #
-# by Sophie de Buyl, translated from a Mathematica code provided by from Charles Fisher and Pankaj Mehta.
+# by Sophie de Buyl, translated from a Mathematica code provided by Charles Fisher and Pankaj Mehta.
 ################################################################
 restrictedleastsquare <- function(inbag,outbag,test){
 
