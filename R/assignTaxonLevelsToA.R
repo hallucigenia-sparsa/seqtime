@@ -16,6 +16,7 @@
 #' @param uniqueNames make names unique by appending a counter if needed (prevents merging of entries belonging to the same taxon)
 #' @param higherLevelNames if given level is not known, assign the highest level that is known
 #' @param no.merge suppress merging (in this case, taxon names are returned in a separate column of the matrix, not as row and column names)
+#' @return an interaction matrix with taxon names assigned
 #'
 #' @examples
 #' data("david_stool_lineages")
@@ -130,10 +131,14 @@ getIndicesOfTopNOTUsInProcessedDavidData<-function(N, type, data, metadata){
   return(res)
 }
 
+# Taxa are not discarded, samples are.
 # type: stoola or stoolb
 # data: David stool data
 # metadata: David metadata
 # Returns processed David data
+# data("david_stoolA_otus")
+# data("david_stoolA_metadata")
+# ts=getProcessedDavidData(type="stoola", data=david_stoolA_otus, metadata=david_stoolA_metadata)
 getProcessedDavidData<-function(type, data, metadata){
   # constants, only needed if type is non-empty
   david.minsamplesum=10000

@@ -10,11 +10,12 @@
 #' @param statsType interactions, degree or network
 #' @param plot.degree plot the degree distribution (for statsType network)
 #' @param collapse.degree sum degrees for taxa with the same name (for statsType degree)
+#' @param verbose print results
 #' @return for degree a matrix with positive, negative and total degree (including self-loops, excluding missing values), else a list; for statsType interactions: meanstrength = average interaction strength, varstrength = variance of interaction strength, nbinteractions = total interaction number (excluding diagonal), nbmut = number of mutualisms, nbcomp = number of competitions, nbcom = number of commensalisms, nbam = number of amensalisms, nbexp = number of exploitations, for statsType network: nodenum (node number), arcnum (arc number, including diagonal), mod (fast greedy modularity), cc (average clustering coefficient), avgpathlength (average shortest path length)
 #' @references Coyte et al., Science: "The ecology of the microbiome: Networks, competition, and stability" 350 (6261), 663-666 (2015).
 #' @export
 
-getAStats<-function(A, statsType = "interactions", plot.degree=FALSE, collapse.degree=FALSE){
+getAStats<-function(A, statsType = "interactions", plot.degree=FALSE, collapse.degree=FALSE, verbose=TRUE){
 
   if(statsType == "interactions"){
     # numbers of interaction types, excluding diagonal
@@ -33,11 +34,16 @@ getAStats<-function(A, statsType = "interactions", plot.degree=FALSE, collapse.d
       for(j in 1:i){
         # skip diagonal
         if(i != j){
-          #print(paste("i=",i))
-          #print(paste("j=",j))
           # collect non-zero interaction strengths
           if((A[i,j] != 0) || (A[j,i] != 0)){
-            a = c(a,A[i,j])
+            if((A[i,j] != 0) && (A[j,i] == 0)){
+              a = c(a,A[i,j])
+            }else if((A[i,j] == 0) && (A[j,i] != 0)){
+              a = c(a,A[j,i])
+            }else{
+              # interaction in both directions: take the mean of the absolute values
+              a=c(a,mean(c(abs(A[i,j]),abs(A[j,i]))))
+            }
           }
           # exploitative
           if((A[i,j] > 0 && A[j,i] < 0) || (A[i,j] < 0 && A[j,i] > 0)){
@@ -64,23 +70,32 @@ getAStats<-function(A, statsType = "interactions", plot.degree=FALSE, collapse.d
     } # end first loop
 
     # compute average interaction strength
-    a=abs(a)
-    var=var(a)
+    if(length(a)>0){
+      a=abs(a)
+      var=var(a)
+      P=length(a)
+    }else{
+      a=NA
+      var=NA
+      P=0
+    }
     # mean strength of realized interactions
     EX=sqrt((2*var)/pi)
     EXsquare=(2*var)/pi
 
-    P=Pm+Pc+Pe+Pp+Pa
+    #P=Pm+Pc+Pe+Pp+Pa
 
     # report statistics
-    print(paste("Total number of inter-species interactions:",P))
-    print(paste("Number of mutualistic inter-species interactions:",Pm))
-    print(paste("Number of competitive inter-species interactions:",Pc))
-    print(paste("Number of exploitative inter-species interactions:",Pe))
-    print(paste("Number of commensalistic inter-species interactions:",Pp))
-    print(paste("Number of amensalistic inter-species interactions:",Pa))
-    print(paste("Average inter-species interaction strength:",EX))
-    print(paste("Variance of inter-species interaction strengths:",var))
+    if(verbose==TRUE){
+      print(paste("Total number of inter-species interactions:",P))
+      print(paste("Number of mutualistic inter-species interactions:",Pm))
+      print(paste("Number of competitive inter-species interactions:",Pc))
+      print(paste("Number of exploitative inter-species interactions:",Pe))
+      print(paste("Number of commensalistic inter-species interactions:",Pp))
+      print(paste("Number of amensalistic inter-species interactions:",Pa))
+      print(paste("Average inter-species interaction strength:",EX))
+      print(paste("Variance of inter-species interaction strengths:",var))
+    }
 
     res=list(EX,var,P,Pm,Pc,Pe,Pp,Pa)
     names(res)=c("meanstrength","varstrength","nbinteractions","nbmut","nbcomp","nbexp","nbcom","nbam")
@@ -107,18 +122,23 @@ getAStats<-function(A, statsType = "interactions", plot.degree=FALSE, collapse.d
     }
     rownames(degrees)=rownames(A)
     posindex=which(degrees[,1]==max(degrees[,1]))
-    print(paste(rownames(degrees)[posindex]," has a maximal positive degree of ",max(degrees[,1]),sep=""))
     negindex=which(degrees[,2]==max(degrees[,2]))
-    print(paste(rownames(degrees)[negindex]," has a maximal negative degree of ",max(degrees[,2]),sep=""))
     index=which(degrees[,3]==max(degrees[,3]))
-    print(paste(rownames(degrees)[index]," has a maximal total degree of ",max(degrees[,3]),sep=""))
+
+    if(verbose==TRUE){
+      print(paste(rownames(degrees)[posindex]," has a maximal positive degree of ",max(degrees[,1]),sep=""))
+      print(paste(rownames(degrees)[negindex]," has a maximal negative degree of ",max(degrees[,2]),sep=""))
+      print(paste(rownames(degrees)[index]," has a maximal total degree of ",max(degrees[,3]),sep=""))
+    }
 
     if(collapse.degree==TRUE){
       entries=unique(rownames(degrees))
       collapsed=matrix(nrow=length(entries),ncol=ncol(degrees))
       entryCounter=1
       for(entry in entries){
-        print(paste("Processing entry",entry))
+        if(verbose==TRUE){
+          print(paste("Processing entry",entry))
+        }
         indices=which(rownames(degrees)==entry)
         for(colIndex in 1:ncol(degrees)){
           collapsed[entryCounter,colIndex]=sum(degrees[indices,colIndex])
@@ -139,14 +159,18 @@ getAStats<-function(A, statsType = "interactions", plot.degree=FALSE, collapse.d
     arcnum=ecount(g)
     fc <- fastgreedy.community(as.undirected(g),weights=NULL)
     maxFc=max(fc$modularity)
-    print(paste("Fastgreedy modularity of final network:",maxFc))
+    if(verbose==TRUE){
+      print(paste("Fastgreedy modularity of final network:",maxFc))
+    }
     if(plot.degree==TRUE){
       plot(degree.distribution(g,cumulative=T),log="xy")
     }
     cc=transitivity(g, type="average")
     avglength=average.path.length(g)
-    print(paste("Average clustering coefficient of final network:",cc))
-    print(paste("Average path length of final network:",avglength))
+    if(verbose==TRUE){
+      print(paste("Average clustering coefficient of final network:",cc))
+      print(paste("Average path length of final network:",avglength))
+    }
 
     res=list(nodenum,arcnum,maxFc,cc,avglength)
     names(res)=c("nodenum","arcnum","mod","cc","avgpathlength")

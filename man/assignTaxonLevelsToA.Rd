@@ -25,6 +25,9 @@ assignTaxonLevelsToA(A, lineages, taxon.level = "genus", pos.only = FALSE,
 
 \item{no.merge}{suppress merging (in this case, taxon names are returned in a separate column of the matrix, not as row and column names)}
 }
+\value{
+an interaction matrix with taxon names assigned
+}
 \description{
 Assign OTU identifiers or higher-level taxon names to an interaction matrix
 }

@@ -539,26 +539,6 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
   return(resulttable)
 }
 
-# generate a random interaction
-# matrix without any structure
-# (notably, avoid setting the diagonal),
-# the random matrix preserves the connectance
-# of the original
-generateRandA<-function(A){
-  N=nrow(A)
-  totalEdgeNum=nrow(A)*nrow(A)
-  onePercEdgeNum=totalEdgeNum/100
-  oriAC=(round(getConnectance(A),2)*100)
-  targetEdgeNum=oriAC*onePercEdgeNum
-  Arand=matrix(0,nrow=nrow(A),ncol=ncol(A))
-  for(edge.index in 1:targetEdgeNum){
-    rand.x=sample(1:N)[1]
-    rand.y=sample(1:N)[2]
-    Arand[rand.x,rand.y]=runif(1,-0.5,0.5)
-  }
-  return(Arand)
-}
-
 # compute mean cross-correlation
 # between rows of A and inferred A
 getCrossCorrel<-function(A,Aest){
