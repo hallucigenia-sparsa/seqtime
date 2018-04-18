@@ -5,8 +5,8 @@
 \title{Compute edge statistics for an interaction matrix with taxonomic information}
 \usage{
 analyseTaxaInA(taxonA, count.entries = FALSE, count.loops = FALSE,
-  report.pval = FALSE, pos.only = FALSE, neg.only = FALSE, iters = 100,
-  p.threshold = 0.05, sig = FALSE)
+  report.pval = FALSE, report.rand = FALSE, pos.only = FALSE,
+  neg.only = FALSE, iters = 100, p.threshold = 0.05, sig = FALSE)
 }
 \arguments{
 \item{taxonA}{an interaction matrix with taxonomy (first column contains higher-level taxa)}
@@ -16,6 +16,8 @@ analyseTaxaInA(taxonA, count.entries = FALSE, count.loops = FALSE,
 \item{count.loops}{count link of a node to itself}
 
 \item{report.pval}{if true, entries in the resulting interaction matrix are p-values of edge number between taxonomic groups, else edge numbers}
+
+\item{report.rand}{return the mean number of links found in randomized matrices}
 
 \item{pos.only}{only consider positive entries in taxonA}
 
