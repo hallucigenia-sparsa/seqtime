@@ -83,7 +83,7 @@ Finally, we can plot a few quality estimators for the interaction matrix inferen
 limitsqual=limitsQuality(out.ricker,A=Aest,plot=TRUE)
 ```
 
-For comparison, we now generate a neutral time series with the Hubbell model. This model does not take species interactions into account and hence does not take the interaction matrix A as an input.
+For comparison, we now generate a neutral time series with the Hubbell model. This model does not take species interactions into account explicitly (though implicitly there is a competition between all species) and hence does not take the interaction matrix A as an input.
 
 ```{r, fig.height = 6, fig.width = 6}
 out.hubbell=simHubbell(N=N, M=N,I=1500,d=N, m=0.1, tskip=500, tend=1000)
@@ -96,7 +96,8 @@ We infer an interaction matrix from the neutral time series:
 Aesth=limits(out.hubbell)$Aest
 ```
 
-The quality plot shows that the inferred interaction matrix leads to a high cross-correlation between predicted and original time series, even though the model underlying the original time series does not feature an interaction matrix. Thus, a high correlation between predicted and original time series can be misleading as an indicator for the quality of the inferred interaction matrix.
+The quality plot shows that the inferred interaction matrix leads to a high cross-correlation between predicted and original time series, even though the dynamics in the neutral time series is not determined by species-specific interactions (all interactions are negative and of equal strength, since no species has an advantage over another in the competition for a space in the local community).
+Thus, a high correlation between predicted and original time series can be misleading as an indicator for the quality of the inferred interaction matrix.
 
 ```{r, fig.height = 6, fig.width = 6}
 limitsqualh=limitsQuality(out.hubbell,A=Aesth, plot=TRUE)
