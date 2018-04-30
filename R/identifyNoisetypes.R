@@ -58,7 +58,7 @@ identifyNoisetypes <- function(x, epsilon = 0.2, predef=FALSE, detrend=TRUE, pva
           pink=nt$pink
           brown=nt$brown
           black=nt$black
-          nonclas=nt$nonclass
+          nonclass=nt$nonclass
         }else{
           reg.data=data.frame(logfreq,logspec)
           linreg = lm(formula = logspec~logfreq)
@@ -71,7 +71,7 @@ identifyNoisetypes <- function(x, epsilon = 0.2, predef=FALSE, detrend=TRUE, pva
               pink=nt$pink
               brown=nt$brown
               black=nt$black
-              nonclas=nt$nonclass
+              nonclass=nt$nonclass
           }else{
             # no line could be fitted
             nonsig=c(nonsig,i)
