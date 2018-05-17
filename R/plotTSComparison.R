@@ -16,7 +16,7 @@
 # custom.header: custom header, if empty, a default will be composed of data names (for boxplot and summary)
 # summary.type: the type of the summary plot, either noise, hurst or autocor (summary)
 # summary.legend: whether or not to display the legend of the summary plot
-# nt.smooth: when noise types were computed using predef and smoothing, all non-black,non-brown and non-pink taxa can be interpreted as white (so color is white and white is added in biplot), otherwise this assumption cannot be made (so color is grey and white is omitted from biplot)
+# nt.predef: when noise types were computed using predef (assuming smoothing is TRUE), all non-black,non-brown and non-pink taxa can be interpreted as white (so color is white and white is added in biplot), otherwise this assumption cannot be made (so color is grey and white is omitted from biplot)
 # jitter.width: jitter control (boxplot)
 # dot.size: dot size control (boxplot)
 # sig: for p-values: display significance (boxplot)
@@ -45,7 +45,7 @@
 #
 # Note: ggbiplot is outcommented so as not to disturb the seqtime build (avoid ggbiplot package dependency)
 
-plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", property="pink", custom.header="", summary.type="noise", summary.legend=TRUE, nt.smooth=FALSE, jitter.width=0.1, dot.size=3, sig=FALSE, pcs=c(1,2), useGgplot=FALSE, skipIntervals=FALSE, skipHighDeathrate=FALSE, skipGenerators=c(), addInitAbund=FALSE, norm=FALSE, taxonNum=NA, generator="all", pch="", maxautocorBins=c(0.3,0.5,0.8), hurstBins=c(0.5,0.7,0.9), no.xlabels=FALSE, makeggplot=TRUE){
+plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", property="pink", custom.header="", summary.type="noise", summary.legend=TRUE, nt.predef=FALSE, jitter.width=0.1, dot.size=3, sig=FALSE, pcs=c(1,2), useGgplot=FALSE, skipIntervals=FALSE, skipHighDeathrate=FALSE, skipGenerators=c(), addInitAbund=FALSE, norm=FALSE, taxonNum=NA, generator="all", pch="", maxautocorBins=c(0.3,0.5,0.8), hurstBins=c(0.5,0.7,0.9), no.xlabels=FALSE, makeggplot=TRUE){
   if(!is.data.frame(data)){
     data=as.data.frame(data)
   }
@@ -131,6 +131,12 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
     descript="difference between initial and final taxon proportions"
   }else if(property=="soir2"){
     descript="SOI fitting mean R2"
+  }else if(property=="avgtimescale"){
+    descript="average time scale in days"
+    ylim=c(0,NA)
+  }else if(property=="upperbound"){
+    descript="upper bound for sampling period in days"
+    ylim=c(0,NA)
   }
 
   if(colorBy=="pep"){
@@ -172,9 +178,17 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
     }else{
       title=paste(generatorDescr," versus ",descript, " colored by ",colorByDescript,sep="")
     }
-    if(is.na(ylim[1])){
-      ymin=min(data[property],na.rm=TRUE)
-      ymax=max(data[property],na.rm=TRUE)
+    if(is.na(ylim[1]) || is.na(ylim[2])){
+      if(is.na(ylim[1])){
+        ymin=min(data[property],na.rm=TRUE)
+      }else{
+        ymin=ylim[1]
+      }
+      if(is.na(ylim[2])){
+        ymax=max(data[property],na.rm=TRUE)
+      }else{
+        ymax=ylim[2]
+      }
       ylim=c(ymin,ymax)
     }
     #print(customizeGeneratorNames(as.character(data$algorithm)))
@@ -199,12 +213,19 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
       y.intercept=1.3 # sig corresponding to p-value 0.05
       ggplotObj <- ggplot2::ggplot(data, ggplot2::aes(factor(algorithm),data[property])) + ggplot2::geom_boxplot() + ggplot2::geom_jitter(ggplot2::aes(colour=factor(unlist(data[colorBy]))), width=jitter.width, size=dot.size) + ggplot2::coord_cartesian(ylim=ylim) + ggplot2::geom_hline(yintercept = y.intercept, stat = 'hline', linetype="dotted") + ggplot2::ggtitle(title) + ggplot2::xlab("") + ggplot2::ylab(firstup(descript)) + ggplot2::theme(legend.title=ggplot2::element_blank(), axis.text.x = ggplot2::element_text(angle=90,size=11))
     }else{
-      ggplotObj <- ggplot2::ggplot(data, ggplot2::aes(factor(algorithm),data[property])) + ggplot2::geom_boxplot() + ggplot2::geom_jitter(ggplot2::aes(colour=factor(unlist(data[colorBy]))), width=jitter.width, size=dot.size) + ggplot2::coord_cartesian(ylim=ylim) + ggplot2::ggtitle(title) + ggplot2::xlab("") + ggplot2::ylab(firstup(descript)) + ggplot2::theme(legend.title=ggplot2::element_blank(), axis.text.x = ggplot2::element_text(angle=90,size=11))
+      if(property=="avgtimescale" || property=="upperbound"){
+        ggplotObj <- ggplot2::ggplot(data, ggplot2::aes(factor(algorithm),data[property])) + ggplot2::geom_hline(yintercept = 1, stat = 'hline', linetype="dotted") + ggplot2::geom_boxplot() + ggplot2::geom_jitter(ggplot2::aes(colour=factor(unlist(data[colorBy]))), width=jitter.width, size=dot.size) + ggplot2::coord_cartesian(ylim=ylim) + ggplot2::ggtitle(title) + ggplot2::xlab("") + ggplot2::ylab(firstup(descript)) + ggplot2::theme(legend.title=ggplot2::element_blank(), axis.text.x = ggplot2::element_text(angle=90,size=11))
+      }else{
+        ggplotObj <- ggplot2::ggplot(data, ggplot2::aes(factor(algorithm),data[property])) + ggplot2::geom_boxplot() + ggplot2::geom_jitter(ggplot2::aes(colour=factor(unlist(data[colorBy]))), width=jitter.width, size=dot.size) + ggplot2::coord_cartesian(ylim=ylim) + ggplot2::ggtitle(title) + ggplot2::xlab("") + ggplot2::ylab(firstup(descript)) + ggplot2::theme(legend.title=ggplot2::element_blank(), axis.text.x = ggplot2::element_text(angle=90,size=11))
+      }
     }
     # remove legend title: theme(legend.title=element_blank())
   }else if(type=="summary"){
     # bar plot with OTU percentages in each category
     nrowComp=4
+    if(nt.predef==FALSE){
+      nrowComp=5
+    }
     if(summary.type=="autocor" || summary.type=="hurst"){
       nrowComp=5
     }
@@ -215,7 +236,15 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
         composition[1,i]=as.numeric(data$pink[i])
         composition[2,i]=as.numeric(data$brown[i])
         composition[3,i]=as.numeric(data$black[i])
-        composition[4,i]=100-sum(composition[1:3,i]) # either all white ones when smooth and predef is true or a mixture of white, non-classified and non-significant ones represented in gray
+        if(nt.predef){
+          # there are no unclassified taxa, all remaining taxa are white
+          composition[4,i]=100-sum(composition[1:3,i])
+        }else{
+          # white taxa
+          composition[4,i]=as.numeric(data$white[i])
+          # grey taxa
+          composition[5,i]=100-sum(composition[1:4,i])
+        }
       }else if(summary.type=="autocor"){
         composition[1,i]=as.numeric(data$maxautocorbin1[i])
         composition[2,i]=as.numeric(data$maxautocorbin2[i])
@@ -271,10 +300,10 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
     colnames(composition)=names
     ylab="Noise type percentages"
     main="Noise type composition"
-    if(nt.smooth){
+    if(nt.predef){
       colors=c("pink", "brown", "black", "white")
     }else{
-      colors=c("pink", "brown", "black", "grey")
+      colors=c("pink", "brown", "black","white", "grey")
     }
     if(summary.type=="noise"){
       rownames(composition)=colors
@@ -329,7 +358,7 @@ plotTSComparison<-function(data, distribs, colorBy="interval", type="boxplot", p
     }
   }else if(type=="biplot" && ggbiplotPresent==TRUE){
     groups=as.factor(data$algorithm)
-    if(nt.smooth){
+    if(nt.predef){
       #mat=cbind(data$white, data$pink, data$brown, data$black, data$autoslope, data$taylorr2, data$neutral, data$corrAll)
       #colnames(mat)=c("white","pink","brown","black","autocor","taylor.R2", "neutrality","LIMITS")
       mat=cbind(data$white, data$pink, data$brown, data$black,data$autoslope, data$taylorr2, data$neutral)

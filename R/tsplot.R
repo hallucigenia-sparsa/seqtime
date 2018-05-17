@@ -26,7 +26,19 @@
 #' tsplot(out.ricker[,1:50],mode="pcoa")
 #' @export
 tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="lines", dist="bray", my.color.map=list(), identifyPoints=FALSE, topN=10, groups=c(), hideGroups=c(), legend=FALSE, header="", labels=c(), noLabels=FALSE, perturb=NULL, ...){
+  if(!is.null(perturb) && groups==TRUE){
+    stop("Perturbation object and groups cannot be both provided.")
+  }
   if(length(groups)>0){
+    if(mode=="bars" || mode=="pcoa"){
+      if(length(groups)!=ncol(x)){
+        stop("Each sample should have a group assigned.")
+      }
+    }else if(mode=="lines"){
+      if(length(groups)!=ncol(x)){
+        stop("Each taxon should have a group assigned.")
+      }
+    }
     my.colors=assignColorsToGroups(groups = groups, my.color.map = my.color.map)
     #print(paste("colors:",length(my.colors)))
   }else{
@@ -49,10 +61,11 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
     time=c(1:ncol(x))
   }
   if(mode=="lines"){
-    plot(time,as.numeric(x[1,]),ylim = range(x, na.rm = T),xlab = xlab, ylab = ylab, main = main, type = "l", col = my.colors[1], ...)
+    my.type="l"
+    plot(time,as.numeric(x[1,]),ylim = range(x, na.rm = T),xlab = xlab, ylab = ylab, main = main, col = my.colors[1], type = my.type, ...)
     # loop over rows in data
     for(i in 2:num){
-      lines(time,as.numeric(x[i,]), col = my.colors[i], type = "l", ...)
+      lines(time,as.numeric(x[i,]), col = my.colors[i], type=my.type, ...)
     }
     # if non-empty, loop over sample points
     if(length(sample.points)>0){

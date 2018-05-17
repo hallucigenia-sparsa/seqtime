@@ -5,7 +5,7 @@
 \title{Time Series Interpolation}
 \usage{
 interpolate(x, interval = NA, time.index = NA, time.vector = c(),
-  method = "stineman")
+  method = "stineman", groups = c(), negzero = FALSE)
 }
 \arguments{
 \item{x}{the time series matrix, rows are objects and columns are time points}
@@ -17,12 +17,17 @@ interpolate(x, interval = NA, time.index = NA, time.vector = c(),
 \item{time.vector}{the vector holding time points}
 
 \item{method}{fmm, periodic, natural, hyman or monoH.FC (spline), scaledstineman, stineman or parabola (stinterp)}
+
+\item{groups}{a vector with group assignments and as many entries as there are samples}
+
+\item{negzero}{set negative values (can be introduced by interpolation) to zero}
 }
 \value{
 interpolated time series
 }
 \description{
-Wrapper function to interpolate a time series.
+Wrapper function to interpolate a time series. If groups are specified, each
+group is processed separately. The time points of each group are supposed to be in chronological order.
 }
 \details{
 If no interval is provided, the intervals in the time vector are computed and the most frequent one is taken as the interval.

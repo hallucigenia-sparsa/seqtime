@@ -6,7 +6,7 @@
 \usage{
 identifyNoisetypes(x, epsilon = 0.2, predef = FALSE, detrend = TRUE,
   pval.threshold = 0.05, smooth = FALSE, df = max(2, log10(ncol(x))),
-  permut = FALSE, abund.threshold = 0)
+  permut = FALSE, abund.threshold = 0, groups = c())
 }
 \arguments{
 \item{x}{a matrix with objects as rows and time points as columns}
@@ -26,6 +26,8 @@ identifyNoisetypes(x, epsilon = 0.2, predef = FALSE, detrend = TRUE,
 \item{permut}{permute time points before computing noise types}
 
 \item{abund.threshold}{minimum sum per row}
+
+\item{groups}{vector of group assignments with as many entries as x has samples, if non-empty computes frequencies and spectral densities for each group separately and compute noise type on pooled frequencies and spectral densities}
 }
 \value{
 S3 noisetypes object

@@ -5,8 +5,8 @@
 \title{Compute statistics on jumps through community space}
 \usage{
 tsJumpStats(x, time.given = FALSE, time.unit = "days", ordinate = TRUE,
-  distance = "bray", dimensions = c(1, 2), plot = FALSE,
-  plot.type = "jumps", header = "", subsample = FALSE, perturb = NULL)
+  distance = "bray", dimensions = c(1, 2), groups = c(), plot = FALSE,
+  plot.type = "bar", header = "", subsample = FALSE, perturb = NULL)
 }
 \arguments{
 \item{x}{a community time series matrix, with rows as taxa and columns as time points}
@@ -21,9 +21,11 @@ tsJumpStats(x, time.given = FALSE, time.unit = "days", ordinate = TRUE,
 
 \item{dimensions}{if ordinate is TRUE, the principal components considered}
 
+\item{groups}{a vector with group assignments and as many entries as there are samples}
+
 \item{plot}{if TRUE, a plot of the jumps is made}
 
-\item{plot.type}{jumps: plot jumps as bars in the order of occurrence; box: a box plot of jump lengths in non-perturbed vs perturbed communities. This is effectively a visualization of beta-diversity, which is however not computed between all pair-wise but only between consecutive samples; hist: a histogram of jump lengths for perturbed and non-perturbed sample pairs (box and hist only possible if perturbation object is provided)}
+\item{plot.type}{bar: plot jumps as bars in the order of occurrence; box: a box plot of jump lengths; hist: a histogram of jump lengths, power: power law of jumps of a certain length}
 
 \item{header}{text to be used as plot title instead of default text}
 
@@ -37,10 +39,13 @@ jump lengths (i.e. dissimilarities of community composition at consecutive time 
 \description{
 Consecutive samples representing time points in an ordination plot can be interpreted
 as vectors, which have a length and an angle. If ordinate is true, these lengths and angles
-are computed. If ordinate is false, dissimilarities between consecutive time points are computed.
-If a perturbation object is provided and plot.type hist or box is true, the histogram or box plot of jump
-lengths is plotted and the significance of the difference between perturbed and non-perturbed jump lengths is
-assessed with a Wilcoxon test.
+are computed from the selection dimensions of the ordination. If ordinate is false, dissimilarities between
+consecutive time points are computed.
+If a perturbation object is provided and plot.type hist or box is true, the histogram or box plot of
+the perturbed and non-perturbed jump lengths is plotted and the significance of the difference between
+perturbed and non-perturbed jump lengths is assessed with a Wilcoxon test.
+Note that jump lengths plots are a visualization of beta-diversity, which is however not computed between all
+pair-wise but only between consecutive samples.
 }
 \examples{
 \dontrun{
