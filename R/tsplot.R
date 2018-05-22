@@ -12,7 +12,6 @@
 #' @param groups group membership vector; for mode bars and pcoa refers to samples; for mode lines refers to taxa; there are as many entries in the group membership vector as samples or taxa; taxa/samples are assumed to be ordered by groups
 #' @param hideGroups compute PCoA with all data, but do not show members of selected groups; expects one integer per group and consistency with groups parameter, only supported for mode pcoa
 #' @param legend add a legend
-#' @param header string added to the plot title
 #' @param labels use the provided labels in the PCoA plot
 #' @param noLabels do not use any labels in the PCoA plot
 #' @param perturb a perturbation object (adds polygons in mode lines highlighting the perturbation periods and colors dots in the PCoA plot)
@@ -21,11 +20,11 @@
 #' N=50
 #' A=modifyA(generateA(N, c=0.1, d=-1),perc=70,strength="uniform",mode="negpercent")
 #' out.ricker=ricker(N,A=A,y=generateAbundances(N,mode=5,prob=TRUE),K=rep(0.1,N), sigma=-1,tend=500)
-#' tsplot(out.ricker)
+#' tsplot(out.ricker, main="Ricker")
 #' tsplot(out.ricker[,1:20],mode="bars",legend=TRUE)
 #' tsplot(out.ricker[,1:50],mode="pcoa")
 #' @export
-tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="lines", dist="bray", my.color.map=list(), identifyPoints=FALSE, topN=10, groups=c(), hideGroups=c(), legend=FALSE, header="", labels=c(), noLabels=FALSE, perturb=NULL, ...){
+tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="lines", dist="bray", my.color.map=list(), identifyPoints=FALSE, topN=10, groups=c(), hideGroups=c(), legend=FALSE, labels=c(), noLabels=FALSE, perturb=NULL, ...){
   if(!is.null(perturb) && groups==TRUE){
     stop("Perturbation object and groups cannot be both provided.")
   }
@@ -45,7 +44,6 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
     col.vec = seq(0,1,1/nrow(x))
     my.colors = hsv(col.vec)
   }
-  main=paste("Community time series",header)
   xlab="Time points"
   ylab="Abundance"
   if(is.null(rownames(x))){
@@ -61,8 +59,8 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
     time=c(1:ncol(x))
   }
   if(mode=="lines"){
-    my.type="l"
-    plot(time,as.numeric(x[1,]),ylim = range(x, na.rm = T),xlab = xlab, ylab = ylab, main = main, col = my.colors[1], type = my.type, ...)
+    my.type="l"  # b (both lines and dots)
+    plot(time,as.numeric(x[1,]),ylim = range(x, na.rm = T),xlab = xlab, ylab = ylab, col = my.colors[1], type = my.type, ...)
     # loop over rows in data
     for(i in 2:num){
       lines(time,as.numeric(x[i,]), col = my.colors[i], type=my.type, ...)
@@ -139,7 +137,6 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
     }
     ylim.margin=0.05
     ylim=c(min(pcoa.res$CA$u[,2]),max(pcoa.res$CA$u[,2])+ylim.margin)
-    #labelNames=c(1:ncol(x))
     labelNames=time
     groups.copy=groups
     # color points according to groups
@@ -163,7 +160,7 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
         }
       }
     } # groups provided
-    plot(pcoa.res$CA$u[,1:2], main=paste("PCoA",header), xlim=xlim, ylim=ylim, xlab="PCoA1", ylab="PCoA2", col=colors.copy, ...)
+    plot(pcoa.res$CA$u[,1:2], xlim=xlim, ylim=ylim, xlab="PCoA1", ylab="PCoA2", pch=20, cex=2, col=colors.copy, ...)
     #points(x=pcoa.res$CA$u[nrow(pcoa.res$CA$u),1],y=pcoa.res$CA$u[nrow(pcoa.res$CA$u),2], col=colors.copy[length(colors.copy)-1])
     for(i in 1:(nrow(pcoa.res$CA$u)-1)){
       if(length(groups)==0 || groups.copy[i]==groups.copy[i+1]){
@@ -212,11 +209,11 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
     color.index=1
     if(length(my.color.map)>0){
       colormap=my.color.map
-      # gray color for non-top taxa
-      colormap[["Others"]]="#a9a9a9"
+        # gray color for non-top taxa
+        colormap[["Others"]]="#a9a9a9"
     }else{
-      # gray color for non-top taxa
-      colormap=list("Others"="#a9a9a9")
+        # gray color for non-top taxa
+        colormap=list("Others"="#a9a9a9")
     }
 
     # loop groups
@@ -224,23 +221,23 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
       if(length(groupNum) > 1){
         group.member.indices=which(groups==group.index)
         xsub=x[,group.member.indices]
-        main=paste("Top",topN,"taxa of group",group.index,header)
       }else{
         xsub=x
-        #main=header
-        main=paste("Top",topN,"taxa",header)
       }
+
       rowsums=apply(xsub,1,sum)
       sorted=sort(rowsums,decreasing=TRUE,index.return=TRUE)
       sub.xsub=xsub[sorted$ix[1:topN],]
       misc=xsub[sorted$ix[(topN+1):nrow(xsub)],]
-      if(ncol(xsub) > 1){
-        misc.summed=apply(misc,2,sum)
-        sub.xsub=rbind(sub.xsub,misc.summed)
-      }else{
-        misc.summed=sum(misc)
-        sub.xsub=as.matrix(c(sub.xsub,misc.summed))
-        rownames(sub.xsub)=c(rownames(xsub)[sorted$ix[1:topN]],"")
+      if(topN<nrow(x)){
+        if(ncol(xsub) > 1){
+          misc.summed=apply(misc,2,sum)
+          sub.xsub=rbind(sub.xsub,misc.summed)
+        }else{
+          misc.summed=sum(misc)
+          sub.xsub=as.matrix(c(sub.xsub,misc.summed))
+          rownames(sub.xsub)=c(rownames(xsub)[sorted$ix[1:topN]],"")
+        }
       }
 
       # add dummy columns for the legend (according to a heuristic)
@@ -250,7 +247,9 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
         sub.xsub=cbind(sub.xsub,rep(NA,nrow(sub.xsub)))
         colnames(sub.xsub)[ncol(sub.xsub)]=""
       }
-      rownames(sub.xsub)[nrow(sub.xsub)]="Others"
+      if(topN<nrow(x)){
+        rownames(sub.xsub)[nrow(sub.xsub)]="Others"
+      }
       colnames(sub.xsub)[(ncol(sub.xsub)-dummynum+1):ncol(sub.xsub)]=""
 
       # select colors
@@ -270,7 +269,7 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
           }
         }
       }
-      barplot(as.matrix(sub.xsub),col=selected.colors, ylab="Abundance", main=main,cex.lab=0.8,las=2, ...)
+      barplot(as.matrix(sub.xsub),col=selected.colors, ylab="Abundance",cex.lab=0.8,las=2, ...)
       if(legend==TRUE){
         legend("topright",legend=rownames(sub.xsub),cex=0.9, bg = "white", text.col=selected.colors)
       }
@@ -286,25 +285,22 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
 assignColorsToGroups<-function(groups, my.color.map = list()){
   groups.nafree=na.omit(groups)
   groupNum=length(unique(groups.nafree))+length(which(is.na(groups)))
-  #print(paste("group number: ",groupNum))
   col.vec = seq(0,1,1/groupNum)
   hues = hsv(col.vec)
+  #print(hues)
   hueCounter=1
   prevGroup=groups[1]
-  if(length(my.color.map)>0){
-    colors=my.color.map[[groups[1]]]
-  }else{
-    colors=c(hues[hueCounter])
-  }
-  for(group.index in 2:length(groups)){
+  colors=c()
+  for(group.index in 1:length(groups)){
     if(length(my.color.map)>0){
       colors=c(colors,my.color.map[[groups[group.index]]])
     }else{
-      #print(paste(groups[group.index]," gets color: ",hues[hueCounter]))
-      colors=c(colors,hues[hueCounter])
+
       if(is.na(groups[group.index]) || is.na(prevGroup) || prevGroup!=groups[group.index]){
         hueCounter=hueCounter+1
       }
+      colors=c(colors,hues[hueCounter])
+      #print(paste(groups[group.index]," gets color: ",hues[hueCounter]))
       prevGroup=groups[group.index]
     }
   }
