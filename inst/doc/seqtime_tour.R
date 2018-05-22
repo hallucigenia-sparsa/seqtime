@@ -21,7 +21,7 @@ barplot(y,main="Initial species abundances",xlab="Species",ylab="Abundance")
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
 # convert initial abundances in proportions (y/sum(y)) and run without a noise term (sigma=-1)
 out.ricker=ricker(N,A=A,y=(y/sum(y)),K=rep(0.1,N), sigma=-1,tend=500)
-tsplot(out.ricker,header="Ricker")
+tsplot(out.ricker,main="Ricker")
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
 # the pseudo-count allows to take the logarithm of species hat went extinct
@@ -33,7 +33,7 @@ plotNoisetypes(ricker.noise)
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
 out.soi=soi(N, I=500, A=A, m.vector=y, tend=100)
-tsplot(out.soi,header="SOI")
+tsplot(out.soi,main="SOI")
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
 soi.taylor=seqtime::taylor(out.soi, pseudo=0.0001, col="blue", type="taylor")
@@ -44,7 +44,7 @@ plotNoisetypes(soi.noise)
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
 out.hubbell=simHubbell(N=N, M=N,I=1500,d=N, m.vector=(y/sum(y)), m=0.1, tskip=500, tend=1000)
-tsplot(out.hubbell,header="Hubbell")
+tsplot(out.hubbell,main="Hubbell")
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
 hubbell.taylor=seqtime::taylor(out.hubbell, pseudo=0.0001, col="blue", type="taylor")
@@ -55,7 +55,7 @@ plotNoisetypes(hubbell.noise)
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
 dm.uneven=simCountMat(N,samples=100,mode=5,k=0.05)
-tsplot(dm.uneven,header="Dirichlet-Multinomial")
+tsplot(dm.uneven,main="Dirichlet-Multinomial")
 
 ## ---- fig.height = 6, fig.width = 6--------------------------------------
 dm.uneven.taylor=seqtime::taylor(dm.uneven, pseudo=0.0001, col="orange", type="taylor", header="Dirichlet-Multinomial")

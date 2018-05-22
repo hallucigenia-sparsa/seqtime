@@ -51,7 +51,7 @@ Given our interaction matrix, we can now simulate a test time series with the Ri
 
 ```{r, fig.height = 6, fig.width = 6}
 out.ricker=ricker(N,A=A)
-tsplot(out.ricker,header="Ricker")
+tsplot(out.ricker,main="Ricker")
 ```
 
 Now, we run LIMITS to test how well it can infer the known interaction matrix from the time series. LIMITS was developed by Fisher and Mehta [PLoS ONE 2014](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0102451).
@@ -87,7 +87,7 @@ For comparison, we now generate a neutral time series with the Hubbell model. Th
 
 ```{r, fig.height = 6, fig.width = 6}
 out.hubbell=simHubbell(N=N, M=N,I=1500,d=N, m=0.1, tskip=500, tend=1000)
-tsplot(out.hubbell,header="Hubbell")
+tsplot(out.hubbell,main="Hubbell")
 ```
 
 We infer an interaction matrix from the neutral time series:
