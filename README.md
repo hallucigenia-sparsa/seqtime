@@ -22,6 +22,10 @@ For examples on network inference with LIMITS and visualization, see the [networ
 
 [![Travis-CI Build Status](https://travis-ci.org/hallucigenia-sparsa/seqtime.svg?branch=master)](https://travis-ci.org/hallucigenia-sparsa/seqtime)
 
+### Issues
+
+The FGN dependency is broken, since FGN is discontinued. We will shortly remove this dependency. Meanwhile, please install FGN manually from its archive (https://cran.r-project.org/src/contrib/Archive/FGN/).
+
 ### Contribute
 
 Contributions are very welcome:
