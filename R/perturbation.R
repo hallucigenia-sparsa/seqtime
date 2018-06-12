@@ -133,3 +133,75 @@ applyPerturbation<-function(perturb, t=NA, perturbCounter=1, durationCounter=1, 
   names(res)=c("growthrates","abundances", "perturbCounter","durationCounter", "perturbationOn")
   return(res)
 }
+
+
+# Given a binary vector, build a
+# perturbation object that counts true.value entries
+# as perturbations and false.value entries as non-perturbed time points.
+binaryToPerturb<-function(bin.metadata.item, false.value="no", true.value="yes"){
+  perturb.indices=c()
+  durations=c()
+  duration=0
+  prevPerturb=FALSE
+  perturb=FALSE
+  for(i in 1:length(bin.metadata.item)){
+    if(bin.metadata.item[i]==true.value){
+      perturb=TRUE
+    }else{
+      perturb=FALSE
+    }
+    if(perturb==TRUE && prevPerturb==FALSE){
+      perturb.indices=c(perturb.indices,i)
+    }
+    if(prevPerturb==TRUE && perturb==FALSE){
+      durations=c(durations,duration)
+      duration=0
+    }
+    if(perturb==TRUE){
+      duration=duration+1
+      #print(paste("current duration",duration))
+    }
+    prevPerturb=perturb
+  }
+  if(duration>0){
+    durations=c(durations,duration)
+  }
+  #print(perturb.indices)
+  #print(durations)
+  perturbObj=perturbation(times=perturb.indices,durations=durations)
+  return(perturbObj)
+}
+
+# Convert perturbation object into a binary vector with FALSE for time points without perturbation and
+# TRUE for time points with perturbation.
+# If returnCol is TRUE, return instead a color vector with the defaultColor for non-perturbed time points
+# and the perturbColor for perturbed time points.
+# perturb: perturbation object
+# l: length of the time series
+perturbToBinary<-function(perturb, l=NA, returnCol=FALSE, defaultColor=rgb(0,1,0,0.5), perturbColor=rgb(1,0,0,0.5)){
+  binary=c()
+  colors=c()
+  if(!is.null(perturb)){
+    perturbationOn=FALSE
+    perturbCounter=1
+    durationCounter=1
+    # loop over time
+    for(timepoint in 1:l){
+      applied=applyPerturbation(perturb=perturb,t=timepoint, perturbationOn = perturbationOn, durationCounter = durationCounter, perturbCounter = perturbCounter)
+      perturbationOn=applied$perturbationOn
+      durationCounter=applied$durationCounter
+      perturbCounter=applied$perturbCounter
+      if(perturbationOn==TRUE){
+        colors=c(colors,perturbColor)
+        binary=c(binary,TRUE)
+      }else{
+        colors=c(colors,defaultColor)
+        binary=c(binary,FALSE)
+      }
+    } # end loop
+  } # end perturbation object is not null
+  if(returnCol){
+    binary=colors
+  }
+  return(binary)
+}

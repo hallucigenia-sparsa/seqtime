@@ -16,7 +16,7 @@ Depends:
     vegan
 Imports:
     deSolve,    
-    FGN,
+    pracma,
     geigen,
     gtools,    
     MASS,    
@@ -30,7 +30,6 @@ Suggests:
     WrightFisher,
     sde,
     reshape2,
-    pracma,
     testthat
 License: BSD_2_clause + file LICENSE
 LazyData: true

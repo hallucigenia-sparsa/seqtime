@@ -16,6 +16,8 @@
 #' @param scale.weight scale interaction strengths between -1 and 1 (does not apply to method network)
 #' @param original plot original values (does not apply to method network)
 #' @param setNAToZero set missing values to zeros
+#' @param pos.link.color color of positive edges
+#' @param neg.link.color color of negative edges
 #' @param removeOrphans remove orphan nodes (method network)
 #' @param removeLoops remove loops (method network)
 #' @param returnNetwork return the network for manual adjustment with tkplot (method network)
@@ -23,7 +25,7 @@
 #' plotA(generateA(20,c=0.1))
 #' @export
 
-plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE, setNAToZero=FALSE, removeOrphans=TRUE, removeLoops=FALSE, returnNetwork=FALSE){
+plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE, setNAToZero=FALSE, pos.link.color="green", neg.link.color="red", removeOrphans=TRUE, removeLoops=FALSE, returnNetwork=FALSE){
   A=as.matrix(A)
   if(setNAToZero==TRUE){
     A[is.na(A)]=0
@@ -63,15 +65,15 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
     } # row loop
   }
   if(method == "image"){
-    palette <- colorRampPalette(c("red","white","green"))
+    palette <- colorRampPalette(c(neg.link.color,"white",pos.link.color))
     colorNumber=3
     # adjust palette, else in the absence of positive edges, interactions will appear red on a green bg
     if(length(A[A>0])==0){
-      palette <- colorRampPalette(c("red","white"))
+      palette <- colorRampPalette(c(neg.link.color,"white"))
       colorNumber=2
     }
     if(length(A[A<0])==0){
-      palette <- colorRampPalette(c("white","green"))
+      palette <- colorRampPalette(c("white",pos.link.color))
       colorNumber=2
     }
     if(scale.weight == TRUE){
@@ -121,9 +123,9 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
       if(is.na(weight)){
         colors=append(colors,"gray")
       }else if(weight<0){
-        colors=append(colors,"red")
+        colors=append(colors,neg.link.color)
       }else if(weight>0){
-        colors=append(colors,"green")
+        colors=append(colors,pos.link.color)
       }
     }
     # attributes can be placed in plot also, but this has the advantage of easier transfer to tkplot, see http://kateto.net/network-visualization

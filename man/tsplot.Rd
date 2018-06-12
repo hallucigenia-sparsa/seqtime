@@ -7,7 +7,8 @@
 tsplot(x, time.given = FALSE, num = nrow(x), sample.points = c(),
   mode = "lines", dist = "bray", my.color.map = list(),
   identifyPoints = FALSE, topN = 10, groups = c(), hideGroups = c(),
-  legend = FALSE, labels = c(), noLabels = FALSE, perturb = NULL, ...)
+  legend = FALSE, labels = c(), noLabels = FALSE, centroid = FALSE,
+  perturb = NULL, ...)
 }
 \arguments{
 \item{x}{the matrix of time series}
@@ -38,7 +39,9 @@ tsplot(x, time.given = FALSE, num = nrow(x), sample.points = c(),
 
 \item{noLabels}{do not use any labels in the PCoA plot}
 
-\item{perturb}{a perturbation object (adds polygons in mode lines highlighting the perturbation periods and colors dots in the PCoA plot)}
+\item{centroid}{draw PCoA plot with a centroid (groups are ignored)}
+
+\item{perturb}{a perturbation object (adds polygons in mode lines highlighting the perturbation periods, colors labels in mode bars and colors dots in the PCoA plot)}
 
 \item{\\dots}{Additional arguments passed to plot()}
 }

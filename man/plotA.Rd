@@ -5,8 +5,9 @@
 \title{Plot an interaction matrix.}
 \usage{
 plotA(A, method = "image", header = "", scale.weight = FALSE,
-  original = FALSE, setNAToZero = FALSE, removeOrphans = TRUE,
-  removeLoops = FALSE, returnNetwork = FALSE)
+  original = FALSE, setNAToZero = FALSE, pos.link.color = "green",
+  neg.link.color = "red", removeOrphans = TRUE, removeLoops = FALSE,
+  returnNetwork = FALSE)
 }
 \arguments{
 \item{A}{interaction matrix}
@@ -20,6 +21,10 @@ plotA(A, method = "image", header = "", scale.weight = FALSE,
 \item{original}{plot original values (does not apply to method network)}
 
 \item{setNAToZero}{set missing values to zeros}
+
+\item{pos.link.color}{color of positive edges}
+
+\item{neg.link.color}{color of negative edges}
 
 \item{removeOrphans}{remove orphan nodes (method network)}
 

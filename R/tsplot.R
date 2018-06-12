@@ -14,7 +14,8 @@
 #' @param legend add a legend
 #' @param labels use the provided labels in the PCoA plot
 #' @param noLabels do not use any labels in the PCoA plot
-#' @param perturb a perturbation object (adds polygons in mode lines highlighting the perturbation periods and colors dots in the PCoA plot)
+#' @param centroid draw PCoA plot with a centroid (groups are ignored)
+#' @param perturb a perturbation object (adds polygons in mode lines highlighting the perturbation periods, colors labels in mode bars and colors dots in the PCoA plot)
 #' @param \\dots Additional arguments passed to plot()
 #' @examples
 #' N=50
@@ -24,8 +25,8 @@
 #' tsplot(out.ricker[,1:20],mode="bars",legend=TRUE)
 #' tsplot(out.ricker[,1:50],mode="pcoa")
 #' @export
-tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="lines", dist="bray", my.color.map=list(), identifyPoints=FALSE, topN=10, groups=c(), hideGroups=c(), legend=FALSE, labels=c(), noLabels=FALSE, perturb=NULL, ...){
-  if(!is.null(perturb) && groups==TRUE){
+tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="lines", dist="bray", my.color.map=list(), identifyPoints=FALSE, topN=10, groups=c(), hideGroups=c(), legend=FALSE, labels=c(), noLabels=FALSE, centroid=FALSE, perturb=NULL, ...){
+  if(!is.null(perturb) && length(groups)>0){
     stop("Perturbation object and groups cannot be both provided.")
   }
   if(length(groups)>0){
@@ -39,11 +40,14 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
       }
     }
     my.colors=assignColorsToGroups(groups = groups, my.color.map = my.color.map)
-    #print(paste("colors:",length(my.colors)))
   }else{
     col.vec = seq(0,1,1/nrow(x))
     my.colors = hsv(col.vec)
   }
+  export.file=""
+  my.type="l"  # b (both lines and dots in mode lines)
+  defaultColor=rgb(0,1,0,0.5)
+  perturbColor=rgb(1,0,0,0.5)
   xlab="Time points"
   ylab="Abundance"
   if(is.null(rownames(x))){
@@ -59,7 +63,6 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
     time=c(1:ncol(x))
   }
   if(mode=="lines"){
-    my.type="l"  # b (both lines and dots)
     plot(time,as.numeric(x[1,]),ylim = range(x, na.rm = T),xlab = xlab, ylab = ylab, col = my.colors[1], type = my.type, ...)
     # loop over rows in data
     for(i in 2:num){
@@ -94,25 +97,8 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
     colors.copy=c()
     arrowColors=c()
     if(!is.null(perturb)){
-      perturbCounter=1
-      durationCounter=1
-      perturbationOn=FALSE
-      perturbIndices=c()
-      defaultColor=rgb(0,1,0,0.5)
-      perturbColor=rgb(1,0,0,0.5)
-      for(timepoint in 1:ncol(x)){
-        applied=applyPerturbation(perturb=perturb,t=timepoint, perturbCounter=perturbCounter, durationCounter=durationCounter, perturbationOn=perturbationOn, ori.growthrates = c(), abundances=c())
-        durationCounter=applied$durationCounter
-        perturbCounter=applied$perturbCounter
-        perturbationOn=applied$perturbationOn
-        if(perturbationOn==TRUE){
-          colors=c(colors,perturbColor)
-          perturbIndices=c(perturbIndices,timepoint)
-        }else{
-          colors=c(colors,defaultColor)
-        }
-      }
-      # color preceding arrows also
+      colors=perturbToBinary(perturb = perturb, returnCol = TRUE, l = ncol(x), defaultColor = defaultColor, perturbColor = perturbColor)
+      perturbIndices=which(colors==perturbColor)
       arrowColors=colors
       for(perturbIndex in perturbIndices){
         if(perturbIndex>0){
@@ -160,12 +146,33 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
         }
       }
     } # groups provided
+
+    centroid.location=c(0,0)
+    if(centroid){
+      if(length(groups)==0){
+      # loop over samples
+      for(sample.index in 1:ncol(x)){
+        centroid.location[1]=centroid.location[1]+pcoa.res$CA$u[sample.index,1]
+        centroid.location[2]=centroid.location[2]+pcoa.res$CA$u[sample.index,2]
+      }
+      centroid.location=centroid.location/ncol(x)
+      }
+    }
+
     plot(pcoa.res$CA$u[,1:2], xlim=xlim, ylim=ylim, xlab="PCoA1", ylab="PCoA2", pch=20, cex=2, col=colors.copy, ...)
+    print("First five eigen values:")
+    print(paste0(pcoa.res$CA$eig[1:5],collapse=", "))
+    if(export.file!=""){
+      write.table(file=export.file,pcoa.res$CA$u[,1:2],sep="\t",quote=FALSE,col.names = FALSE)
+    }
     #points(x=pcoa.res$CA$u[nrow(pcoa.res$CA$u),1],y=pcoa.res$CA$u[nrow(pcoa.res$CA$u),2], col=colors.copy[length(colors.copy)-1])
     for(i in 1:(nrow(pcoa.res$CA$u)-1)){
       if(length(groups)==0 || groups.copy[i]==groups.copy[i+1]){
-        arrows(x0=pcoa.res$CA$u[i,1],y0=pcoa.res$CA$u[i,2],x1=pcoa.res$CA$u[i+1,1],y1=pcoa.res$CA$u[i+1,2], length=0.08, col=arrowColors[i])
+        arrows(x0=pcoa.res$CA$u[i,1],y0=pcoa.res$CA$u[i,2],x1=pcoa.res$CA$u[i+1,1],y1=pcoa.res$CA$u[i+1,2], length=0.04, col=arrowColors[i]) # 0.08
       }
+    }
+    if(centroid){
+      points(x=centroid.location[1],y=centroid.location[2], pch=21, col="red", bg="red")
     }
     #print(pcoa.res$CA$u[nrow(pcoa.res$CA$u),1:2])
     if(noLabels==FALSE){
@@ -269,7 +276,16 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
           }
         }
       }
-      barplot(as.matrix(sub.xsub),col=selected.colors, ylab="Abundance",cex.lab=0.8,las=2, ...)
+      sub.xsub=as.matrix(sub.xsub)
+      labelnames=colnames(sub.xsub)
+      if(!is.null(perturb)){
+        colnames(sub.xsub)=NULL
+      }
+      midpoints=barplot(sub.xsub,col=selected.colors, ylab="Abundance",cex.lab=0.8,las=2, ...)
+      if(!is.null(perturb)){
+        labelcolors=perturbToBinary(perturb = perturb, returnCol = TRUE, l = ncol(x), defaultColor = defaultColor, perturbColor = perturbColor)
+        mtext(labelnames,col=labelcolors,side=1, las=2, cex.lab=0.7, cex=0.7, line=0.5, at=midpoints)
+      }
       if(legend==TRUE){
         legend("topright",legend=rownames(sub.xsub),cex=0.9, bg = "white", text.col=selected.colors)
       }
@@ -278,6 +294,7 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
     stop("Plot mode ",mode, "not supported. Supported modes are: lines, pcoa and bars")
   }
 }
+
 
 # expects group membership vector as input and returns a color vector
 # assign the same color to members of the same group

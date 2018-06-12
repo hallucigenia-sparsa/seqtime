@@ -1,4 +1,4 @@
-#' @importFrom FGN HurstK
+#' @importFrom pracma hurstexp
 #' @importFrom gtools rdirichlet
 #' @importFrom tuneR noise
 #' @importFrom vegan rrarefy
@@ -49,6 +49,7 @@
 #' @importFrom stats predict
 #' @importFrom utils data
 #' @importFrom utils read.table
+#' @importFrom utils write.table
 #' @import igraph
 #' @import graphics
 

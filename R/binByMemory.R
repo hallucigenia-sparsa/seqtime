@@ -2,7 +2,7 @@
 #'
 #' @description Memory is assessed either with the Hurst exponent or with the maximum auto-
 #' correlation (omitting lag zero). Hurst exponents are computed with
-#' function HurstK in package FGN.
+#' function hurstexp in package pracma. The simple R/S Hurst exponent is selected.
 #'
 #' @details The function returns an object that groups matrix row indices in different levels.
 #' Rows that could not be binned are classified in bin na.
@@ -10,6 +10,7 @@
 #' @param x a matrix with objects as rows and time points as columns
 #' @param thresholds the thresholds by which to bin
 #' @param method autocor or hurst, computing the maximum auto-correlation (omitting lag=0) and the Hurst exponent, respectively
+#' @param d window size for Hurst exponent computation with function hurstexp
 #' @return list with row indices assigned to bins
 #' @examples
 #' N=10
@@ -20,13 +21,14 @@
 #' barplot(memBinned.bars,main="Auto-correlation bins", ylab="Number of rows")
 #' @export
 
-binByMemory<-function(x, thresholds=c(0.3, 0.5, 0.8), method="autocor"){
+binByMemory<-function(x, thresholds=c(0.3, 0.5, 0.8), method="autocor", d=round(ncol(x)/3)){
   thresholds=c(-Inf,thresholds,Inf)
   res=list()
   # loop rows in x
   for(i in 1:nrow(x)){
     if(method=="hurst"){
-      value=FGN::HurstK(as.numeric(x[i,]))
+      value=pracma::hurstexp(as.numeric(x[i,]),d=d, display=FALSE)
+      value=value$Hs
     }else if(method=="autocor"){
       acfRes=stats::acf(as.numeric(x[i,]),plot=FALSE)
       # skip perfect autocorrelation at lag 0

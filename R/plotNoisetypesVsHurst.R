@@ -3,9 +3,10 @@
 #' @description Given a matrix and the output of noise type classification, compute the
 #' Hurst exponent of each matrix row and draw a box plot that plots for each
 #' noise type the range of Hurst exponents. Hurst exponents are computed with
-#' function HurstK in package FGN.
+#' function hurstexp in the pracma package (simple R/S Hurst is used).
 #' @param x a matrix
 #' @param noisetypes the noisetypes of the matrix
+#' @param d window size for Hurst exponent computation with function hurstexp
 #' @param header header string
 #' @examples
 #' \dontrun{
@@ -18,11 +19,11 @@
 #' }
 #' @export
 
-plotNoisetypesVsHurst<-function(x, noisetypes, header=""){
+plotNoisetypesVsHurst<-function(x, noisetypes,d=round(ncol(x)/3), header=""){
   hurst.pink=c()
   if(length(noisetypes$pink) > 0){
     for(i in 1:length(noisetypes$pink)){
-      h=FGN::HurstK(x[noisetypes$pink[i],])
+      h=pracma::hurstexp(x[noisetypes$pink[i],],d=d)$Hs
       hurst.pink=c(hurst.pink,h)
     }
   }else{
@@ -31,7 +32,7 @@ plotNoisetypesVsHurst<-function(x, noisetypes, header=""){
   hurst.white=c()
   if(length(noisetypes$white) > 0){
     for(i in 1:length(noisetypes$white)){
-      h=FGN::HurstK(x[noisetypes$white[i],])
+      h=pracma::hurstexp(x[noisetypes$white[i],],d=d)$Hs
       hurst.white=c(hurst.white,h)
     }
   }else{
@@ -40,7 +41,7 @@ plotNoisetypesVsHurst<-function(x, noisetypes, header=""){
   hurst.brown=c()
   if(length(noisetypes$brown) > 0){
     for(i in 1:length(noisetypes$brown)){
-      h=FGN::HurstK(x[noisetypes$brown[i],])
+      h=pracma::hurstexp(x[noisetypes$brown[i],],d=d)$Hs
       hurst.brown=c(hurst.brown,h)
     }
   }else{
@@ -49,7 +50,7 @@ plotNoisetypesVsHurst<-function(x, noisetypes, header=""){
   hurst.black=c()
   if(length(noisetypes$black) > 0){
     for(i in 1:length(noisetypes$black)){
-      h=FGN::HurstK(x[noisetypes$black[i],])
+      h=pracma::hurstexp(x[noisetypes$black[i],],d=d)$Hs
       hurst.black=c(hurst.black,h)
     }
   }else{

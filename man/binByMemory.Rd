@@ -4,7 +4,8 @@
 \alias{binByMemory}
 \title{Bin rows in a matrix by memory.}
 \usage{
-binByMemory(x, thresholds = c(0.3, 0.5, 0.8), method = "autocor")
+binByMemory(x, thresholds = c(0.3, 0.5, 0.8), method = "autocor",
+  d = round(ncol(x)/3))
 }
 \arguments{
 \item{x}{a matrix with objects as rows and time points as columns}
@@ -12,6 +13,8 @@ binByMemory(x, thresholds = c(0.3, 0.5, 0.8), method = "autocor")
 \item{thresholds}{the thresholds by which to bin}
 
 \item{method}{autocor or hurst, computing the maximum auto-correlation (omitting lag=0) and the Hurst exponent, respectively}
+
+\item{d}{window size for Hurst exponent computation with function hurstexp}
 }
 \value{
 list with row indices assigned to bins
@@ -19,7 +22,7 @@ list with row indices assigned to bins
 \description{
 Memory is assessed either with the Hurst exponent or with the maximum auto-
 correlation (omitting lag zero). Hurst exponents are computed with
-function HurstK in package FGN.
+function hurstexp in package pracma. The simple R/S Hurst exponent is selected.
 }
 \details{
 The function returns an object that groups matrix row indices in different levels.

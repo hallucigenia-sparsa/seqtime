@@ -4,12 +4,14 @@
 \alias{plotNoisetypesVsHurst}
 \title{Plot noise types versus their range of Hurst exponents}
 \usage{
-plotNoisetypesVsHurst(x, noisetypes, header = "")
+plotNoisetypesVsHurst(x, noisetypes, d = round(ncol(x)/3), header = "")
 }
 \arguments{
 \item{x}{a matrix}
 
 \item{noisetypes}{the noisetypes of the matrix}
+
+\item{d}{window size for Hurst exponent computation with function hurstexp}
 
 \item{header}{header string}
 }
@@ -17,7 +19,7 @@ plotNoisetypesVsHurst(x, noisetypes, header = "")
 Given a matrix and the output of noise type classification, compute the
 Hurst exponent of each matrix row and draw a box plot that plots for each
 noise type the range of Hurst exponents. Hurst exponents are computed with
-function HurstK in package FGN.
+function hurstexp in the pracma package (simple R/S Hurst is used).
 }
 \examples{
 \dontrun{

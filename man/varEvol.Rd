@@ -4,18 +4,24 @@
 \alias{varEvol}
 \title{Plot mean variance versus the number of time points.}
 \usage{
-varEvol(x, plot = TRUE)
+varEvol(x, groups = c(), plot = TRUE, sd = FALSE)
 }
 \arguments{
 \item{x}{a community matrix with rows representing taxa and columns time points}
 
+\item{groups}{a vector with group assignments and as many entries as there are samples}
+
 \item{plot}{do the plot}
+
+\item{sd}{use the standard deviation instead of the variance}
 }
 \value{
-a list with variances and the intersection, slope, pval and adjR2 of the linear regression of variances against time
+a list with variances (or standard deviations if sd is true) and the intersection, slope, pval and adjR2 of the linear regression of variances against time
 }
 \description{
-Plot the mean variance for an increasing number of time points.
+Plot the mean variance across all taxa for an increasing number of time points. If groups are given,
+compute the mean of beta diversity (assessed with Bray Curtis) across samples for each time point.
+Groups are interpreted as replicates, such that each group is assumed to cover the same time points in the same order.
 }
 \examples{
 N=20

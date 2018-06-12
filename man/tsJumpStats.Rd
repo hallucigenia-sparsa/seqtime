@@ -5,11 +5,12 @@
 \title{Compute statistics on jumps through community space}
 \usage{
 tsJumpStats(x, time.given = FALSE, time.unit = "days", ordinate = TRUE,
-  distance = "bray", dimensions = c(1, 2), groups = c(), plot = FALSE,
+  distance = "bray", dimensions = c(1, 2), groups = c(),
+  min.jump.length = 0, max.jump.length = Inf, plot = FALSE,
   plot.type = "bar", header = "", subsample = FALSE, perturb = NULL)
 }
 \arguments{
-\item{x}{a community time series matrix, with rows as taxa and columns as time points}
+\item{x}{a community time series, with rows as taxa and columns as time points}
 
 \item{time.given}{sample names provide time steps, only needed for plotting and plot.type jumps}
 
@@ -23,9 +24,13 @@ tsJumpStats(x, time.given = FALSE, time.unit = "days", ordinate = TRUE,
 
 \item{groups}{a vector with group assignments and as many entries as there are samples}
 
+\item{min.jump.length}{minimum length of jumps to be considered for the statistic}
+
+\item{max.jump.length}{maximum length of jumps to be considered for the statistic}
+
 \item{plot}{if TRUE, a plot of the jumps is made}
 
-\item{plot.type}{bar: plot jumps as bars in the order of occurrence; box: a box plot of jump lengths; hist: a histogram of jump lengths, power: power law of jumps of a certain length}
+\item{plot.type}{bar: plot jumps as bars in the order of occurrence; box: a box plot of jump lengths; hist: a histogram of jump lengths, power: power law of jumps of a certain length, msd: mean square displacement vs time lag}
 
 \item{header}{text to be used as plot title instead of default text}
 
@@ -40,7 +45,7 @@ jump lengths (i.e. dissimilarities of community composition at consecutive time 
 Consecutive samples representing time points in an ordination plot can be interpreted
 as vectors, which have a length and an angle. If ordinate is true, these lengths and angles
 are computed from the selection dimensions of the ordination. If ordinate is false, dissimilarities between
-consecutive time points are computed.
+consecutive time points are computed. If ordinate is true, the Euclidean distance to the centroid is computed as well.
 If a perturbation object is provided and plot.type hist or box is true, the histogram or box plot of
 the perturbed and non-perturbed jump lengths is plotted and the significance of the difference between
 perturbed and non-perturbed jump lengths is assessed with a Wilcoxon test.
