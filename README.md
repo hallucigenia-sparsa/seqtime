@@ -36,7 +36,7 @@ Contributions are very welcome:
 
 ### Acknowledgements
 
-**Kindly cite this work** as follows: Karoline Faust, Leo Lahti, and [others](https://github.com/hallucigenia-sparsa/seqtime/graphs/contributors). The seqtime R package 2017. R package version 1.1.1. URL: [https://github.com/hallucigenia-sparsa/seqtime](https://github.com/hallucigenia-sparsa/seqtime)
+**Kindly cite this work** as follows: Karoline Faust, Franziska Bauchinger, Béatrice Laroche, Sophie de Buyl, Leo Lahti, Alex D Washburne, Didier Gonze, Stefanie Widder, "Signatures of ecological processes in microbial community time series", Microbiome (2018). The seqtime R package 2017. R package version 1.1.1. URL: [https://github.com/hallucigenia-sparsa/seqtime](https://github.com/hallucigenia-sparsa/seqtime)
 
 
 
