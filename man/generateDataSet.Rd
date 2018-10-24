@@ -4,8 +4,8 @@
 \alias{generateDataSet}
 \title{Generate a dataset}
 \usage{
-generateDataSet(samples, matrix, env.matrix = NULL, perturb.count = NULL,
-  count = 1000, mode = 4)
+generateDataSet(samples, matrix, env.matrix = NULL,
+  perturb.count = NULL, count = 1000, mode = 4)
 }
 \arguments{
 \item{samples}{Number of samples}

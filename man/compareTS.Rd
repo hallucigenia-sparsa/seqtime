@@ -5,11 +5,11 @@
 \title{Community Time Series Comparison}
 \usage{
 compareTS(input.folder = "", expIds = c(), modif.folder = "",
-  modif = "", testNeutral = FALSE, sliceDef = c(1, NA), epsilon = 0.2,
-  predef = FALSE, detrend = TRUE, norm = FALSE, hurstBins = c(0.5, 0.7,
-  0.9), maxautocorBins = c(0.3, 0.5, 0.8), timeDecaySliceDef = c(1, 50),
-  varEvolSliceDef = c(), radSliceDef = c(), returnDistribs = FALSE,
-  returnTS = FALSE)
+  modif = "", testNeutral = FALSE, sliceDef = c(1, NA),
+  epsilon = 0.2, predef = FALSE, detrend = TRUE, norm = FALSE,
+  hurstBins = c(0.5, 0.7, 0.9), maxautocorBins = c(0.3, 0.5, 0.8),
+  timeDecaySliceDef = c(1, 50), varEvolSliceDef = c(),
+  radSliceDef = c(), returnDistribs = FALSE, returnTS = FALSE)
 }
 \arguments{
 \item{input.folder}{the folder where results (settings and time series) of function generateTS are stored.}

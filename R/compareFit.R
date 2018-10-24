@@ -457,7 +457,7 @@ compareFit<-function(fit.folder="", input.folder="", path.slices="", expIds=c(),
             rand.correls=c()
             rand.accs=c()
             for(i in 1:randiter){
-              # preserves diagonal, therefore replaced by generateRandA
+              # generateA preserves diagonal, therefore replaced by generateRandA in analyseTaxaInA
               #Arand=generateA(N=nrow(A),c=round(oriACon,2))
               Arand=generateRandA(A)
               # cor.rand=sum(diag(cor(A,Arand)))/nrow(A)

@@ -134,10 +134,16 @@ applyPerturbation<-function(perturb, t=NA, perturbCounter=1, durationCounter=1, 
   return(res)
 }
 
-
-# Given a binary vector, build a
-# perturbation object that counts true.value entries
-# as perturbations and false.value entries as non-perturbed time points.
+#' @title Given a binary vector, build a perturbation object
+#'
+#' @description True.values are counted as perturbed time points,
+#' false.values as non-perturbed ones.
+#'
+#' @param bin.metadata.item a binary metadata item with false and true values
+#' @param false.value the string/number used to encode false values
+#' @param true.value the string/number used to encode true values
+#'
+#' @export
 binaryToPerturb<-function(bin.metadata.item, false.value="no", true.value="yes"){
   perturb.indices=c()
   durations=c()
@@ -172,15 +178,25 @@ binaryToPerturb<-function(bin.metadata.item, false.value="no", true.value="yes")
   return(perturbObj)
 }
 
-# Convert perturbation object into a binary vector with FALSE for time points without perturbation and
-# TRUE for time points with perturbation.
-# If returnCol is TRUE, return instead a color vector with the defaultColor for non-perturbed time points
-# and the perturbColor for perturbed time points.
-# perturb: perturbation object
-# l: length of the time series
+#' @title Given a perturbation object, extract a binary vector
+#'
+#' @description Non-perturbed time points are coded as FALSE, perturbed ones as TRUE.
+#' If returnCol is TRUE, return instead a color vector with the defaultColor for non-perturbed
+#' time points and the perturbColor for perturbed time points.
+#'
+#' @param perturb perturbation object
+#' @param l length of the time series
+#' @param returnCol return colors instead of FALSE/TRUE values
+#' @param defaultColor the color used for non-perturbed time points
+#' @param perturbColor the color used for perturbed time points
+#'
+#' @export
 perturbToBinary<-function(perturb, l=NA, returnCol=FALSE, defaultColor=rgb(0,1,0,0.5), perturbColor=rgb(1,0,0,0.5)){
   binary=c()
   colors=c()
+  if(is.na(l)){
+    stop("Please provide the length of the time series.")
+  }
   if(!is.null(perturb)){
     perturbationOn=FALSE
     perturbCounter=1

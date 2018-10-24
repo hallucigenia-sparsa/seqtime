@@ -10,7 +10,7 @@
 #' @param identifyPoints click at points in the PCoA plot to identify them (using function identify), not active when noLabels is TRUE
 #' @param topN number of top taxa to be plotted for mode bars
 #' @param groups group membership vector; for mode bars and pcoa refers to samples; for mode lines refers to taxa; there are as many entries in the group membership vector as samples or taxa; taxa/samples are assumed to be ordered by groups
-#' @param hideGroups compute PCoA with all data, but do not show members of selected groups; expects one integer per group and consistency with groups parameter, only supported for mode pcoa
+#' @param hideGroups compute PCoA with all data, but do not show members of selected groups; expects one integer/name per group and consistency with groups parameter, only supported for mode pcoa
 #' @param legend add a legend
 #' @param labels use the provided labels in the PCoA plot
 #' @param noLabels do not use any labels in the PCoA plot
@@ -26,8 +26,10 @@
 #' tsplot(out.ricker[,1:50],mode="pcoa")
 #' @export
 tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="lines", dist="bray", my.color.map=list(), identifyPoints=FALSE, topN=10, groups=c(), hideGroups=c(), legend=FALSE, labels=c(), noLabels=FALSE, centroid=FALSE, perturb=NULL, ...){
-  if(!is.null(perturb) && length(groups)>0){
-    stop("Perturbation object and groups cannot be both provided.")
+  if(mode!="pcoa"){
+    if(!is.null(perturb) && length(groups)>0){
+      stop("Perturbation object and groups cannot be both provided.")
+    }
   }
   if(length(groups)>0){
     if(mode=="bars" || mode=="pcoa"){
@@ -113,8 +115,9 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
       }
     }else{
       colors="black"
-      arrowColors=rep("black",ncol(x))
+      arrowColors=rep("grey",ncol(x)) # black
     }
+    #print(arrowColors[37:73])
     # xlim with margin for the legend
     if(legend==TRUE){
       xlim=c(min(pcoa.res$CA$u[,1]),max(pcoa.res$CA$u[,1]+0.1))
@@ -141,6 +144,7 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
         groups.copy=groups.copy[visible.sample.indices]
         colors.copy=colors[visible.sample.indices]
         colors.copy[length(colors.copy)]=colors.copy[length(colors.copy)-1]
+        arrowColors=arrowColors[visible.sample.indices]
         if(length(labels)> 0){
           labels=labels[visible.sample.indices]
         }
@@ -168,7 +172,7 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
     #points(x=pcoa.res$CA$u[nrow(pcoa.res$CA$u),1],y=pcoa.res$CA$u[nrow(pcoa.res$CA$u),2], col=colors.copy[length(colors.copy)-1])
     for(i in 1:(nrow(pcoa.res$CA$u)-1)){
       if(length(groups)==0 || groups.copy[i]==groups.copy[i+1]){
-        arrows(x0=pcoa.res$CA$u[i,1],y0=pcoa.res$CA$u[i,2],x1=pcoa.res$CA$u[i+1,1],y1=pcoa.res$CA$u[i+1,2], length=0.04, col=arrowColors[i]) # 0.08
+        arrows(x0=pcoa.res$CA$u[i,1],y0=pcoa.res$CA$u[i,2],x1=pcoa.res$CA$u[i+1,1],y1=pcoa.res$CA$u[i+1,2], length=0.1, col=arrowColors[i], lty=2, angle=20) # 0.04 (length of the edges of the arrow head in inches), lty=2 is dashed, angle refers to shaft vs edge of arrow head
       }
     }
     if(centroid){
@@ -287,7 +291,7 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
         mtext(labelnames,col=labelcolors,side=1, las=2, cex.lab=0.7, cex=0.7, line=0.5, at=midpoints)
       }
       if(legend==TRUE){
-        legend("topright",legend=rownames(sub.xsub),cex=0.9, bg = "white", text.col=selected.colors)
+        legend("topright",legend=rownames(sub.xsub),cex=0.8, bg = "white", text.col=selected.colors)
       }
     }
   }else{

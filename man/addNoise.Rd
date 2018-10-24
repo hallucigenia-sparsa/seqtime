@@ -6,8 +6,8 @@
 \usage{
 addNoise(x, input.folder = "", output.folder = "", expIds = c(),
   add = FALSE, seqdepths = c(), vary.seqdepth = FALSE,
-  scaling.factor = 1, noise.distrib = "pois", param1 = 1, param2 = 1,
-  scale.noise = 1)
+  scaling.factor = 1, noise.distrib = "pois", param1 = 1,
+  param2 = 1, scale.noise = 1)
 }
 \arguments{
 \item{x}{matrix with taxa as rows and time points as columns (optional, can be set to NULL if an input.folder is provided)}

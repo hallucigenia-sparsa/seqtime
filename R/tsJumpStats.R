@@ -3,7 +3,7 @@
 #' @description Consecutive samples representing time points in an ordination plot can be interpreted
 #' as vectors, which have a length and an angle. If ordinate is true, these lengths and angles
 #' are computed from the selection dimensions of the ordination. If ordinate is false, dissimilarities between
-#' consecutive time points are computed. If ordinate is true, the Euclidean distance to the centroid is computed as well.
+#' consecutive time points are computed.
 #' If a perturbation object is provided and plot.type hist or box is true, the histogram or box plot of
 #' the perturbed and non-perturbed jump lengths is plotted and the significance of the difference between
 #' perturbed and non-perturbed jump lengths is assessed with a Wilcoxon test.
@@ -23,7 +23,9 @@
 #' @param plot.type bar: plot jumps as bars in the order of occurrence; box: a box plot of jump lengths; hist: a histogram of jump lengths, power: power law of jumps of a certain length, msd: mean square displacement vs time lag
 #' @param header text to be used as plot title instead of default text
 #' @param subsample for plot.type hist or box: subsample larger jump vector randomly down to smaller one, so that there are as many perturbed as non-perturbed jumps
+#' @param computeCentroid whether or not to formally compute the centroid, if false, centroid is set to 0,0 (only for ordinate=TRUE)
 #' @param perturb a perturbation object, if provided, the plot is colored accordingly
+#' @param verbose depending on configuration, report details on jump statistics and Wilcoxon test result, values for thresholds, probabilities of transitions and position of centroid
 #' @return jump lengths (i.e. dissimilarities of community composition at consecutive time points) and, in case ordinate is true, angles are returned
 #' @examples
 #' \dontrun{
@@ -40,13 +42,19 @@
 #' }
 #' @export
 
-tsJumpStats<-function(x, time.given=FALSE, time.unit="days", ordinate=TRUE, distance="bray", dimensions=c(1,2), groups=c(), min.jump.length=0, max.jump.length=Inf, plot=FALSE, plot.type="bar", header="", subsample=FALSE, perturb=NULL){
+tsJumpStats<-function(x, time.given=FALSE, time.unit="days", ordinate=TRUE, distance="bray", dimensions=c(1,2), groups=c(), min.jump.length=0, max.jump.length=Inf, plot=FALSE, plot.type="bar", header="", subsample=FALSE, computeCentroid=FALSE, perturb=NULL, verbose=FALSE){
   centroid=c()
   if(ordinate==TRUE){
     ordinate.res=vegan::capscale(data.frame(t(x))~1,distance=distance)
-    centroid=computeCentroid(x=x,ordinate.res = ordinate.res,dimensions=dimensions,groups=groups,min.jump.length = min.jump.length, max.jump.length = max.jump.length)
-    print("Location of centroid:")
-    print(centroid)
+    if(computeCentroid){
+      centroid=computeCentroid(x=x,ordinate.res = ordinate.res,dimensions=dimensions,groups=groups,min.jump.length = min.jump.length, max.jump.length = max.jump.length)
+      if(verbose){
+        print("Location of centroid:")
+        print(centroid)
+      }
+    }else{
+      centroid=c(0,0)
+    }
   }
   jumps=c()
   angles=c()
@@ -128,29 +136,33 @@ tsJumpStats<-function(x, time.given=FALSE, time.unit="days", ordinate=TRUE, dist
   if(ordinate==TRUE){
     low.quantile=0.3
     high.quantile=0.7
-    res.trans=getTransitionProbs(distancesToOrigin,low.quantile = low.quantile,high.quantile = high.quantile, groups=groups)
-    print(paste("Probability of transitions from high to high distance to centroid:",res.trans$high/length(distancesToOrigin)))
-    print(paste("Probability of transitions from low to low distance to centroid:",res.trans$low/length(distancesToOrigin)))
-    print(paste("Probability of transitions from low to high distance to centroid:",res.trans$lowhigh/length(distancesToOrigin)))
-    print(paste("Probability of transitions from high to low distance to centroid:",res.trans$highlow/length(distancesToOrigin)))
+    res.trans=getTransitionProbs(distancesToOrigin,low.quantile = low.quantile,high.quantile = high.quantile, groups=groups, verbose=verbose)
+    if(verbose){
+      print(paste("Probability of transitions from high to high distance to centroid:",res.trans$high/length(distancesToOrigin)))
+      print(paste("Probability of transitions from low to low distance to centroid:",res.trans$low/length(distancesToOrigin)))
+      print(paste("Probability of transitions from low to high distance to centroid:",res.trans$lowhigh/length(distancesToOrigin)))
+      print(paste("Probability of transitions from high to low distance to centroid:",res.trans$highlow/length(distancesToOrigin)))
+    }
   }
 
-  # compute MSD
-  half.time=round(length(time)/2)
   lag.values=c()
   msd.values=c()
-  diffusion.coeffi=c()
-  for(lag in 1:half.time){
-    if(ordinate==TRUE){
-      msd=computeMSD(x=x,ordinate.res = ordinate.res,lag=lag,groups=groups,min.jump.length = min.jump.length, max.jump.length = max.jump.length, dimensions=dimensions, distance=distance)
-    }else{
-      msd=computeMSD(x=x,ordinate.res = NULL,lag=lag,groups=groups,min.jump.length = min.jump.length, max.jump.length = max.jump.length, dimensions=dimensions, distance=distance)
+  # compute MSD
+  if(plot.type=="msd"){
+    half.time=round(length(time)/2)
+    diffusion.coeffi=c()
+    for(lag in 1:half.time){
+      if(ordinate==TRUE){
+        msd=computeMSD(x=x,ordinate.res = ordinate.res,lag=lag,groups=groups,min.jump.length = min.jump.length, max.jump.length = max.jump.length, dimensions=dimensions, distance=distance)
+      }else{
+        msd=computeMSD(x=x,ordinate.res = NULL,lag=lag,groups=groups,min.jump.length = min.jump.length, max.jump.length = max.jump.length, dimensions=dimensions, distance=distance)
+      }
+      msd.values=c(msd.values,msd$dist)
+      lag.values=c(lag.values,lag)
+      # msd(lag)=2*d*D*lag, where d is the number of dimensions (=2) and D is the diffusion coefficient
+      D=msd$dist/(4*lag)
+      diffusion.coeffi=c(diffusion.coeffi,D)
     }
-    msd.values=c(msd.values,msd$dist)
-    lag.values=c(lag.values,lag)
-    # msd(lag)=2*d*D*lag, where d is the number of dimensions (=2) and D is the diffusion coefficient
-    D=msd$dist/(4*lag)
-    diffusion.coeffi=c(diffusion.coeffi,D)
   }
 
   if(plot==TRUE){
@@ -169,16 +181,20 @@ tsJumpStats<-function(x, time.given=FALSE, time.unit="days", ordinate=TRUE, dist
             jump.perturb=sample(jump.perturb)[1:length(jump.normal)]
           }
         }
-        print(paste("Number of non-perturbed jumps:",length(jump.normal)))
-        print(paste("Minimum of non-perturbed jumps:",min(jump.normal,na.rm=TRUE)))
-        print(paste("Maximum of non-perturbed jumps:",max(jump.normal,na.rm=TRUE)))
-        print(paste("Standard deviation of non-perturbed jumps:",sd(jump.normal,na.rm=TRUE)))
-        print(paste("Number of perturbed jumps:",length(jump.perturb)))
-        print(paste("Minimum of perturbed jumps:",min(jump.perturb,na.rm=TRUE)))
-        print(paste("Maximum of perturbed jumps:",max(jump.perturb,na.rm=TRUE)))
-        print(paste("Standard deviation of perturbed jumps:",sd(jump.perturb,na.rm=TRUE)))
+        if(verbose){
+          print(paste("Number of non-perturbed jumps:",length(jump.normal)))
+          print(paste("Minimum of non-perturbed jumps:",min(jump.normal,na.rm=TRUE)))
+          print(paste("Maximum of non-perturbed jumps:",max(jump.normal,na.rm=TRUE)))
+          print(paste("Standard deviation of non-perturbed jumps:",sd(jump.normal,na.rm=TRUE)))
+          print(paste("Number of perturbed jumps:",length(jump.perturb)))
+          print(paste("Minimum of perturbed jumps:",min(jump.perturb,na.rm=TRUE)))
+          print(paste("Maximum of perturbed jumps:",max(jump.perturb,na.rm=TRUE)))
+          print(paste("Standard deviation of perturbed jumps:",sd(jump.perturb,na.rm=TRUE)))
+        }
         wilcox.out=wilcox.test(jump.normal,jump.perturb)
-        print(wilcox.out)
+        if(verbose){
+          print(wilcox.out)
+        }
         # limits
         xmax=max(jump.perturb, na.rm=TRUE)
         xmin=min(jump.perturb,na.rm=TRUE)
@@ -217,8 +233,10 @@ tsJumpStats<-function(x, time.given=FALSE, time.unit="days", ordinate=TRUE, dist
           xmaxD=max(out.h.perturb$density)
           ymaxD=max(out.h.normal$density)
           # check that the density sums to one (it can be greater than one at some points)
-          print(paste("Total density normal jump length:",sum(out.h.normal$density*diff(out.h.normal$breaks))))
-          print(paste("Total density perturbed jump length:",sum(out.h.perturb$density*diff(out.h.perturb$breaks))))
+          if(verbose){
+            print(paste("Total density normal jump length:",sum(out.h.normal$density*diff(out.h.normal$breaks))))
+            print(paste("Total density perturbed jump length:",sum(out.h.perturb$density*diff(out.h.perturb$breaks))))
+          }
           maxD=max(xmaxD,ymaxD)
           max=max+0.05 # add a margin
           maxD=maxD+2.5 # add a margin
@@ -263,7 +281,9 @@ tsJumpStats<-function(x, time.given=FALSE, time.unit="days", ordinate=TRUE, dist
     }else if(plot.type=="power"){
       # bin jumps
       interval.num=round(sqrt(length(jumps)))
-      print(paste("Number of intervals:",interval.num))
+      if(verbose){
+        print(paste("Number of intervals:",interval.num))
+      }
       bins=cut(jumps,breaks=interval.num,labels=FALSE)
       instances=table(bins)
       values=c()
@@ -278,8 +298,10 @@ tsJumpStats<-function(x, time.given=FALSE, time.unit="days", ordinate=TRUE, dist
       slope=linreg$coefficients[2]
       sum=summary(linreg)
       pval=1-pf(sum$fstatistic[1], sum$fstatistic[2], sum$fstatistic[3])
-      print(paste("slope of power law:",slope))
-      print(paste("p-value of power law:",pval))
+      if(verbose){
+        print(paste("slope of power law:",slope))
+        print(paste("p-value of power law:",pval))
+      }
       plot(values,instances,main=paste("Power law, bins=",interval.num,", slope=",round(slope,2),", p-value=",round(pval,2),sep=""), xlab="log(jump length)", ylab="log(jump number)")
       abline(linreg,bty="n",col="red")
     }else if(plot.type=="msd"){
@@ -325,15 +347,19 @@ getPerturbedIndices<-function(time,perturb){
 
 # compute the transition probabilities for different bins of distances to the centroid
 #
-getTransitionProbs<-function(distori=c(),low.quantile=0.25,high.quantile=0.75, groups=c()){
+getTransitionProbs<-function(distori=c(),low.quantile=0.25,high.quantile=0.75, groups=c(), verbose=FALSE){
   t.def=c(low.quantile,high.quantile)
   thresholds=quantile(distori,t.def)
-  print(paste("Threshold low distance to centroid for quantile",low.quantile,":",thresholds[1]))
-  print(paste("Threshold high distance to centroid for quantile",high.quantile,":",thresholds[2]))
+  if(verbose){
+    print(paste("Threshold low distance to centroid for quantile",low.quantile,":",thresholds[1]))
+    print(paste("Threshold high distance to centroid for quantile",high.quantile,":",thresholds[2]))
+  }
   indices.low=which(distori<thresholds[1]) # low quantile group
   indices.high=which(distori>thresholds[2]) # high quantile group
-  print(paste("Number of small distances from origin:",length(indices.low)))
-  print(paste("Number of large distances from origin:",length(indices.high)))
+  if(verbose){
+    print(paste("Number of small distances from origin:",length(indices.low)))
+    print(paste("Number of large distances from origin:",length(indices.high)))
+  }
   transition.vec=c()
   prevVal=NA
   # in the general case, can draw a graph
@@ -391,6 +417,83 @@ getTransitionProbs<-function(distori=c(),low.quantile=0.25,high.quantile=0.75, g
   res=list(lowToLow,highToHigh,lowToHigh,highToLow)
   names(res)=c("low","high","lowhigh","highlow")
   return(res)
+}
+
+# Compute MSD values for two vectors representing x and y coordinates.
+computeMSDCoordinates<-function(x,y,lag=1,groups=c(), min.jump.length=0,max.jump.length=Inf){
+  lag.values=c()
+  msd.values=c()
+  # compute MSD
+  half.time=round(length(x)/2)
+  for(lag in 1:half.time){
+    msd=computeMSDValueCoordinates(x=x,y=y,lag=lag,groups=groups,min.jump.length = min.jump.length, max.jump.length = max.jump.length)
+    msd.values=c(msd.values,msd$dist)
+    lag.values=c(lag.values,lag)
+  }
+  res=list(msd.values,lag.values)
+  names(res)=c("msds","lags")
+  return(res)
+}
+
+# Compute a single MSD value for a particular lag for two vectors representing x and y coordinates.
+# The function also returns the jump lengths.
+computeMSDValueCoordinates<-function(x,y,lag=1,groups=c(),min.jump.length=0, max.jump.length=Inf){
+  mat=cbind(x,y)
+  proceed=TRUE
+  msd.x.values=c()
+  msd.y.values=c()
+  msd.dist.values=c()
+  jumps=c()
+  for(sample.index in 1:(nrow(mat)-lag)){
+    # avoid computation of jumps and angles across groups
+    if(length(groups)>0){
+      group1=groups[sample.index]
+      group2=groups[sample.index+lag]
+      if(group1!=group2){
+        proceed=FALSE
+      }
+    }
+    if(proceed){
+      # vector defined by the two consecutive points in multidimensional space
+      betweenvector=c()
+      # vector defined by the null point and the first point
+      firstvector=c()
+      # vector defined by the null point and the second point
+      secondvector=c()
+      # compute the euclidean distance between points in multi-dimensional space
+
+      # loop over two dimensions
+      for(dim.index in 1:2){
+        # vector between origin and sample
+        firstvector=c(firstvector,mat[sample.index,dim.index])
+        # vector between origin and second sample
+        secondvector=c(secondvector,mat[(sample.index+lag),dim.index])
+        # subtracting value of current dimension
+        pointdim=mat[(sample.index+lag),dim.index] - mat[sample.index,dim.index]
+        # vector between samples
+        betweenvector=c(betweenvector,pointdim)
+      }
+      # compute length of vector between two points using Pythagoras
+      betweenvector=betweenvector^2
+      length=sqrt(sum(betweenvector))
+      if(length>=min.jump.length){
+        if(is.infinite(max.jump.length) || length<=max.jump.length){
+          msd.x.values=c(msd.x.values,betweenvector[1])
+          msd.y.values=c(msd.x.values,betweenvector[2])
+          msd.dist.values=c(msd.dist.values,length)
+          jumps=c(jumps,length)
+        }
+      } # jump is long enough to be considered
+    } # proceed
+    proceed=TRUE
+  } # end loop samples
+
+  msd=list(jumps, mean(msd.x.values),mean(msd.y.values),mean(msd.dist.values))
+  names(msd)=c("lengths","x","y","dist")
+  #print(paste("lag",lag))
+  #print(paste("msd x:",msd$x))
+  #print(paste("msd y:",msd$y))
+  return(msd)
 }
 
 # Compute the mean squared displacement for a given lag.
@@ -464,6 +567,8 @@ computeMSD<-function(x,ordinate.res,lag=1,groups=c(),dimensions=c(1,2),min.jump.
   #print(paste("msd y:",msd$y))
   return(msd)
 }
+
+
 
 # Compute the location of the centroid.
 computeCentroid<-function(x, ordinate.res=NULL, dimensions=c(1,2), groups=c(), min.jump.length=0, max.jump.length=Inf){

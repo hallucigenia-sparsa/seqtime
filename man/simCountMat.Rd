@@ -4,9 +4,9 @@
 \alias{simCountMat}
 \title{Simulate a count matrix}
 \usage{
-simCountMat(N, pi = c(), samples = 100, counts = 1000, distrib = "dm",
-  maxcount = 100, mode = 1, k = 0.5, theta = 0.002, norm = F,
-  shuffle.samples = F)
+simCountMat(N, pi = c(), samples = 100, counts = 1000,
+  distrib = "dm", maxcount = 100, mode = 1, k = 0.5,
+  theta = 0.002, norm = F, shuffle.samples = F)
 }
 \arguments{
 \item{N}{the number of taxa}

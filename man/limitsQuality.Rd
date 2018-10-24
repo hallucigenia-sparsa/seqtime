@@ -4,10 +4,11 @@
 \alias{limitsQuality}
 \title{Quality scores and plot for estimated interaction matrices}
 \usage{
-limitsQuality(oriTS, A, A.ori = matrix(), type = "ricker", m.vector = c(),
-  e.vector = c(), spec.subset = NA, norm = FALSE, plot = FALSE,
-  predict.stepwise = TRUE, sim = "r", noSchur = FALSE,
-  ignoreExplosion = FALSE, sigma = -1, explosion.bound = 10^8)
+limitsQuality(oriTS, A, A.ori = matrix(), type = "ricker",
+  m.vector = c(), e.vector = c(), spec.subset = NA, norm = FALSE,
+  plot = FALSE, predict.stepwise = TRUE, sim = "r",
+  noSchur = FALSE, ignoreExplosion = FALSE, sigma = -1,
+  explosion.bound = 10^8)
 }
 \arguments{
 \item{oriTS}{the original time series, with taxa as rows and time points as columns}

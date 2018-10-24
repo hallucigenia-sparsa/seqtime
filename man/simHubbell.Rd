@@ -5,8 +5,8 @@
 \title{Hubbell Simulation}
 \usage{
 simHubbell(N = 50, M = 500, I = 500, y = rep(1/N, N),
-  m.vector = rep(1/M, M), m = 0.02, d = 10, tskip = 0, tend = 100,
-  perturb = NULL)
+  m.vector = rep(1/M, M), m = 0.02, d = 10, tskip = 0,
+  tend = 100, perturb = NULL)
 }
 \arguments{
 \item{N}{species number in the local community}

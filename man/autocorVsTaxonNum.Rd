@@ -4,7 +4,8 @@
 \alias{autocorVsTaxonNum}
 \title{Compute slope for increasing number of taxa versus their autocorrelation}
 \usage{
-autocorVsTaxonNum(ts, lag = 1, plot = FALSE, col = "black", pch = "+")
+autocorVsTaxonNum(ts, lag = 1, plot = FALSE, col = "black",
+  pch = "+")
 }
 \arguments{
 \item{ts}{a matrix with objects as rows and time points as columns}

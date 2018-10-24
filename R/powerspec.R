@@ -15,6 +15,7 @@
 #' @param header header string
 #' @param col color used in periodogram if plot is true
 #' @param detrend remove a linear trend prior to the computation of the periodogram
+#' @param groups vector of group assignments with the same length as v, if non-empty computes frequencies and spectral densities for each group separately and computes noise type on pooled frequencies and spectral densities
 #' @param smooth fit a cubic spline with smooth.spline and report the slope as the minimum of the derivative; in this case, the goodness of fit of a line to the frequency versus spectral density power law is not reported
 #' @param df smooth.spline parameter (degrees of freedom)
 #' @return return the slope, p-value, adjusted R2, log frequencies and log spectra
@@ -23,15 +24,35 @@
 #' out.spec=powerspec(brownNoise, header="brown noise", plot=TRUE)
 #' @export
 
-powerspec<-function(v, plot=FALSE, detrend=TRUE, smooth=FALSE, df=max(2,log10(length(v))), header="", col="blue"){
+powerspec<-function(v, plot=FALSE, detrend=TRUE, smooth=FALSE, df=max(2,log10(length(v))), groups=c(), header="", col="blue"){
   # generates periodogram
-  out=stats::spectrum(v, plot=FALSE, detrend=detrend)
-  # check for zeros and negative values
-  if(length(out$freq[out$freq<=0])>0 || length(out$spec[out$spec<=0])>0){
-    stop("Zero or negative frequency or spectral density values encountered.")
+  if(length(groups)>0){
+    unique.groups=unique(groups)
+    frequencies=c()
+    spectra=c()
+    # loop groups and merge group-specific frequencies and spectra
+    for(group in unique.groups){
+      print(paste("Processing group",group))
+      group.member.indices=which(groups==group)
+      out=stats::spectrum(v[group.member.indices], plot=FALSE, detrend=detrend)
+      if(length(out$freq[out$freq<=0])>0 || length(out$spec[out$spec<=0])>0){
+        warning(paste("Zero or negative frequency or spectral density values encountered for group",group))
+      }else{
+        frequencies=c(frequencies,out$freq)
+        spectra=c(spectra,out$spec)
+      }
+    }
+    logfreq=log10(frequencies)
+    logspec=log10(spectra)
+  }else{
+    out=stats::spectrum(v, plot=FALSE, detrend=detrend)
+    # check for zeros and negative values
+    if(length(out$freq[out$freq<=0])>0 || length(out$spec[out$spec<=0])>0){
+      stop("Zero or negative frequency or spectral density values encountered.")
+    }
+    logfreq=log10(out$freq)
+    logspec=log10(out$spec)
   }
-  logfreq=log10(out$freq)
-  logspec=log10(out$spec)
   if(smooth){
     sspline=smooth.spline(logfreq,logspec,df=df)
     deriv=predict(sspline, logfreq, deriv=1)

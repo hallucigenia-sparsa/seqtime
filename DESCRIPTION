@@ -35,5 +35,5 @@ License: BSD_2_clause + file LICENSE
 LazyData: true
 URL: https://github.com/hallucigenia-sparsa/seqtime
 BugReports: https://github.com/hallucigenia-sparsa/seqtime/issues
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 VignetteBuilder: knitr

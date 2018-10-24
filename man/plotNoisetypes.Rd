@@ -4,8 +4,8 @@
 \alias{plotNoisetypes}
 \title{Do a barplot of the noise types}
 \usage{
-plotNoisetypes(noisetypes, percentage = TRUE, total = NA, stacked = FALSE,
-  sample.id = "")
+plotNoisetypes(noisetypes, percentage = TRUE, total = NA,
+  stacked = FALSE, sample.id = "")
 }
 \arguments{
 \item{noisetypes}{the noisetypes object}

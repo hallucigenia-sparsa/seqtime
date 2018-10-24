@@ -5,8 +5,8 @@
 \title{Rank abundance distribution curve}
 \usage{
 rad(x, remove.zeros = TRUE, fit.neutral = FALSE, fit.rad = FALSE,
-  fit.distrib = FALSE, fit.N = nrow(x), sample.index = NA, plot = TRUE,
-  header = "")
+  fit.distrib = FALSE, fit.N = nrow(x), sample.index = NA,
+  plot = TRUE, header = "")
 }
 \arguments{
 \item{x}{community matrix with species as rows, samples as columns and non-negative integers as entries}

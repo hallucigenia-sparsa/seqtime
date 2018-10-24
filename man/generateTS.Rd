@@ -4,12 +4,13 @@
 \alias{generateTS}
 \title{Generate community time series}
 \usage{
-generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5, c = 0.05,
-  clique.size = 5, sigma = 0.05, theta = 0.002, Atype = "klemm",
-  Atweak = "tweak", d = -1, PEP = 30, m = 0.02, deathrate = 10,
-  algorithm = "dm", interval = 1, output.folder = "", output.expId = "",
-  input.folder = "", input.expId = "", read.A = FALSE, read.y = FALSE,
-  read.K = FALSE, read.extinct = FALSE, read.ts = FALSE, maxIter = 10)
+generateTS(N = 100, I = 1500, tend = 100, initAbundMode = 5,
+  c = 0.05, clique.size = 5, sigma = 0.05, theta = 0.002,
+  Atype = "klemm", Atweak = "tweak", d = -1, PEP = 30, m = 0.02,
+  deathrate = 10, algorithm = "dm", interval = 1,
+  output.folder = "", output.expId = "", input.folder = "",
+  input.expId = "", read.A = FALSE, read.y = FALSE, read.K = FALSE,
+  read.extinct = FALSE, read.ts = FALSE, maxIter = 10)
 }
 \arguments{
 \item{N}{species number (for hubbell, refers to the species number in the metacommunity)}

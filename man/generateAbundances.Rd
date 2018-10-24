@@ -4,7 +4,8 @@
 \alias{generateAbundances}
 \title{Generate Abundance Vector}
 \usage{
-generateAbundances(N, count = 1000, mode = 1, k = 0.5, probabs = FALSE)
+generateAbundances(N, count = 1000, mode = 1, k = 0.5,
+  probabs = FALSE)
 }
 \arguments{
 \item{N}{number of species}

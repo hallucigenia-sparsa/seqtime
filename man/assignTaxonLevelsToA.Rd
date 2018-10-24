@@ -4,9 +4,9 @@
 \alias{assignTaxonLevelsToA}
 \title{Assign Taxon Levels}
 \usage{
-assignTaxonLevelsToA(A, lineages, taxon.level = "genus", pos.only = FALSE,
-  neg.only = FALSE, uniqueNames = FALSE, higherLevelNames = TRUE,
-  no.merge = FALSE)
+assignTaxonLevelsToA(A, lineages, taxon.level = "genus",
+  pos.only = FALSE, neg.only = FALSE, uniqueNames = FALSE,
+  higherLevelNames = TRUE, no.merge = FALSE)
 }
 \arguments{
 \item{A}{an interaction matrix}

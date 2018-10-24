@@ -4,8 +4,9 @@
 \alias{simNoiseMat}
 \title{Simulate Noise}
 \usage{
-simNoiseMat(samples = 100, noisetypes = list(white = 2, pink = 5, brown =
-  3), brown.type = "bm", mean = 5, sd = 1, r = 2, stayDead = FALSE)
+simNoiseMat(samples = 100, noisetypes = list(white = 2, pink = 5, brown
+  = 3), brown.type = "bm", mean = 5, sd = 1, r = 2,
+  stayDead = FALSE)
 }
 \arguments{
 \item{samples}{the number of samples to be drawn}

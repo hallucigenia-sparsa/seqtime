@@ -4,8 +4,9 @@
 \alias{powerspec}
 \title{Report slope of periodogram in log scale}
 \usage{
-powerspec(v, plot = FALSE, detrend = TRUE, smooth = FALSE, df = max(2,
-  log10(length(v))), header = "", col = "blue")
+powerspec(v, plot = FALSE, detrend = TRUE, smooth = FALSE,
+  df = max(2, log10(length(v))), groups = c(), header = "",
+  col = "blue")
 }
 \arguments{
 \item{v}{time series vector}
@@ -17,6 +18,8 @@ powerspec(v, plot = FALSE, detrend = TRUE, smooth = FALSE, df = max(2,
 \item{smooth}{fit a cubic spline with smooth.spline and report the slope as the minimum of the derivative; in this case, the goodness of fit of a line to the frequency versus spectral density power law is not reported}
 
 \item{df}{smooth.spline parameter (degrees of freedom)}
+
+\item{groups}{vector of group assignments with the same length as v, if non-empty computes frequencies and spectral densities for each group separately and computes noise type on pooled frequencies and spectral densities}
 
 \item{header}{header string}
 

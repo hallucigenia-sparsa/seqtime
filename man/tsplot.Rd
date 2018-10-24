@@ -6,9 +6,9 @@
 \usage{
 tsplot(x, time.given = FALSE, num = nrow(x), sample.points = c(),
   mode = "lines", dist = "bray", my.color.map = list(),
-  identifyPoints = FALSE, topN = 10, groups = c(), hideGroups = c(),
-  legend = FALSE, labels = c(), noLabels = FALSE, centroid = FALSE,
-  perturb = NULL, ...)
+  identifyPoints = FALSE, topN = 10, groups = c(),
+  hideGroups = c(), legend = FALSE, labels = c(), noLabels = FALSE,
+  centroid = FALSE, perturb = NULL, ...)
 }
 \arguments{
 \item{x}{the matrix of time series}
@@ -31,7 +31,7 @@ tsplot(x, time.given = FALSE, num = nrow(x), sample.points = c(),
 
 \item{groups}{group membership vector; for mode bars and pcoa refers to samples; for mode lines refers to taxa; there are as many entries in the group membership vector as samples or taxa; taxa/samples are assumed to be ordered by groups}
 
-\item{hideGroups}{compute PCoA with all data, but do not show members of selected groups; expects one integer per group and consistency with groups parameter, only supported for mode pcoa}
+\item{hideGroups}{compute PCoA with all data, but do not show members of selected groups; expects one integer/name per group and consistency with groups parameter, only supported for mode pcoa}
 
 \item{legend}{add a legend}
 

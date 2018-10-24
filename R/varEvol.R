@@ -18,6 +18,7 @@
 varEvol<-function(x, groups=c(), plot=TRUE, sd=FALSE){
   meancumvar=c()
   var.measure="variance"
+  beautify=TRUE
   if(sd==TRUE){
       var.measure="standard deviation"
   }
@@ -26,14 +27,32 @@ varEvol<-function(x, groups=c(), plot=TRUE, sd=FALSE){
     var.measure="mean"
     group.ids=unique(groups)
     number.timepoints=length(which(groups==group.ids[1]))
-    print(paste("Number of replicates:",length(group.ids)))
+    number.replicates=length(group.ids)
+    print(paste("Number of replicates:",number.replicates))
     if(length(group.ids)<2){
       stop("At least two groups required.")
     }
+    bc.res.mat=matrix(nrow=((number.replicates*(number.replicates-1))/2), ncol=number.timepoints)
     #print(paste("Replicates are supposed to have",number.timepoints,"time points each."))
     values.per.group=list()
+    firstGroup=TRUE
     for(group.id in group.ids){
+      # store all values belonging to current group in a list
       values.per.group[[group.id]]=x[,which(groups==group.id)]
+      if(firstGroup){
+        colnames(bc.res.mat)=colnames(x)[which(groups==group.id)]
+        # specific beautification code
+        if(beautify){
+          beautified.colnames=c()
+          for(colname.index in 1:ncol(bc.res.mat)){
+            label=colnames(bc.res.mat)[colname.index]
+            splitted=strsplit(label,split="_")  # \\.
+            beautified.colnames=c(beautified.colnames,splitted[[1]][1])
+          }
+          colnames(bc.res.mat)=beautified.colnames
+        }
+        firstGroup=FALSE
+      }
       if(ncol(values.per.group[[group.id]]) != number.timepoints){
         stop(paste("Group",group.id,"does not have as many time points as the first group!"))
       }
@@ -47,10 +66,14 @@ varEvol<-function(x, groups=c(), plot=TRUE, sd=FALSE){
       }
       # compute all pair-wise beta dissimilarities
       # vegdist computes dissimilarities row-wise, here should be computed column-wise
+      #print(dim(replicate.mat)) # number of taxa x replicates for 1 time point
       bc.dist.mat=as.matrix(vegdist(t(replicate.mat)))
       #print(dim(bc.dist.mat))
-      # get lower triangle elements from symmetric matrix (so upper triangle works equally well)
+      # get lower triangle elements from symmetric matrix (upper triangle works equally well)
       bc.dist=bc.dist.mat[lower.tri(bc.dist.mat)]
+      bc.res.mat[,tp]=bc.dist
+      #print(length(bc.dist))
+      # get the mean of all the pair-wise dissimilarities
       meancumvar=c(meancumvar,mean(bc.dist))
     } # end loop time points
   }else{
@@ -75,7 +98,11 @@ varEvol<-function(x, groups=c(), plot=TRUE, sd=FALSE){
       plot(meancumvar,xlab="Time",ylab="",main=paste("Change of ",var.measure," over time", sep=""))
       title(ylab=paste("Mean ",var.measure," up to time point", sep=""), line=4.5)
     }else{
-      plot(meancumvar,xlab="Time",ylab=paste(firstup(var.measure)," of Bray Curtis dissimilarity",sep=""),main=paste("Change of ",var.measure," of dissimilarity across replicates", sep=""))
+      boxplot(bc.res.mat, xlab="Time", ylab="Bray-Curtis dissimilarity across replicates", las=2, main=paste("Change of Bray Curtis dissimilarity across replicates", sep=""))
+      #plot(meancumvar,xlab="Time",ylab=paste(firstup(var.measure)," of Bray Curtis dissimilarity",sep=""),main=paste("Change of ",var.measure," of dissimilarity across replicates", sep=""))
+      for(i in 1:ncol(bc.res.mat)){
+        points(rep(i,length(bc.res.mat[,i])),bc.res.mat[,i])
+      }
     }
   }
 
@@ -88,6 +115,10 @@ varEvol<-function(x, groups=c(), plot=TRUE, sd=FALSE){
   pval=1-pf(sum$fstatistic[1], sum$fstatistic[2], sum$fstatistic[3])
   res=list(meancumvar, intersection, slope, pval, adjR2)
   names(res)=c("variances", "intersection","slope","pval","adjR2")
+  print(paste("Change of ",var.measure," of dissimilarity across replicates"))
+  print(paste("Slope: ",slope))
+  print(paste("Adjusted R2: ",adjR2))
+  print(paste("P-value: ",pval))
   return(res)
 }
 

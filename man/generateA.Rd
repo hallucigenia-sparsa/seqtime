@@ -5,9 +5,10 @@
 \title{Generate an interaction matrix}
 \usage{
 generateA(N = 100, type = "random", pep = 50, d = -0.5,
-  min.strength = -0.5, max.strength = 0.5, c = 0.02, ignore.c = FALSE,
-  negedge.symm = FALSE, clique.size = 5, groups = c(),
-  intra.group.strength = 0.5, inter.group.strength = NA)
+  min.strength = -0.5, max.strength = 0.5, c = 0.02,
+  ignore.c = FALSE, negedge.symm = FALSE, clique.size = 5,
+  groups = c(), intra.group.strength = 0.5,
+  inter.group.strength = NA)
 }
 \arguments{
 \item{N}{number of species}
