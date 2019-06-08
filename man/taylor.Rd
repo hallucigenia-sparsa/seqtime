@@ -4,13 +4,20 @@
 \alias{taylor}
 \title{Plot relationship between row mean and row variance}
 \usage{
-taylor(x, type = "taylor", pseudo = 0, col = "black", header = "",
-  plot = TRUE)
+taylor(x, type = "taylor", boot = 1000, lower.conf = 0.05,
+  upper.conf = 0.95, pseudo = 0, col = "black", header = "",
+  label = FALSE, plot = TRUE)
 }
 \arguments{
-\item{x}{a matrix}
+\item{x}{a matrix, mean and variance are computed row-wise}
 
 \item{type}{the type of plot to do: mean.var (mean vs variance), boxplot (row-wise), taylor (powerlaw fitted to mean vs variance)}
+
+\item{boot}{compute confidence interval through bootstrapping with given number of iterations (only for type=taylor)}
+
+\item{lower.conf}{lower confidence interval}
+
+\item{upper.conf}{upper confidence interval}
 
 \item{pseudo}{add a pseudo count to deal with zeros in log-log plot (for type=taylor)}
 
@@ -18,14 +25,20 @@ taylor(x, type = "taylor", pseudo = 0, col = "black", header = "",
 
 \item{header}{header string}
 
+\item{label}{label points interactively (only for type=taylor, escape to stop labeling)}
+
 \item{plot}{whether to do the plot}
 }
 \value{
-for type taylor, the slope, p-value and adjusted R2 of the Taylor law are returned (slope, pval, adjR2)
+for type taylor, the slope, p-value, adjusted R2 of the Taylor law as well as the log means and variances are returned (slope, pval, adjR2, logmeans, logvars)
 }
 \description{
 The power law relationship between variance and mean is known as Taylor's law, which is
 defined as: \eqn{var(Y) = a*mean(Y)^b}. We can obtain the power as the slope in log-scale: \eqn{log(var(Y)) = log(a)+b*log(mean(Y))}
+}
+\details{
+Confidence intervals are estimated by first resampling columns with replacement from the input matrix and then recomputing log means
+and log variances on the bootstrapped data.
 }
 \references{
 L.R. Taylor (1961). Aggregation, variance and the mean. Nature 189, 732-735.

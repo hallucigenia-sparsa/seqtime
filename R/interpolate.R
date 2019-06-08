@@ -82,6 +82,10 @@ interpolateSub<-function(x, time.vector=c(), time.index=NA, interval=NA, method=
       stop("Time points must be provided in chronological order.")
     }
     interval=which(intervalcounts==max(intervalcounts))
+    if(length(interval)>1){
+      print("More than one interval are equally frequent; selected the smallest one.")
+      interval=interval[1]
+    }
     print(paste("Selected interval: ",interval,sep=""))
   }else{
     # make sure we have a positive integer as interval
