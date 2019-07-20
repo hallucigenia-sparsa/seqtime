@@ -4,20 +4,22 @@
 \alias{taylor}
 \title{Plot relationship between row mean and row variance}
 \usage{
-taylor(x, type = "taylor", boot = 1000, lower.conf = 0.05,
-  upper.conf = 0.95, pseudo = 0, col = "black", header = "",
-  label = FALSE, plot = TRUE)
+taylor(x, type = "taylor", boot = 0, interval = "prediction",
+  lower.conf = 0.025, upper.conf = 0.975, pseudo = 0,
+  col = "black", header = "", label = FALSE, plot = TRUE)
 }
 \arguments{
 \item{x}{a matrix, mean and variance are computed row-wise}
 
 \item{type}{the type of plot to do: mean.var (mean vs variance), boxplot (row-wise), taylor (powerlaw fitted to mean vs variance)}
 
-\item{boot}{compute confidence interval through bootstrapping with given number of iterations (only for type=taylor)}
+\item{boot}{compute confidence interval for individual data points through bootstrapping with given number of iterations (only for type=taylor)}
 
-\item{lower.conf}{lower confidence interval}
+\item{interval}{compute prediction or confidence interval (for type=taylor)}
 
-\item{upper.conf}{upper confidence interval}
+\item{lower.conf}{lower limit of confidence interval for both regression line and individual data points (for type=taylor)}
+
+\item{upper.conf}{upper limit of confidence interval for both regression line and individual data points (for type=taylor)}
 
 \item{pseudo}{add a pseudo count to deal with zeros in log-log plot (for type=taylor)}
 
@@ -27,18 +29,18 @@ taylor(x, type = "taylor", boot = 1000, lower.conf = 0.05,
 
 \item{label}{label points interactively (only for type=taylor, escape to stop labeling)}
 
-\item{plot}{whether to do the plot}
+\item{plot}{whether to display the plot}
 }
 \value{
-for type taylor, the slope, p-value, adjusted R2 of the Taylor law as well as the log means and variances are returned (slope, pval, adjR2, logmeans, logvars)
+for type taylor, the slope, p-value, adjusted R2 of the Taylor law as well as the log means and variances and for boot>0, the lower and upper values of log mean and variance bootstraps are returned (slope, pval, adjR2, logmeans, logvars, lowerConfMean, upperConfMean, lowerConfVar, upperConfVar)
 }
 \description{
 The power law relationship between variance and mean is known as Taylor's law, which is
 defined as: \eqn{var(Y) = a*mean(Y)^b}. We can obtain the power as the slope in log-scale: \eqn{log(var(Y)) = log(a)+b*log(mean(Y))}
 }
 \details{
-Confidence intervals are estimated by first resampling columns with replacement from the input matrix and then recomputing log means
-and log variances on the bootstrapped data.
+For plot type taylor, confidence intervals for individual data points are estimated by first resampling columns with replacement from the input matrix and then recomputing log means
+and log variances on the bootstrapped data. The confidence interval shown for the regression line is the prediction interval.
 }
 \references{
 L.R. Taylor (1961). Aggregation, variance and the mean. Nature 189, 732-735.
