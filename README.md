@@ -18,10 +18,12 @@ library(seqtime)
 For a tour of seqtime, see the [overview vignette](http://hallucigenia-sparsa.github.io/seqtime/articles/seqtime_tour.html).
 For examples on network inference with LIMITS and visualization, see the [network inference vignette](http://hallucigenia-sparsa.github.io/seqtime/articles/network_inference.html).
 
-### Development status
+### Development status and hit number
 
 [![Travis-CI Build Status](https://travis-ci.org/hallucigenia-sparsa/seqtime.svg?branch=master)](https://travis-ci.org/hallucigenia-sparsa/seqtime)
 
+
+[![HitCount](http://hits.dwyl.io/hallucigenia-sparsa/seqtime.svg)](http://hits.dwyl.io/hallucigenia-sparsa/seqtime)
 
 ### Contribute
 

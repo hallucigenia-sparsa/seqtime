@@ -17,13 +17,14 @@
 #' @param y initial abundances
 #' @param sigma noise level, if set to a non-positive value, no noise is added
 #' @param tend number of time points
+#' @param death.t species with abundance below this value are killed (abundance is set to 0)
 #' @param tskip number of initial time points to skip (to skip the transient)
 #' @param explosion.bound boundary for explosion
 #' @param perturb a perturbation object
 #' @return a matrix with species abundances as rows and time points as columns
 #' @references Fisher & Mehta (2014). Identifying Keystone Species in the Human Gut Microbiome from Metagenomic Timeseries using Sparse Linear Regression. PLoS One 9:e102451
 #' @examples
-#' tsplot(ricker(10,generateA(10),K=rep(0.01,10)),header="ricker")
+#' tsplot(ricker(10,generateA(10),K=rep(0.01,10)),main="ricker")
 #' per=perturbation(times=seq(10,100,10),durations=rep(1,10),numberchanges=c(0.1,rep(0,9)))
 #' tsplot(ricker(10,generateA(10),K=rep(0.01,10),perturb=per))
 #' @seealso \code{\link{glv}} for the generalized Lotka Volterra model
@@ -31,7 +32,7 @@
 #'
 #'
 
-ricker<-function(N, A, K=rep(0.1,N), y=runif(N), sigma=0.05, K.trend=NA, tend=100, tskip=0, explosion.bound=10^8, perturb=NULL){
+ricker<-function(N, A, K=rep(0.1,N), y=runif(N), sigma=0.05, K.trend=NA, tend=100, death.t=NA, tskip=0, explosion.bound=10^8, perturb=NULL){
   if(length(y) != N){
     stop("y needs to have N entries.")
   }
@@ -88,6 +89,9 @@ ricker<-function(N, A, K=rep(0.1,N), y=runif(N), sigma=0.05, K.trend=NA, tend=10
       print("Explosion!")
       res=c(-1,which(y==max(y)))
       return(res)
+    }
+    if(!is.na(death.t) && death.t>0){
+      y[y<death.t]=0 # kill species below the threshold
     }
     else if(length(y[y<0]) > 0){
       stop("Species below 0!")

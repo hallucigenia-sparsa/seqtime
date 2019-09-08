@@ -5,8 +5,8 @@
 \title{Generate time series with the Ricker model}
 \usage{
 ricker(N, A, K = rep(0.1, N), y = runif(N), sigma = 0.05,
-  K.trend = NA, tend = 100, tskip = 0, explosion.bound = 10^8,
-  perturb = NULL)
+  K.trend = NA, tend = 100, death.t = NA, tskip = 0,
+  explosion.bound = 10^8, perturb = NULL)
 }
 \arguments{
 \item{N}{number of species}
@@ -22,6 +22,8 @@ ricker(N, A, K = rep(0.1, N), y = runif(N), sigma = 0.05,
 \item{K.trend}{a vector of positive or negative carrying capacity percentages specified between 0 and 1}
 
 \item{tend}{number of time points}
+
+\item{death.t}{species with abundance below this value are killed (abundance is set to 0)}
 
 \item{tskip}{number of initial time points to skip (to skip the transient)}
 
@@ -45,7 +47,7 @@ to each species' current carrying capacity in each time step. K.trend allows to 
 Negative carrying capacities are set to zero. If both a perturbation and K.trend are specified, the perturbation is carried out first.
 }
 \examples{
-tsplot(ricker(10,generateA(10),K=rep(0.01,10)),header="ricker")
+tsplot(ricker(10,generateA(10),K=rep(0.01,10)),main="ricker")
 per=perturbation(times=seq(10,100,10),durations=rep(1,10),numberchanges=c(0.1,rep(0,9)))
 tsplot(ricker(10,generateA(10),K=rep(0.01,10),perturb=per))
 }

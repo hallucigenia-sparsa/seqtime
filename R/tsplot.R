@@ -203,7 +203,7 @@ tsplot <- function(x, time.given=FALSE, num=nrow(x), sample.points=c(), mode="li
     }
 
     if(length(groups)>0){
-      groupNum=unique(groups)
+      groupNum=length(unique(groups))
     }else{
       groupNum=1
     }
