@@ -8,7 +8,7 @@
 #' @param x a matrix, mean and variance are computed row-wise
 #' @param type the type of plot to do: mean.var (mean vs variance), boxplot (row-wise), taylor (powerlaw fitted to mean vs variance)
 #' @param boot compute confidence interval for individual data points through bootstrapping with given number of iterations (only for type=taylor)
-#' @param interval compute prediction or confidence interval (for type=taylor)
+#' @param interval compute prediction interval or confidence interval, so values are "prediction" or "confidence" (for type=taylor)
 #' @param lower.conf lower limit of confidence interval for both regression line and individual data points (for type=taylor)
 #' @param upper.conf upper limit of confidence interval for both regression line and individual data points (for type=taylor)
 #' @param pseudo add a pseudo count to deal with zeros in log-log plot (for type=taylor)
@@ -90,9 +90,12 @@ taylor<-function(x, type="taylor", boot=0, interval="prediction", lower.conf=0.0
       logmeans.sum=summary(logmeans)
 
       # https://stats.stackexchange.com/questions/16493/difference-between-confidence-intervals-and-prediction-intervals
-      # prediction interval: for response itself
-      # regression interval: for expectation of response given predictor (more precise)
+      # prediction interval: for response itself, an interval associated with a random variable yet to be observed ("biological variability?")
+      # confidence interval: for expectation of response given predictor (more precise), how well we have determined the mean ("technical variability?")
+      # A 95% confidence interval will contain the true parameter with probability 0.95
       # The difference between a prediction interval and a confidence interval is the standard error
+      # prediction interval is always wider than confidence interval
+      # see also: https://robjhyndman.com/hyndsight/intervals/
 
       # code: https://datascienceplus.com/prediction-interval-the-wider-sister-of-confidence-interval/
       interval <- predict(linreg, interval=interval,level = (upper.conf-lower.conf))

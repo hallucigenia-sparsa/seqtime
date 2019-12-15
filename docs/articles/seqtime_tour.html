@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tour through seqtime - Properties of time series generated with different ecological models • seqtime</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Tour through seqtime - Properties of time series generated with different ecological models">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -70,7 +71,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/hallucigenia-sparsa/seqtime">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -83,13 +84,14 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Tour through seqtime - Properties of time series generated with different ecological models</h1>
                         <h4 class="author">Karoline Faust</h4>
             
-            <h4 class="date">2019-06-08</h4>
+            <h4 class="date">2019-12-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/hallucigenia-sparsa/seqtime/blob/master/vignettes/seqtime_tour.Rmd"><code>vignettes/seqtime_tour.Rmd</code></a></small>
       <div class="hidden name"><code>seqtime_tour.Rmd</code></div>
@@ -99,7 +101,7 @@
     
     
 <p>We start by loading the seqtime library.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(seqtime)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(seqtime)</code></pre></div>
 <p>Then, we generate a time series with the Ricker community model. For this, we have to specify the number of species N as well as the interaction matrix A that describes their interactions. We generate an interaction matrix with a specified connectance c at random. The connectance gives the percentage of realized arcs out of all possible arcs (arc means that the edge is directed). The diagonal values, which represent intra-species competition, are set to a negative value. In addition, we introduce a high percentage of negative arcs to avoid explosions.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">N=<span class="dv">50</span>
 A=<span class="kw"><a href="../reference/generateA.html">generateA</a></span>(N, <span class="dt">c=</span><span class="fl">0.1</span>, <span class="dt">d=</span><span class="op">-</span><span class="dv">1</span>)</code></pre></div>
@@ -112,42 +114,25 @@ A=<span class="kw"><a href="../reference/generateA.html">generateA</a></span>(N,
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">A=<span class="kw"><a href="../reference/modifyA.html">modifyA</a></span>(A,<span class="dt">perc=</span><span class="dv">70</span>,<span class="dt">strength=</span><span class="st">"uniform"</span>,<span class="dt">mode=</span><span class="st">"negpercent"</span>)</code></pre></div>
 <pre><code>## [1] "Initial edge number 295"
 ## [1] "Initial connectance 0.1"
-## [1] "Number of negative edges already present: 176"
-## [1] "Converting 30 edges into negative edges"
+## [1] "Number of negative edges already present: 170"
+## [1] "Converting 36 edges into negative edges"
 ## [1] "Final connectance: 0.1"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Generate a matrix using the algorithm by Klemm and Eguiluz to simulate a species network with a more realistic modular and scale-free structure. This takes a couple of minutes to complete.</span>
 <span class="co">#A=generateA(N, type="klemm", c=0.1)</span></code></pre></div>
 <p>Next, we generate uneven initial species abundances, summing to a total count of 1000.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">y=<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(<span class="kw"><a href="../reference/generateAbundances.html">generateAbundances</a></span>(N,<span class="dt">mode=</span><span class="dv">5</span>))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(y)=<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span><span class="op">:</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(y))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/barplot">barplot</a></span>(y,<span class="dt">main=</span><span class="st">"Initial species abundances"</span>,<span class="dt">xlab=</span><span class="st">"Species"</span>,<span class="dt">ylab=</span><span class="st">"Abundance"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">y=<span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw"><a href="../reference/generateAbundances.html">generateAbundances</a></span>(N,<span class="dt">mode=</span><span class="dv">5</span>))
+<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(y)=<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span><span class="op">:</span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(y))
+<span class="kw"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span>(y,<span class="dt">main=</span><span class="st">"Initial species abundances"</span>,<span class="dt">xlab=</span><span class="st">"Species"</span>,<span class="dt">ylab=</span><span class="st">"Abundance"</span>)</code></pre></div>
 <p><img src="figure_seqtime_tour/unnamed-chunk-3-1.png" width="576"></p>
 <p>With the initial abundances and the interaction matrix, we can run a simulation of community dynamics with the Ricker model and plot the resulting time series.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># convert initial abundances in proportions (y/sum(y)) and run without a noise term (sigma=-1)</span>
-out.ricker=<span class="kw"><a href="../reference/ricker.html">ricker</a></span>(N,<span class="dt">A=</span>A,<span class="dt">y=</span>(y<span class="op">/</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sum">sum</a></span>(y)),<span class="dt">K=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="fl">0.1</span>,N), <span class="dt">sigma=</span><span class="op">-</span><span class="dv">1</span>,<span class="dt">tend=</span><span class="dv">500</span>)
+out.ricker=<span class="kw"><a href="../reference/ricker.html">ricker</a></span>(N,<span class="dt">A=</span>A,<span class="dt">y=</span>(y<span class="op">/</span><span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(y)),<span class="dt">K=</span><span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0.1</span>,N), <span class="dt">sigma=</span><span class="op">-</span><span class="dv">1</span>,<span class="dt">tend=</span><span class="dv">500</span>)
 <span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(out.ricker,<span class="dt">main=</span><span class="st">"Ricker"</span>)</code></pre></div>
 <p><img src="figure_seqtime_tour/unnamed-chunk-4-1.png" width="576"></p>
 <p>We can then analyse the community time series. First, we plot for each species the mean against the variance. If a straight line fits well in log scale, the Taylor law applies.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the pseudo-count allows to take the logarithm of species hat went extinct</span>
-ricker.taylor=seqtime<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/seqtime/topics/taylor">taylor</a></span>(out.ricker, <span class="dt">pseudo=</span><span class="fl">0.0001</span>, <span class="dt">col=</span><span class="st">"green"</span>, <span class="dt">type=</span><span class="st">"taylor"</span>)</code></pre></div>
-<pre><code>## Warning in arrows(upperConfM[val.index], logvars[val.index],
-## lowerConfM[val.index], : zero-length arrow is of indeterminate angle and so
-## skipped</code></pre>
-<pre><code>## Warning in arrows(lowerConfM[val.index], logvars[val.index],
-## upperConfM[val.index], : zero-length arrow is of indeterminate angle and so
-## skipped</code></pre>
-<pre><code>## Warning in arrows(logmeans[val.index], upperConfV[val.index],
-## logmeans[val.index], : zero-length arrow is of indeterminate angle and so
-## skipped</code></pre>
-<pre><code>## Warning in arrows(logmeans[val.index], lowerConfV[val.index],
-## logmeans[val.index], : zero-length arrow is of indeterminate angle and so
-## skipped</code></pre>
-<pre><code>## Warning in arrows(upperConfM[val.index], logvars[val.index],
-## lowerConfM[val.index], : zero-length arrow is of indeterminate angle and so
-## skipped</code></pre>
-<pre><code>## Warning in arrows(lowerConfM[val.index], logvars[val.index],
-## upperConfM[val.index], : zero-length arrow is of indeterminate angle and so
-## skipped</code></pre>
+ricker.taylor=seqtime<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/seqtime/man/taylor.html">taylor</a></span>(out.ricker, <span class="dt">pseudo=</span><span class="fl">0.0001</span>, <span class="dt">col=</span><span class="st">"green"</span>, <span class="dt">type=</span><span class="st">"taylor"</span>)</code></pre></div>
+<pre><code>## Warning in predict.lm(linreg, interval = interval, level = (upper.conf - : predictions on current data refer to _future_ responses</code></pre>
 <p><img src="figure_seqtime_tour/unnamed-chunk-5-1.png" width="576"></p>
 <p>Now we look at the noise types of the species simulated with the noise-free Ricker model. The only noise type identified is black noise.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ricker.noise=<span class="kw"><a href="../reference/identifyNoisetypes.html">identifyNoisetypes</a></span>(out.ricker, <span class="dt">smooth=</span><span class="ot">TRUE</span>)</code></pre></div>
@@ -165,58 +150,36 @@ ricker.taylor=seqtime<span class="op">::</span><span class="kw"><a href="https:/
 <span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(out.soi,<span class="dt">main=</span><span class="st">"SOI"</span>)</code></pre></div>
 <p><img src="figure_seqtime_tour/unnamed-chunk-7-1.png" width="576"></p>
 <p>The Taylor law fits far better to time series generated with the SOI than with the Ricker model according to the adjusted R2.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">soi.taylor=seqtime<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/seqtime/topics/taylor">taylor</a></span>(out.soi, <span class="dt">pseudo=</span><span class="fl">0.0001</span>, <span class="dt">col=</span><span class="st">"blue"</span>, <span class="dt">type=</span><span class="st">"taylor"</span>)</code></pre></div>
-<pre><code>## Warning in arrows(logmeans[val.index], upperConfV[val.index],
-## logmeans[val.index], : zero-length arrow is of indeterminate angle and so
-## skipped</code></pre>
-<pre><code>## Warning in arrows(logmeans[val.index], lowerConfV[val.index],
-## logmeans[val.index], : zero-length arrow is of indeterminate angle and so
-## skipped</code></pre>
-<pre><code>## Warning in arrows(upperConfM[val.index], logvars[val.index],
-## lowerConfM[val.index], : zero-length arrow is of indeterminate angle and so
-## skipped</code></pre>
-<pre><code>## Warning in arrows(lowerConfM[val.index], logvars[val.index],
-## upperConfM[val.index], : zero-length arrow is of indeterminate angle and so
-## skipped</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">soi.taylor=seqtime<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/seqtime/man/taylor.html">taylor</a></span>(out.soi, <span class="dt">pseudo=</span><span class="fl">0.0001</span>, <span class="dt">col=</span><span class="st">"blue"</span>, <span class="dt">type=</span><span class="st">"taylor"</span>)</code></pre></div>
+<pre><code>## Warning in predict.lm(linreg, interval = interval, level = (upper.conf - : predictions on current data refer to _future_ responses</code></pre>
 <p><img src="figure_seqtime_tour/unnamed-chunk-8-1.png" width="576"></p>
 <p>When we compute noise types in the community time series generated with SOI, we find that pink noise dominates.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">soi.noise=<span class="kw"><a href="../reference/identifyNoisetypes.html">identifyNoisetypes</a></span>(out.soi,<span class="dt">smooth=</span><span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## [1] "Number of taxa below the abundance threshold:  1"
 ## [1] "Number of taxa with non-significant power spectrum laws:  0"
-## [1] "Number of taxa with non-classified power spectrum:  24"
-## [1] "Number of taxa with white noise:  2"
-## [1] "Number of taxa with pink noise:  21"
-## [1] "Number of taxa with brown noise:  2"
+## [1] "Number of taxa with non-classified power spectrum:  28"
+## [1] "Number of taxa with white noise:  0"
+## [1] "Number of taxa with pink noise:  15"
+## [1] "Number of taxa with brown noise:  6"
 ## [1] "Number of taxa with black noise:  0"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotNoisetypes.html">plotNoisetypes</a></span>(soi.noise)</code></pre></div>
 <p><img src="figure_seqtime_tour/unnamed-chunk-9-1.png" width="576"></p>
 <p>Next, we generate a community time series with the Hubbell model, which describes neutral community dynamics. We set the number of species in the local and in the meta-community as well as the number of deaths to N and assign 1500 individuals. The immigration rate m is set to 0.1. We skip the first 500 steps of transient dynamics.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">out.hubbell=<span class="kw"><a href="../reference/simHubbell.html">simHubbell</a></span>(<span class="dt">N=</span>N, <span class="dt">M=</span>N,<span class="dt">I=</span><span class="dv">1500</span>,<span class="dt">d=</span>N, <span class="dt">m.vector=</span>(y<span class="op">/</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sum">sum</a></span>(y)), <span class="dt">m=</span><span class="fl">0.1</span>, <span class="dt">tskip=</span><span class="dv">500</span>, <span class="dt">tend=</span><span class="dv">1000</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">out.hubbell=<span class="kw"><a href="../reference/simHubbell.html">simHubbell</a></span>(<span class="dt">N=</span>N, <span class="dt">M=</span>N,<span class="dt">I=</span><span class="dv">1500</span>,<span class="dt">d=</span>N, <span class="dt">m.vector=</span>(y<span class="op">/</span><span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(y)), <span class="dt">m=</span><span class="fl">0.1</span>, <span class="dt">tskip=</span><span class="dv">500</span>, <span class="dt">tend=</span><span class="dv">1000</span>)
 <span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(out.hubbell,<span class="dt">main=</span><span class="st">"Hubbell"</span>)</code></pre></div>
 <p><img src="figure_seqtime_tour/unnamed-chunk-10-1.png" width="576"></p>
 <p>The neutral dynamics fits the Taylor law well:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hubbell.taylor=seqtime<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/seqtime/topics/taylor">taylor</a></span>(out.hubbell, <span class="dt">pseudo=</span><span class="fl">0.0001</span>, <span class="dt">col=</span><span class="st">"blue"</span>, <span class="dt">type=</span><span class="st">"taylor"</span>)</code></pre></div>
-<pre><code>## Warning in arrows(logmeans[val.index], upperConfV[val.index],
-## logmeans[val.index], : zero-length arrow is of indeterminate angle and so
-## skipped</code></pre>
-<pre><code>## Warning in arrows(logmeans[val.index], lowerConfV[val.index],
-## logmeans[val.index], : zero-length arrow is of indeterminate angle and so
-## skipped</code></pre>
-<pre><code>## Warning in arrows(upperConfM[val.index], logvars[val.index],
-## lowerConfM[val.index], : zero-length arrow is of indeterminate angle and so
-## skipped</code></pre>
-<pre><code>## Warning in arrows(lowerConfM[val.index], logvars[val.index],
-## upperConfM[val.index], : zero-length arrow is of indeterminate angle and so
-## skipped</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hubbell.taylor=seqtime<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/seqtime/man/taylor.html">taylor</a></span>(out.hubbell, <span class="dt">pseudo=</span><span class="fl">0.0001</span>, <span class="dt">col=</span><span class="st">"blue"</span>, <span class="dt">type=</span><span class="st">"taylor"</span>)</code></pre></div>
+<pre><code>## Warning in predict.lm(linreg, interval = interval, level = (upper.conf - : predictions on current data refer to _future_ responses</code></pre>
 <p><img src="figure_seqtime_tour/unnamed-chunk-11-1.png" width="576"></p>
 <p>The Hubbell time series is dominated by brown noise:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hubbell.noise=<span class="kw"><a href="../reference/identifyNoisetypes.html">identifyNoisetypes</a></span>(out.hubbell,<span class="dt">smooth=</span><span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## [1] "Number of taxa below the abundance threshold:  1"
 ## [1] "Number of taxa with non-significant power spectrum laws:  0"
-## [1] "Number of taxa with non-classified power spectrum:  6"
+## [1] "Number of taxa with non-classified power spectrum:  7"
 ## [1] "Number of taxa with white noise:  0"
 ## [1] "Number of taxa with pink noise:  0"
-## [1] "Number of taxa with brown noise:  43"
+## [1] "Number of taxa with brown noise:  42"
 ## [1] "Number of taxa with black noise:  0"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotNoisetypes.html">plotNoisetypes</a></span>(hubbell.noise)</code></pre></div>
 <p><img src="figure_seqtime_tour/unnamed-chunk-12-1.png" width="576"></p>
@@ -225,14 +188,15 @@ ricker.taylor=seqtime<span class="op">::</span><span class="kw"><a href="https:/
 <span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(dm.uneven,<span class="dt">main=</span><span class="st">"Dirichlet-Multinomial"</span>)</code></pre></div>
 <p><img src="figure_seqtime_tour/unnamed-chunk-13-1.png" width="576"></p>
 <p>We plot its Taylor law.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dm.uneven.taylor=seqtime<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/seqtime/topics/taylor">taylor</a></span>(dm.uneven, <span class="dt">pseudo=</span><span class="fl">0.0001</span>, <span class="dt">col=</span><span class="st">"orange"</span>, <span class="dt">type=</span><span class="st">"taylor"</span>, <span class="dt">header=</span><span class="st">"Dirichlet-Multinomial"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dm.uneven.taylor=seqtime<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/seqtime/man/taylor.html">taylor</a></span>(dm.uneven, <span class="dt">pseudo=</span><span class="fl">0.0001</span>, <span class="dt">col=</span><span class="st">"orange"</span>, <span class="dt">type=</span><span class="st">"taylor"</span>, <span class="dt">header=</span><span class="st">"Dirichlet-Multinomial"</span>)</code></pre></div>
+<pre><code>## Warning in predict.lm(linreg, interval = interval, level = (upper.conf - : predictions on current data refer to _future_ responses</code></pre>
 <p><img src="figure_seqtime_tour/unnamed-chunk-14-1.png" width="576"></p>
 <p>As expected, samples generated with the Dirichlet-Multinomial distribution do not display pink, brown or black noise.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dm.uneven.noise=<span class="kw"><a href="../reference/identifyNoisetypes.html">identifyNoisetypes</a></span>(dm.uneven,<span class="dt">smooth=</span><span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## [1] "Number of taxa below the abundance threshold:  0"
 ## [1] "Number of taxa with non-significant power spectrum laws:  0"
-## [1] "Number of taxa with non-classified power spectrum:  16"
-## [1] "Number of taxa with white noise:  34"
+## [1] "Number of taxa with non-classified power spectrum:  21"
+## [1] "Number of taxa with white noise:  29"
 ## [1] "Number of taxa with pink noise:  0"
 ## [1] "Number of taxa with brown noise:  0"
 ## [1] "Number of taxa with black noise:  0"</code></pre>
@@ -240,7 +204,8 @@ ricker.taylor=seqtime<span class="op">::</span><span class="kw"><a href="https:/
 <p><img src="figure_seqtime_tour/unnamed-chunk-15-1.png" width="576"></p>
 <p>The evenness of the species proportion vector given to the Dirichlet-Multinomial distribution influences the slope of the Taylor law:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dm.even=<span class="kw"><a href="../reference/simCountMat.html">simCountMat</a></span>(N,<span class="dt">samples=</span><span class="dv">100</span>,<span class="dt">mode=</span><span class="dv">1</span>)
-dm.even.taylor=seqtime<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/seqtime/topics/taylor">taylor</a></span>(dm.even, <span class="dt">pseudo=</span><span class="fl">0.0001</span>, <span class="dt">col=</span><span class="st">"orange"</span>, <span class="dt">type=</span><span class="st">"taylor"</span>, <span class="dt">header=</span><span class="st">"Even Dirichlet-Multinomial"</span>)</code></pre></div>
+dm.even.taylor=seqtime<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/seqtime/man/taylor.html">taylor</a></span>(dm.even, <span class="dt">pseudo=</span><span class="fl">0.0001</span>, <span class="dt">col=</span><span class="st">"orange"</span>, <span class="dt">type=</span><span class="st">"taylor"</span>, <span class="dt">header=</span><span class="st">"Even Dirichlet-Multinomial"</span>)</code></pre></div>
+<pre><code>## Warning in predict.lm(linreg, interval = interval, level = (upper.conf - : predictions on current data refer to _future_ responses</code></pre>
 <p><img src="figure_seqtime_tour/unnamed-chunk-16-1.png" width="576"></p>
 <div id="noise-simulation" class="section level2">
 <h2 class="hasAnchor">
@@ -262,17 +227,20 @@ dm.even.taylor=seqtime<span class="op">::</span><span class="kw"><a href="https:
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Karoline Faust, Franziska Bauchinger, Sophie de Buyl, Leo Lahti.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

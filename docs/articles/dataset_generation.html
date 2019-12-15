@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Generating synthetic datasets with seqtime and generalized Lotka-Volterra • seqtime</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Generating synthetic datasets with seqtime and generalized Lotka-Volterra">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -70,7 +71,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/hallucigenia-sparsa/seqtime">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -83,6 +84,7 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -99,9 +101,9 @@
     
     
 <p>Start by loading the seqtime library as well as ggplot2. To make plotting easier, we are going to use the ggplot2 package together with reshape2.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(seqtime)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(reshape2)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(seqtime)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggplot2)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(reshape2)</code></pre></div>
 <p>We are going to generate a simulated dataset with 50 species, 40 samples. We first need to generate an interaction matrix. We are using the Klemm-Eguiluz algorithm, as this produces modular and scale-free networks.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">N =<span class="st"> </span><span class="dv">50</span>
 S =<span class="st"> </span><span class="dv">40</span>
@@ -121,23 +123,23 @@ A =<span class="st"> </span><span class="kw"><a href="../reference/generateA.htm
 ## [1] "Final negative arc number (excluding self-arcs) 105"
 ## [1] "PEP: 13.9344262295082"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotA.html">plotA</a></span>(A, <span class="dt">header=</span><span class="st">"Klemm-Eguiluz interaction matrix"</span>)</code></pre></div>
-<pre><code>## [1] "Largest value: 0.38438063855892"
+<pre><code>## [1] "Largest value: 0.491416546592438"
 ## [1] "Smallest value: -0.5"</code></pre>
 <p><img src="dataset_generation_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <p>Normally, we would need to generate initial abundances so we could perform the gLV calculations. The dataset generation function takes care of that, but if you want to have different initial abundances than those generated from the Poisson distribution, you can change the mode parameter.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dataset =<span class="st"> </span><span class="kw"><a href="../reference/generateDataSet.html">generateDataSet</a></span>(S, A)
-dataset =<span class="st"> </span>seqtime<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/seqtime/topics/normalize">normalize</a></span>(dataset)
-dataset =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/reshape2/topics/melt">melt</a></span>(dataset)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dataset) =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Species"</span>, <span class="st">"Sample"</span>, <span class="st">"Abundance"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="dt">data=</span>dataset, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>dataset<span class="op">$</span>Sample, <span class="dt">y=</span>dataset<span class="op">$</span>Abundance, <span class="dt">width=</span><span class="dv">1</span>)) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/geom_bar">geom_bar</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">y =</span> dataset<span class="op">$</span>Abundance, <span class="dt">x=</span> dataset<span class="op">$</span>Sample, <span class="dt">fill=</span>dataset<span class="op">$</span>Species), <span class="dt">data=</span>dataset, <span class="dt">stat=</span><span class="st">"identity"</span>, <span class="dt">show.legend=</span>F) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">aspect.ratio=</span>.<span class="dv">4</span>) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_classic</a></span>()<span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/labs">ylab</a></span>(<span class="st">"Relative abundance"</span>) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/labs">xlab</a></span>(<span class="st">"Sample"</span>)</code></pre></div>
+dataset =<span class="st"> </span>seqtime<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/seqtime/man/normalize.html">normalize</a></span>(dataset)
+dataset =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/reshape2/man/melt.html">melt</a></span>(dataset)
+<span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(dataset) =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Species"</span>, <span class="st">"Sample"</span>, <span class="st">"Abundance"</span>)
+<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="dt">data=</span>dataset, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>dataset<span class="op">$</span>Sample, <span class="dt">y=</span>dataset<span class="op">$</span>Abundance, <span class="dt">width=</span><span class="dv">1</span>)) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">y =</span> dataset<span class="op">$</span>Abundance, <span class="dt">x=</span> dataset<span class="op">$</span>Sample, <span class="dt">fill=</span>dataset<span class="op">$</span>Species), <span class="dt">data=</span>dataset, <span class="dt">stat=</span><span class="st">"identity"</span>, <span class="dt">show.legend=</span>F) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">aspect.ratio=</span>.<span class="dv">4</span>) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_classic</a></span>()<span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span>(<span class="st">"Relative abundance"</span>) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span>(<span class="st">"Sample"</span>)</code></pre></div>
 <p><img src="dataset_generation_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <p>We can also generate the dataset with environmental perturbations. For that, we first generate a suitable environmental matrix. We also tell the dataset function how many samples receive which perturbation. The abundance profile shifts as a result.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/envGrowthChanges.html">envGrowthChanges</a></span>(N, <span class="dt">strength=</span><span class="fl">0.8</span>)
-dataset =<span class="st"> </span><span class="kw"><a href="../reference/generateDataSet.html">generateDataSet</a></span>(S, A, <span class="dt">env.matrix=</span>env, <span class="dt">perturb.count=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">20</span>,<span class="dv">20</span>))
-dataset =<span class="st"> </span>seqtime<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/seqtime/topics/normalize">normalize</a></span>(dataset)
-dataset =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/reshape2/topics/melt">melt</a></span>(dataset)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(dataset) =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Species"</span>, <span class="st">"Sample"</span>, <span class="st">"Abundance"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(<span class="dt">data=</span>dataset, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>dataset<span class="op">$</span>Sample, <span class="dt">y=</span>dataset<span class="op">$</span>Abundance, <span class="dt">width=</span><span class="dv">1</span>)) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/geom_bar">geom_bar</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">y =</span> dataset<span class="op">$</span>Abundance, <span class="dt">x=</span> dataset<span class="op">$</span>Sample, <span class="dt">fill=</span>dataset<span class="op">$</span>Species), <span class="dt">data=</span>dataset, <span class="dt">stat=</span><span class="st">"identity"</span>, <span class="dt">show.legend=</span>F) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">aspect.ratio=</span>.<span class="dv">4</span>) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_classic</a></span>()<span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/labs">ylab</a></span>(<span class="st">"Relative abundance"</span>) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/labs">xlab</a></span>(<span class="st">"Sample"</span>)</code></pre></div>
+dataset =<span class="st"> </span><span class="kw"><a href="../reference/generateDataSet.html">generateDataSet</a></span>(S, A, <span class="dt">env.matrix=</span>env, <span class="dt">perturb.count=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">20</span>,<span class="dv">20</span>))
+dataset =<span class="st"> </span>seqtime<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/seqtime/man/normalize.html">normalize</a></span>(dataset)
+dataset =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/reshape2/man/melt.html">melt</a></span>(dataset)
+<span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(dataset) =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Species"</span>, <span class="st">"Sample"</span>, <span class="st">"Abundance"</span>)
+<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="dt">data=</span>dataset, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>dataset<span class="op">$</span>Sample, <span class="dt">y=</span>dataset<span class="op">$</span>Abundance, <span class="dt">width=</span><span class="dv">1</span>)) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">y =</span> dataset<span class="op">$</span>Abundance, <span class="dt">x=</span> dataset<span class="op">$</span>Sample, <span class="dt">fill=</span>dataset<span class="op">$</span>Species), <span class="dt">data=</span>dataset, <span class="dt">stat=</span><span class="st">"identity"</span>, <span class="dt">show.legend=</span>F) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">aspect.ratio=</span>.<span class="dv">4</span>) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_classic</a></span>()<span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span>(<span class="st">"Relative abundance"</span>) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span>(<span class="st">"Sample"</span>)</code></pre></div>
 <p><img src="dataset_generation_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
   </div>
 
@@ -147,17 +149,20 @@ dataset =<span class="st"> </span><span class="kw"><a href="https://www.rdocumen
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Karoline Faust, Franziska Bauchinger, Sophie de Buyl, Leo Lahti.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>
