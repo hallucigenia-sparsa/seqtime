@@ -131,15 +131,13 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
     # attributes can be placed in plot also, but this has the advantage of easier transfer to tkplot, see http://kateto.net/network-visualization
     E(g)$arrow.size=0.3
     E(g)$color=colors
-    E(g)$weight.org=E(g)$weight
-    E(g)$weight=abs(E(g)$weight)
     V(g)$color="white"
     V(g)$label=taxonnames
     V(g)$frame.color="black"
     V(g)$label.color="black"
     # alternative: https://www.ggplot2-exts.org/ggraph.html
     # http://kateto.net/network-visualization
-    plot(g,layout=layout.fruchterman.reingold(g))
+    plot(g,layout=layout.fruchterman.reingold(g, weights=abs(E(g)$weight)))
     if(returnNetwork==TRUE){
       return(g)
     }
