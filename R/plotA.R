@@ -137,7 +137,7 @@ plotA<-function(A, method="image", header="", scale.weight=FALSE, original=FALSE
     V(g)$label.color="black"
     # alternative: https://www.ggplot2-exts.org/ggraph.html
     # http://kateto.net/network-visualization
-    plot(g,layout=layout.fruchterman.reingold(g))
+    plot(g,layout=layout.fruchterman.reingold(g, weights=abs(E(g)$weight)))
     if(returnNetwork==TRUE){
       return(g)
     }
